@@ -1,7 +1,7 @@
 function backitup(){
 	if [[ -e $1 ]]; then
-		cp -r $1 $1_backup
+		cp -r $1 $1_backup &
 	else
-		print "target file needed"
+		print "target directory needed!!!"
 	fi
 }

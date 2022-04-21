@@ -9,14 +9,15 @@ if [[ ! -e $HOME/.vimrc ]]; then
 fi
 
 # Option 
-  setopt extended_glob
-  setopt rc_expand_param
-  setopt rc_quotes
+  setopt always_to_end
   setopt auto_cd
+  setopt extended_glob
   setopt hist_ignore_dups
   setopt hist_ignore_space
   setopt hist_verify
-  setopt always_to_end
+  setopt no_flow_control
+  setopt rc_expand_param
+  setopt rc_quotes
 
 # Functions
   autoload -U compinit
@@ -36,6 +37,7 @@ fi
   PS1=$'%{\e[32m%}[%!]%{\e[0m%} %n [%1~] %# '
   PS4=$'+%N:%{\e[33m%}[%i]%{\e[0m%}> '
   CDPATH="$CDPATH:$HOME/Desktop"
+  FPATH="$FPATH:$HOME/.zfunc"
   HISTFILE="$HOME/.zsh_history"
   HISTSIZE=10000
   SAVEHIST=10000

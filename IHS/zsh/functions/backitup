@@ -1,0 +1,7 @@
+function backitup(){
+	if [[ -e $1 ]]; then
+		cp -r $1 $1_backup
+	else
+		print "target file needed"
+	fi
+}

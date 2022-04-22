@@ -34,7 +34,7 @@ fi
   alias -g prod="$HOME/Desktop/Production"
 
 # Parameters
-  PS1=$'%{\e[32m%}[%!]%{\e[0m%} %n [%1~] %# '
+  PS1=$'%{\e[32m%}[%!]%{\e[0m%} %n %{\e[34m%}[%1~]%{\e[0m%} %# '
   PS4=$'+%N:%{\e[33m%}[%i]%{\e[0m%}> '
   CDPATH="$CDPATH:$HOME/Desktop"
   FPATH="$FPATH:$HOME/.zfunc"

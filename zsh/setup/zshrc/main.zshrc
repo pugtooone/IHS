@@ -161,4 +161,3 @@ source $ZSH/oh-my-zsh.sh
 #}}}
 
 vim: set foldmethod=marker foldlevel=0: 2>/dev/null
-# hi

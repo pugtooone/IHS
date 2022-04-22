@@ -126,6 +126,7 @@ source $ZSH/oh-my-zsh.sh
   autoload -U retest
   autoload -U l1
   autoload -U jpgdrag
+  autoload -U pngdrag
 
 # nvim setup
   zmodload zsh/zpty #cmp-zsh requirement

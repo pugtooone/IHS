@@ -115,6 +115,13 @@ source $ZSH/oh-my-zsh.sh
   setopt rc_quotes
   # setopt auto_cd
 
+# Parameters
+  PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
+  PATH="$PATH:/Users/zeric.chan/homebrew/bin"
+  CDPATH="$HOME/Desktop"
+  FPATH="$FPATH:$HOME/.zfunc"
+  NVIM="$HOME/.config/nvim"
+
 # Functions
   autoload -U compinit
   # Completion
@@ -137,13 +144,16 @@ source $ZSH/oh-my-zsh.sh
   # alias l1="ls -1AG | cat -n"
   alias imgdrag="mv -i **/*(.) ." 
   alias seeallfiles="ls **/*(.) | cat -n"
-  alias ihs_repo="cd $HOME/Documents/GitHub/IHS"
+  alias ghub="cd $HOME/Documents/GitHub"
 
-# Parameters
-  PATH="$PATH:/Users/zeric.chan/homebrew/bin"
-  CDPATH="$HOME/Desktop"
-  FPATH="$FPATH:$HOME/.zfunc"
-  NVIM="$HOME/.config/nvim"
+# zsh-syntax-highlighting config
+  ZSH_HIGHLIGHT_HIGHLIGHTERS=( main brackets )
+  ZSH_HIGHLIGHT_STYLES[command]='fg=blue,bold'
+  ZSH_HIGHLIGHT_STYLES[builtin]='fg=blue,bold'
+  ZSH_HIGHLIGHT_STYLES[alias]='fg=blue,bold'
+  ZSH_HIGHLIGHT_STYLES[function]='fg=magenta,blod'
+  ZSH_HIGHLIGHT_STYLES[path]='fg=yellow,blod'
+  ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=blue,bg=yellow,blod'
 
 # Startup commands
   clear  

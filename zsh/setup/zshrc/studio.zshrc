@@ -35,12 +35,21 @@ fi
 
 # Parameters
   PS1=$'%{\e[32m%}[%!]%{\e[0m%} %n %{\e[34m%}[%1~]%{\e[0m%} %# '
-  PS4=$'+%N:%{\e[33m%}[%i]%{\e[0m%}> '
+  PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
   CDPATH="$CDPATH:$HOME/Desktop"
   FPATH="$FPATH:$HOME/.zfunc"
   HISTFILE="$HOME/.zsh_history"
   HISTSIZE=10000
   SAVEHIST=10000
+
+# zsh-syntax-highlighting config
+  ZSH_HIGHLIGHT_HIGHLIGHTERS=( main brackets )
+  ZSH_HIGHLIGHT_STYLES[command]='fg=blue,bold'
+  ZSH_HIGHLIGHT_STYLES[builtin]='fg=blue,bold'
+  ZSH_HIGHLIGHT_STYLES[alias]='fg=blue,bold'
+  ZSH_HIGHLIGHT_STYLES[function]='fg=magenta,blod'
+  ZSH_HIGHLIGHT_STYLES[path]='fg=yellow,blod'
+  ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=blue,bg=yellow,blod'
 
 # File Management
 

@@ -10,7 +10,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="duellj"
+ZSH_THEME="agnoster"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -141,10 +141,9 @@ source $ZSH/oh-my-zsh.sh
 # Aliases
   alias -g D="$HOME/Desktop"
   alias -g brand="$HOME/Desktop/DOCUMENTS/Brand"
-  # alias l1="ls -1AG | cat -n"
   alias imgdrag="mv -i **/*(.) ." 
   alias seeallfiles="ls **/*(.) | cat -n"
-  alias ghub="cd $HOME/Documents/GitHub"
+  alias zgit="cd $HOME/.zeric/.zgit"
 
 # zsh-syntax-highlighting config
   ZSH_HIGHLIGHT_HIGHLIGHTERS=( main brackets )

@@ -114,6 +114,8 @@ source $ZSH/oh-my-zsh.sh
   setopt rc_expand_param
   setopt rc_quotes
   # setopt auto_cd
+  setopt no_global_rcs
+  setopt prompt_subst
 
 # Parameters
   PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
@@ -135,8 +137,9 @@ source $ZSH/oh-my-zsh.sh
   autoload -U jpgdrag
   autoload -U pngdrag
 
-# nvim setup
+# Modules
   zmodload zsh/zpty #cmp-zsh requirement
+  zmodload zsh/complist
 
 # Aliases
   alias -g D="$HOME/Desktop"

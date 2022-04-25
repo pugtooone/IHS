@@ -2,12 +2,6 @@
 # run the following command on the command line to back this zshrc up, and create your own
 # cp $HOME/.zshrc $HOME/.zshrc_backup && vim $HOME/.zshrc
 
-# vim setup 
-if [[ ! -e $HOME/.vimrc ]]; then
-	touch $HOME/.vimrc
-	print "set number" >$HOME/.vimrc
-fi
-
 # Option 
   setopt always_to_end
   setopt auto_cd
@@ -16,6 +10,7 @@ fi
   setopt hist_ignore_space
   setopt hist_verify
   setopt no_flow_control
+  setopt no_global_rcs
   setopt rc_expand_param
   setopt rc_quotes
 
@@ -28,13 +23,14 @@ fi
     zstyle ':completion:*' group-name ''
 
 # Alias
-  alias l="ls -lAh"
+  alias l="ls -lAGh"
   alias l1="ls -1AG | cat -n"
-  alias -g D="$HOME/Desktop"
-  alias -g prod="$HOME/Desktop/Production"
+  alias D="cd $HOME/Desktop"
+  alias prod="cd $HOME/Desktop/Production"
+  alias pgrep="pgrep -li"
 
 # Parameters
-  PS1=$'%{\e[32m%}[%!]%{\e[0m%} %n %{\e[34m%}[%1~]%{\e[0m%} %# '
+  PS1=$'%{\e[1;36m%}[%!]%{\e[0m%} %{\e[1;32m%}%n%{\e[0m%} %{\e[1;36m%}[%1~]%{\e[0m%} %# '
   PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
   CDPATH="$CDPATH:$HOME/Desktop"
   FPATH="$FPATH:$HOME/.zfunc"
@@ -44,12 +40,6 @@ fi
 
 # zsh-syntax-highlighting config
   ZSH_HIGHLIGHT_HIGHLIGHTERS=( main brackets )
-  ZSH_HIGHLIGHT_STYLES[command]='fg=blue,bold'
-  ZSH_HIGHLIGHT_STYLES[builtin]='fg=blue,bold'
-  ZSH_HIGHLIGHT_STYLES[alias]='fg=blue,bold'
-  ZSH_HIGHLIGHT_STYLES[function]='fg=magenta,blod'
-  ZSH_HIGHLIGHT_STYLES[path]='fg=yellow,blod'
-  ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=blue,bg=yellow,blod'
 
 # File Management
 
@@ -60,4 +50,9 @@ fi
   	mv -i $HOME/Desktop/Screenshot*(.) $HOME/Desktop/Screenshots(/)
   fi
 
-vim: set foldmethod=marker foldlevel=0 :
+# Sourcing plugins
+# download git by running the command: xcode-select --install, which is used to clone the plugins to the device
+source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+vim: set foldmethod=marker foldlevel=0 : 2>/dev/null

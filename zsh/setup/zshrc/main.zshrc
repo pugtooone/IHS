@@ -148,15 +148,6 @@ source $ZSH/oh-my-zsh.sh
   alias seeallfiles="ls **/*(.) | cat -n"
   alias zgit="cd $HOME/.zeric/.zgit"
 
-# zsh-syntax-highlighting config
-  ZSH_HIGHLIGHT_HIGHLIGHTERS=( main brackets )
-  ZSH_HIGHLIGHT_STYLES[command]='fg=blue,bold'
-  ZSH_HIGHLIGHT_STYLES[builtin]='fg=blue,bold'
-  ZSH_HIGHLIGHT_STYLES[alias]='fg=blue,bold'
-  ZSH_HIGHLIGHT_STYLES[function]='fg=magenta,blod'
-  ZSH_HIGHLIGHT_STYLES[path]='fg=yellow,blod'
-  ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=blue,bg=yellow,blod'
-
 # Startup commands
   clear  
   neofetch
@@ -170,6 +161,15 @@ source $ZSH/oh-my-zsh.sh
 # Source for programs
   source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
   source /Users/zeric.chan/.config/broot/launcher/bash/br
+
+# zsh-syntax-highlighting config
+  ZSH_HIGHLIGHT_HIGHLIGHTERS=( main brackets )
+  ZSH_HIGHLIGHT_STYLES[command]='fg=blue,bold'
+  ZSH_HIGHLIGHT_STYLES[builtin]='fg=blue,bold'
+  ZSH_HIGHLIGHT_STYLES[alias]='fg=blue,bold'
+  ZSH_HIGHLIGHT_STYLES[function]='fg=magenta,blod'
+  ZSH_HIGHLIGHT_STYLES[path]='fg=yellow,blod'
+  ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=blue,bg=yellow,blod'
 
 #}}}
 

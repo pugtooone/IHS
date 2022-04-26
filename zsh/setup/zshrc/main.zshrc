@@ -147,6 +147,22 @@ source $ZSH/oh-my-zsh.sh
   alias imgdrag="mv -i **/*(.) ." 
   alias seeallfiles="ls **/*(.) | cat -n"
   alias zgit="cd $HOME/.zeric/.zgit"
+  alias pgrep="pgrep -li"
+  alias lastoutput=$(!!)
+
+# Startup commands
+  clear  
+  neofetch
+  # cowsay -f dragon 'Roar!! I don''t want OT!!'
+
+# File management
+  mv -i $HOME/Desktop/Screenshot* "$HOME/Desktop/DOCUMENTS/Screenshots" 2>/dev/null
+  mv -i $HOME/Desktop/RL/Sending/sent* $HOME/Desktop/RL/Sent 2>/dev/null
+  rm $HOME/Desktop/**/*Thumbs.db 2>/dev/null
+
+# Source for programs
+  source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+  source /Users/zeric.chan/.config/broot/launcher/bash/br
 
 # zsh-syntax-highlighting config
   ZSH_HIGHLIGHT_HIGHLIGHTERS=( main brackets )
@@ -157,20 +173,6 @@ source $ZSH/oh-my-zsh.sh
   ZSH_HIGHLIGHT_STYLES[path]='fg=yellow,blod'
   ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=blue,bg=yellow,blod'
 
-# Startup commands
-  clear  
-  neofetch
-  cowsay -f dragon 'Roar!! I don''t want OT!!'
-
-# File management
-  mv -i $HOME/Desktop/Screenshot* "$HOME/Desktop/DOCUMENTS/Screenshots"
-  mv -i $HOME/Desktop/RL/Sending/sent* $HOME/Desktop/RL/Sent
-  rm $HOME/Desktop/**/*Thumbs.db
-
-# Source for programs
-  source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-  source /Users/zeric.chan/.config/broot/launcher/bash/br
-
 #}}}
 
-vim: set foldmethod=marker foldlevel=0: 2>/dev/null
+# vim: set foldmethod=marker foldlevel=0:

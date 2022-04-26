@@ -43,6 +43,7 @@
 
 # File Management
 
+  # Clean up Desktop screenshots
   if [[ ! -d $HOME/Desktop/Screenshots ]]; then
   	mkdir $HOME/Desktop/Screenshots
   	mv -i $HOME/Desktop/Screenshot*(.) $HOME/Desktop/Screenshots(/)
@@ -50,9 +51,23 @@
   	mv -i $HOME/Desktop/Screenshot*(.) $HOME/Desktop/Screenshots(/)
   fi
 
+  # Clean up RL sent sessions
+  if [[ -d $HOME/Desktop/RL ]]; then
+  	mv -i $HOME/Desktop/RL/Sending/sent* $HOME/Desktop/RL/Sent
+  fi
+
 # Sourcing plugins
 # download git by running the command: xcode-select --install, which is used to clone the plugins to the device
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# zsh-syntax-highlighting config
+  ZSH_HIGHLIGHT_HIGHLIGHTERS=( main brackets )
+  ZSH_HIGHLIGHT_STYLES[command]='fg=blue,bold'
+  ZSH_HIGHLIGHT_STYLES[builtin]='fg=blue,bold'
+  ZSH_HIGHLIGHT_STYLES[alias]='fg=blue,bold'
+  ZSH_HIGHLIGHT_STYLES[function]='fg=magenta,blod'
+  ZSH_HIGHLIGHT_STYLES[path]='fg=yellow,blod'
+  ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=blue,bg=yellow,blod'
 
 vim: set foldmethod=marker foldlevel=0 : 2>/dev/null

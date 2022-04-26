@@ -147,11 +147,13 @@ source $ZSH/oh-my-zsh.sh
   alias imgdrag="mv -i **/*(.) ." 
   alias seeallfiles="ls **/*(.) | cat -n"
   alias zgit="cd $HOME/.zeric/.zgit"
+  alias pgrep="pgrep -li"
+  alias lastoutput=$(!!)
 
 # Startup commands
   clear  
   neofetch
-  cowsay -f dragon 'Roar!! I don''t want OT!!'
+  # cowsay -f dragon 'Roar!! I don''t want OT!!'
 
 # File management
   mv -i $HOME/Desktop/Screenshot* "$HOME/Desktop/DOCUMENTS/Screenshots" 2>/dev/null

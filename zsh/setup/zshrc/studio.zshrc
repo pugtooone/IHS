@@ -61,4 +61,13 @@
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
+# zsh-syntax-highlighting config
+  ZSH_HIGHLIGHT_HIGHLIGHTERS=( main brackets )
+  ZSH_HIGHLIGHT_STYLES[command]='fg=blue,bold'
+  ZSH_HIGHLIGHT_STYLES[builtin]='fg=blue,bold'
+  ZSH_HIGHLIGHT_STYLES[alias]='fg=blue,bold'
+  ZSH_HIGHLIGHT_STYLES[function]='fg=magenta,blod'
+  ZSH_HIGHLIGHT_STYLES[path]='fg=yellow,blod'
+  ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=blue,bg=yellow,blod'
+
 vim: set foldmethod=marker foldlevel=0 : 2>/dev/null

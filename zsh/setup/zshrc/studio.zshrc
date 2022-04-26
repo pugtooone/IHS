@@ -43,11 +43,17 @@
 
 # File Management
 
+  # Clean up Desktop screenshots
   if [[ ! -d $HOME/Desktop/Screenshots ]]; then
   	mkdir $HOME/Desktop/Screenshots
   	mv -i $HOME/Desktop/Screenshot*(.) $HOME/Desktop/Screenshots(/)
   else
   	mv -i $HOME/Desktop/Screenshot*(.) $HOME/Desktop/Screenshots(/)
+  fi
+
+  # Clean up RL sent sessions
+  if [[ -d $HOME/Desktop/RL ]]; then
+  	mv -i $HOME/Desktop/RL/Sending/sent* $HOME/Desktop/RL/Sent
   fi
 
 # Sourcing plugins

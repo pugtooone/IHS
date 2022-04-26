@@ -154,9 +154,9 @@ source $ZSH/oh-my-zsh.sh
   cowsay -f dragon 'Roar!! I don''t want OT!!'
 
 # File management
-  mv -i $HOME/Desktop/Screenshot* "$HOME/Desktop/DOCUMENTS/Screenshots"
-  mv -i $HOME/Desktop/RL/Sending/sent* $HOME/Desktop/RL/Sent
-  rm $HOME/Desktop/**/*Thumbs.db
+  mv -i $HOME/Desktop/Screenshot* "$HOME/Desktop/DOCUMENTS/Screenshots" 2>/dev/null
+  mv -i $HOME/Desktop/RL/Sending/sent* $HOME/Desktop/RL/Sent 2>/dev/null
+  rm $HOME/Desktop/**/*Thumbs.db 2>/dev/null
 
 # Source for programs
   source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -173,4 +173,4 @@ source $ZSH/oh-my-zsh.sh
 
 #}}}
 
-vim: set foldmethod=marker foldlevel=0: 2>/dev/null
+# vim: set foldmethod=marker foldlevel=0:

@@ -119,10 +119,11 @@ source $ZSH/oh-my-zsh.sh
 
 # Parameters
   PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
-  PATH="$PATH:/Users/zeric.chan/homebrew/bin"
+  PATH="$(brew --prefix)/Cellar/ruby/3.1.2/bin:$(brew --prefix)/lib/ruby/gems/3.1.0/bin:$PATH:/Users/zeric.chan/homebrew/bin"
   CDPATH="$HOME/Desktop"
   FPATH="$FPATH:$HOME/.zfunc"
   NVIM="$HOME/.config/nvim"
+  NVIM_INIT="$HOME/.config/nvim/init.vim"
 
 # Functions
   autoload -U compinit
@@ -141,14 +142,24 @@ source $ZSH/oh-my-zsh.sh
   zmodload zsh/zpty #cmp-zsh requirement
   zmodload zsh/complist
 
-# Aliases
-  alias -g D="$HOME/Desktop"
-  alias -g brand="$HOME/Desktop/DOCUMENTS/Brand"
-  alias imgdrag="mv -i **/*(.) ." 
-  alias seeallfiles="ls **/*(.) | cat -n"
+# Alias
+  # builtins 
+  alias D="cd $HOME/Desktop"
   alias zgit="cd $HOME/.zeric/.zgit"
   alias pgrep="pgrep -li"
-  alias lastoutput=$(!!)
+  alias lastout=$(!!)
+  # external commands
+  alias htop="sudo htop"
+  alias lc="colorls"
+  alias l="colorls -lA --sd"
+  alias lr="colorls -report"
+  # IHS
+  alias brand="cd $HOME/Desktop/DOCUMENTS/Brand"
+  alias imgdrag="mv -i **/*(.) ." 
+  alias seeallfiles="ls **/*(.) | cat -n"
+  # misc
+  alias showargs="printf '>>>%s<<<\n'"
+
 
 # Startup commands
   clear  
@@ -163,6 +174,7 @@ source $ZSH/oh-my-zsh.sh
 # Source for programs
   source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
   source /Users/zeric.chan/.config/broot/launcher/bash/br
+  source $(dirname $(gem which colorls))/tab_complete.sh
 
 # zsh-syntax-highlighting config
   ZSH_HIGHLIGHT_HIGHLIGHTERS=( main brackets )

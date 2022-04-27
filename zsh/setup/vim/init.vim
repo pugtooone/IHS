@@ -12,7 +12,7 @@ syntax enable
 
 call plug#begin()
 
-"Visual
+" Visual
 " syntax highlight
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 " statusline setup
@@ -20,8 +20,10 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 " indent blankline (not for vim)
 Plug 'lukas-reineke/indent-blankline.nvim'
+" icon
+Plug 'ryanoasis/vim-devicons'
 
-"Editing
+" Editing
 " completions
 Plug 'hrsh7th/nvim-cmp'
 Plug 'tamago324/cmp-zsh'
@@ -29,7 +31,7 @@ Plug 'Shougo/deol.nvim'
 " autopair brackets and quotes
 Plug 'jiangmiao/auto-pairs'
 
-" files searching 
+" Searching 
 Plug 'kyazdani42/nvim-web-devicons' " for file icons
 Plug 'kyazdani42/nvim-tree.lua'
 Plug 'nvim-lua/plenary.nvim' "dependency for telescope

@@ -30,16 +30,13 @@
   alias pgrep="pgrep -li"
 
 # Parameters
-  PS1=$'%{\e[1;36m%}[%!]%{\e[0m%} %{\e[1;32m%}%n%{\e[0m%} %{\e[1;36m%}[%1~]%{\e[0m%} %# '
+  PS1=$'%{\e[1;37m%}[%!]%{\e[0m%} %{\e[1;32m%}%n%{\e[0m%} %{\e[1;37m%}[%1~]%{\e[0m%} %# '
   PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
   CDPATH="$CDPATH:$HOME/Desktop"
   FPATH="$FPATH:$HOME/.zfunc"
   HISTFILE="$HOME/.zsh_history"
   HISTSIZE=10000
   SAVEHIST=10000
-
-# zsh-syntax-highlighting config
-  ZSH_HIGHLIGHT_HIGHLIGHTERS=( main brackets )
 
 # File Management
 

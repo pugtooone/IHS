@@ -147,14 +147,14 @@ source $ZSH/oh-my-zsh.sh
   alias D="cd $HOME/Desktop"
   alias zgit="cd $HOME/.zeric/.zgit"
   alias pgrep="pgrep -li"
-  alias lastout=$(!!)
   # external commands
   alias htop="sudo htop"
   alias lc="colorls"
   alias l="colorls -lA --sd"
   alias lr="colorls -report"
+  alias ltree="colorls --tree"
   # IHS
-  alias brand="cd $HOME/Desktop/DOCUMENTS/Brand"
+  alias brand="open $HOME/Desktop/DOCUMENTS/Brand"
   alias imgdrag="mv -i **/*(.) ." 
   alias seeallfiles="ls **/*(.) | cat -n"
   # misc

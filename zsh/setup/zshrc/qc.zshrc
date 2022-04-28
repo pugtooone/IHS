@@ -132,6 +132,9 @@ source $ZSH/oh-my-zsh.sh
     zstyle ':completion:*:warnings' format 'No matches: %d'
     zstyle ':completion:*:descriptions' format %B%d%b
     zstyle ':completion:*' group-name ''
+    zstyle ':completion:*' verbose yes
+    zstyle ':completion:*' auto-description 'specify: %d'
+    zstyle ':completion:*:default' list-prompt '%S%P%M%s' #prompt setup for complist
   autoload -U backitup
   autoload -U retest
   autoload -U l1

@@ -157,6 +157,7 @@ source $ZSH/oh-my-zsh.sh
   alias brand="open $HOME/Desktop/DOCUMENTS/Brand"
   alias imgdrag="mv -i **/*(.) ." 
   alias seeallfiles="ls **/*(.) | cat -n"
+  alias qcing="cd $HOME/Desktop/QCing"
   # misc
   alias showargs="printf '>>>%s<<<\n'"
 

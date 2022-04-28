@@ -16,11 +16,15 @@
 
 # Functions
   autoload -U compinit
+  compinit
   # zsh Completions
     zstyle ':completion:*' format %d
     zstyle ':completion:*:warnings' format 'No matches: %d'
     zstyle ':completion:*:descriptions' format %B%d%b
     zstyle ':completion:*' group-name ''
+    zstyle ':completion:*' verbose yes
+    zstyle ':completion:*' auto-description 'specify: %d'
+    zstyle ':completion:*:default' list-prompt '%S%P%M%s'
 
 # Alias
   alias l="ls -lAGh"
@@ -30,7 +34,7 @@
   alias pgrep="pgrep -li"
 
 # Parameters
-  PS1=$'%{\e[1;37m%}[%!]%{\e[0m%} %{\e[1;32m%}%n%{\e[0m%} %{\e[1;37m%}[%1~]%{\e[0m%} %# '
+  PS1=$'%{\e[37m%}[%!]%{\e[0m%} %S%{\e[32m%}%n%{\e[0m%}%s %{\e[37m%}[%~]%{\e[0m%} %# '
   PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
   CDPATH="$CDPATH:$HOME/Desktop"
   FPATH="$FPATH:$HOME/.zfunc"
@@ -67,4 +71,4 @@ source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
   ZSH_HIGHLIGHT_STYLES[path]='fg=yellow,blod'
   ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=blue,bg=yellow,blod'
 
-vim: set foldmethod=marker foldlevel=0 : 2>/dev/null
+# vim: set foldmethod=marker foldlevel=0 :

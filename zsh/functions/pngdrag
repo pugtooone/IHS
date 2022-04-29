@@ -1,0 +1,54 @@
+# function to drag the PNG directories out of the product folders
+
+# initial tree: 1) Images/Product/.tif
+#		    	         /PNG/.png
+#		2) Images/.tif
+#			 /PNG/.png
+
+# final tree: 1) TIFF/Product/.tif
+#	         PNG/Product/.png
+#	      2) TIFF/.tif
+#	         PNG/.png
+
+function pngdrag(){
+if [[ -e $1 ]]; then
+	
+	cd $1
+	PARENT="$(pwd)"
+
+	if [[ -d Images ]]; then
+		
+		mv -i Images TIFF
+		mkdir PNG
+		local MPNG="$(pwd)/PNG"
+		
+		for dir in [^J]*/**/PNG; do
+			
+			cd $dir/..
+
+			# run if product folders existi (tree 1)
+			if [[ $(basename "$(pwd)") != TIFF ]]; then
+				
+				mv -i PNG $(basename "$(pwd)") # rename PNG to product
+				mv -i $(basename "$(pwd)") $MPNG # move to MPNG
+				cd $PARENT
+
+			# run if only TIFF folder exist (tree 2)
+			elif [[ $(basename "$(pwd)") == TIFF ]]; then
+				
+				mv -i PNG/*.png $MPNG
+				rm -r PNG
+				cd $PARENT
+
+			fi
+		done
+
+		cd ..
+
+	else
+		print "Images folder not exist!!!"
+	fi
+else
+	print "Job folder is missing!!!"
+fi
+}

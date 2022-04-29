@@ -5,6 +5,7 @@
 # Option 
   setopt always_to_end
   setopt auto_cd
+  setopt auto_pushd
   setopt extended_glob
   setopt hist_ignore_dups
   setopt hist_ignore_space
@@ -20,7 +21,7 @@
   # zsh Completions
     zstyle ':completion:*' format %d
     zstyle ':completion:*:warnings' format 'No matches: %d'
-    zstyle ':completion:*:descriptions' format %B%d%b
+    zstyle ':completion:*:descriptions' format %B%U%d%u%b
     zstyle ':completion:*' group-name ''
     zstyle ':completion:*' verbose yes
     zstyle ':completion:*' auto-description 'specify: %d'
@@ -34,13 +35,14 @@
   alias pgrep="pgrep -li"
 
 # Parameters
-  PS1=$'%{\e[37m%}[%!]%{\e[0m%} %S%{\e[32m%}%n%{\e[0m%}%s %{\e[37m%}[%~]%{\e[0m%} %# '
+  PS1=$'%S[%!]%s %n %S[%~]%s %# '
   PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
   CDPATH="$CDPATH:$HOME/Desktop"
   FPATH="$FPATH:$HOME/.zfunc"
   HISTFILE="$HOME/.zsh_history"
   HISTSIZE=10000
   SAVEHIST=10000
+  DIRSTACKSIZE=8
 
 # File Management
 

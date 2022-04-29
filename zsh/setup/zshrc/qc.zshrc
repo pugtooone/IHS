@@ -117,6 +117,10 @@ source $ZSH/oh-my-zsh.sh
   setopt no_global_rcs
   setopt prompt_subst
 
+# Modules
+  zmodload zsh/zpty #cmp-zsh requirement
+  zmodload zsh/complist
+
 # Parameters
   PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
   PATH="$(brew --prefix)/Cellar/ruby/3.1.2/bin:$(brew --prefix)/lib/ruby/gems/3.1.0/bin:$PATH:/Users/zeric.chan/homebrew/bin"
@@ -124,9 +128,13 @@ source $ZSH/oh-my-zsh.sh
   FPATH="$FPATH:$HOME/.zfunc"
   NVIM="$HOME/.config/nvim"
   NVIM_INIT="$HOME/.config/nvim/init.vim"
+  ZGIT="$HOME/.zeric/.zgit"
+  # associative array for the IHS zshrc
+  typeset -A ihsrc=( qc $HOME/.zeric/.zgit/IHS/zsh/setup/zshrc/qc.zshrc studio $HOME/.zeric/.zgit/IHS/zsh/setup/zshrc/studio.zshrc ) 
 
 # Functions
-  autoload -U compinit
+  # autoload -U compinit
+  # compinit
   # Completion
     zstyle ':completion:*:message' format %d
     zstyle ':completion:*:warnings' format 'No matches: %d'
@@ -135,20 +143,22 @@ source $ZSH/oh-my-zsh.sh
     zstyle ':completion:*' verbose yes
     zstyle ':completion:*' auto-description 'specify: %d'
     zstyle ':completion:*:default' list-prompt '%S%P%M%s' #prompt setup for complist
+    zstyle ':completion:*:default' menu 'select=0' 
   autoload -U backitup
   autoload -U retest
   autoload -U l1
   autoload -U jpgdrag
   autoload -U pngdrag
 
-# Modules
-  zmodload zsh/zpty #cmp-zsh requirement
-  zmodload zsh/complist
+# Key Mappings
+  bindkey -M menuselect '\C-o' accept-and-menu-complete
 
 # Alias
   # builtins 
   alias D="cd $HOME/Desktop"
   alias zgit="cd $HOME/.zeric/.zgit"
+  alias zfunc="cd $HOME/.zfunc"
+  alias config="cd $HOME/.config"
   alias pgrep="pgrep -li"
   # external commands
   alias htop="sudo htop"

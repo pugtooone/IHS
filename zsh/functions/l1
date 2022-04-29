@@ -1,7 +1,7 @@
 function l1(){
 	if [[ ! -e $1 ]];then
-		colorls -1AG | cat -n
+		colorls -1A | cat -n
 	else
-		colorls -1AG $1 | cat -n
+		colorls -1A $1 | cat -n
 	fi
 }

@@ -110,27 +110,18 @@ source $ZSH/oh-my-zsh.sh
 # zeric's startup {{{
 
 # Options
-  # setopt extened_glob
-  setopt rc_expand_param
-  setopt rc_quotes
   # setopt auto_cd
+  # setopt auto_pushd
+  # setopt extened_glob
+  setopt list_ambiguous
   setopt no_global_rcs
   setopt prompt_subst
+  setopt rc_expand_param
+  setopt rc_quotes
 
 # Modules
   zmodload zsh/zpty #cmp-zsh requirement
   zmodload zsh/complist
-
-# Parameters
-  PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
-  PATH="$(brew --prefix)/Cellar/ruby/3.1.2/bin:$(brew --prefix)/lib/ruby/gems/3.1.0/bin:$PATH:/Users/zeric.chan/homebrew/bin"
-  CDPATH="$HOME/Desktop"
-  FPATH="$FPATH:$HOME/.zfunc"
-  NVIM="$HOME/.config/nvim"
-  NVIM_INIT="$HOME/.config/nvim/init.vim"
-  ZGIT="$HOME/.zeric/.zgit"
-  # associative array for the IHS zshrc
-  typeset -A ihsrc=( qc $HOME/.zeric/.zgit/IHS/zsh/setup/zshrc/qc.zshrc studio $HOME/.zeric/.zgit/IHS/zsh/setup/zshrc/studio.zshrc ) 
 
 # Functions
   # autoload -U compinit
@@ -149,9 +140,22 @@ source $ZSH/oh-my-zsh.sh
   autoload -U l1
   autoload -U jpgdrag
   autoload -U pngdrag
+  # autoload -U imgsort
+  autoload -U qcstart
 
 # Key Mappings
   bindkey -M menuselect '\C-o' accept-and-menu-complete
+# Parameters
+  PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
+  PATH="$(brew --prefix)/Cellar/ruby/3.1.2/bin:$(brew --prefix)/lib/ruby/gems/3.1.0/bin:$PATH:/Users/zeric.chan/homebrew/bin"
+  CDPATH="$HOME/Desktop"
+  FPATH="$FPATH:$HOME/.zfunc"
+  NVIM="$HOME/.config/nvim"
+  NVIM_INIT="$HOME/.config/nvim/init.vim"
+  ZFUNC="$HOME/.zfunc"
+  ZGIT="$HOME/.zeric/.zgit"
+  # associative array for the IHS zshrc
+  typeset -A ihsrc=( qc $HOME/.zeric/.zgit/IHS/zsh/setup/zshrc/qc.zshrc studio $HOME/.zeric/.zgit/IHS/zsh/setup/zshrc/studio.zshrc ) 
 
 # Alias
   # builtins 
@@ -160,6 +164,7 @@ source $ZSH/oh-my-zsh.sh
   alias zfunc="cd $HOME/.zfunc"
   alias config="cd $HOME/.config"
   alias pgrep="pgrep -li"
+  alias -g O="open ."
   # external commands
   alias htop="sudo htop"
   alias lc="colorls"
@@ -171,6 +176,8 @@ source $ZSH/oh-my-zsh.sh
   alias imgdrag="mv -i **/*(.) ." 
   alias seeallfiles="ls **/*(.) | cat -n"
   alias qcing="cd $HOME/Desktop/QCing"
+  alias purgescreenshot="rm $HOME/Desktop/DOCUMENTS/Screenshots/*"
+  alias renamePNG="rename -d ' copy' $HOME/Desktop/PNG/*"
   # misc
   alias showargs="printf '>>>%s<<<\n'"
 

@@ -143,8 +143,7 @@ source $ZSH/oh-my-zsh.sh
   # autoload -U imgsort
   autoload -U qcstart
 
-# Key Mappings
-  bindkey -M menuselect '\C-o' accept-and-menu-complete
+
 # Parameters
   PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
   PATH="$(brew --prefix)/Cellar/ruby/3.1.2/bin:$(brew --prefix)/lib/ruby/gems/3.1.0/bin:$PATH:/Users/zeric.chan/homebrew/bin"
@@ -181,7 +180,6 @@ source $ZSH/oh-my-zsh.sh
   # misc
   alias showargs="printf '>>>%s<<<\n'"
 
-
 # Startup commands
   clear  
   neofetch
@@ -205,6 +203,9 @@ source $ZSH/oh-my-zsh.sh
   ZSH_HIGHLIGHT_STYLES[function]='fg=magenta,blod'
   ZSH_HIGHLIGHT_STYLES[path]='fg=yellow,blod'
   ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=blue,bg=yellow,blod'
+
+# Key Mappings
+  bindkey -M menuselect '\C-o' accept-and-menu-complete
 
 #}}}
 

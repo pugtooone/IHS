@@ -37,9 +37,9 @@
 # Parameters
   PS1=$'%S[%!]%s %n %S[%~]%s %# '
   PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
-  CDPATH="$CDPATH:$HOME/Desktop"
-  FPATH="$FPATH:$HOME/.zfunc"
-  HISTFILE="$HOME/.zsh_history"
+  typeset -U CDPATH="$CDPATH:$HOME/Desktop"
+  typeset -U FPATH="$FPATH:$HOME/.zfunc"
+  HISTFILE="${HISTFILE:+$HOME/.zsh_history}"
   HISTSIZE=10000
   SAVEHIST=10000
   DIRSTACKSIZE=8

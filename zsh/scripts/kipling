@@ -25,12 +25,15 @@ for (( i=1 ; i<13 ; i++ )); do
 		for dir in [^I]*/**/*${KIPGRID[i]}; do
                 	
 			ls -1 $dir | while read; do
+
 			print "OR name: ${REPLY: -3}" >> $SWATCH
+
 			done
 			
 			cd $dir
 			mv -i * $MGRID
 			cd $PARENT
+
 		done
 	done
 done

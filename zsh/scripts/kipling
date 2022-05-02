@@ -3,6 +3,9 @@
 # script for Kipling batch to vendor
 # created by Zeric Chan
 
+emulate -LR zsh
+setopt extended_glob
+
 cd $1
 local PARENT="$(pwd)"
 mkdir Images

@@ -1,5 +1,16 @@
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#  ███████╗███████╗██████╗ ██╗ ██████╗     ███████╗███████╗██╗  ██╗ #
+#  ╚══███╔╝██╔════╝██╔══██╗██║██╔════╝     ╚══███╔╝██╔════╝██║  ██║ #
+#    ███╔╝ █████╗  ██████╔╝██║██║            ███╔╝ ███████╗███████║ #
+#   ███╔╝  ██╔══╝  ██╔══██╗██║██║           ███╔╝  ╚════██║██╔══██║ #
+#  ███████╗███████╗██║  ██║██║╚██████╗     ███████╗███████║██║  ██║ #
+#  ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝ ╚═════╝     ╚══════╝╚══════╝╚═╝  ╚═╝ #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+#=================================================================
 # oh-my-zsh setup {{{
-#---------------------------------------------------------------------------
+#================================================================================
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -106,7 +117,9 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 #}}}
+#=================================================================
 
+#=================================================================
 # zeric's startup {{{
 
 # Options
@@ -141,14 +154,13 @@ source $ZSH/oh-my-zsh.sh
   autoload -U jpgdrag
   autoload -U pngdrag
   # autoload -U imgsort
-  autoload -U qcstart
-
+  # autoload -U qcstart
 
 # Parameters
   PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
-  PATH="$(brew --prefix)/Cellar/ruby/3.1.2/bin:$(brew --prefix)/lib/ruby/gems/3.1.0/bin:$PATH:/Users/zeric.chan/homebrew/bin"
-  CDPATH="$HOME/Desktop"
-  FPATH="$FPATH:$HOME/.zfunc"
+  typeset -U PATH="$(brew --prefix)/Cellar/ruby/3.1.2/bin:$(brew --prefix)/lib/ruby/gems/3.1.0/bin:$PATH:/Users/zeric.chan/homebrew/bin"
+  typeset -U CDPATH="$HOME/Desktop"
+  typeset -U FPATH="$FPATH:$HOME/.zfunc"
   NVIM="$HOME/.config/nvim"
   NVIM_INIT="$HOME/.config/nvim/init.vim"
   ZFUNC="$HOME/.zfunc"
@@ -184,29 +196,42 @@ source $ZSH/oh-my-zsh.sh
   clear  
   neofetch
   # cowsay -f dragon 'Roar!! I don''t want OT!!'
+  # File management
+    mv -i $HOME/Desktop/Screenshot* "$HOME/Desktop/DOCUMENTS/Screenshots" 2>/dev/null
+    mv -i $HOME/Desktop/RL/Sending/sent* $HOME/Desktop/RL/Sent 2>/dev/null
+    rm $HOME/Desktop/**/*Thumbs.db 2>/dev/null
 
-# File management
-  mv -i $HOME/Desktop/Screenshot* "$HOME/Desktop/DOCUMENTS/Screenshots" 2>/dev/null
-  mv -i $HOME/Desktop/RL/Sending/sent* $HOME/Desktop/RL/Sent 2>/dev/null
-  rm $HOME/Desktop/**/*Thumbs.db 2>/dev/null
-
-# Source for programs
+# Sourcing programs
   source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
   source /Users/zeric.chan/.config/broot/launcher/bash/br
   source $(dirname $(gem which colorls))/tab_complete.sh
 
-# zsh-syntax-highlighting config
-  ZSH_HIGHLIGHT_HIGHLIGHTERS=( main brackets )
-  ZSH_HIGHLIGHT_STYLES[command]='fg=blue,bold'
-  ZSH_HIGHLIGHT_STYLES[builtin]='fg=blue,bold'
-  ZSH_HIGHLIGHT_STYLES[alias]='fg=blue,bold'
-  ZSH_HIGHLIGHT_STYLES[function]='fg=magenta,blod'
-  ZSH_HIGHLIGHT_STYLES[path]='fg=yellow,blod'
-  ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=blue,bg=yellow,blod'
+# config
+  # run-help for builtin commands
+  # copy the help files to a directory of your choice first
+    typeset -U HELPDIR="$HOME/.zsh_help"
+    unalias run-help
+    autoload run-help
 
-# Key Mappings
-  bindkey -M menuselect '\C-o' accept-and-menu-complete
+  # zsh-syntax-highlighting config
+    ZSH_HIGHLIGHT_HIGHLIGHTERS=( main brackets )
+    ZSH_HIGHLIGHT_STYLES[command]='fg=blue,bold'
+    ZSH_HIGHLIGHT_STYLES[builtin]='fg=blue,bold'
+    ZSH_HIGHLIGHT_STYLES[alias]='fg=blue,bold'
+    ZSH_HIGHLIGHT_STYLES[function]='fg=magenta,blod'
+    ZSH_HIGHLIGHT_STYLES[path]='fg=yellow,blod'
+    ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=blue,bg=yellow,blod'
+
+  # zsh-autosuggestions config
+    ZSH_AUTOSUGGEST_STRATEGY=( history completion )
+
+  # agnoster.zsh-theme setup
+    customize_agnoster() {
+  	prompt_segment 'red' '' '%{\e[33m%}%B\uf12a %!%b%{\e[0m%}'
+    }
+    AGNOSTER_PROMPT_SEGMENTS=("customize_agnoster" "${AGNOSTER_PROMPT_SEGMENTS[@]}")
 
 #}}}
+#=================================================================
 
 # vim: set foldmethod=marker foldlevel=0:

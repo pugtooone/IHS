@@ -177,7 +177,7 @@ source $ZSH/oh-my-zsh.sh
   alias pgrep="pgrep -li"
   alias -g O="open ."
   # external commands
-  alias htop="sudo htop"
+  # alias htop="sudo htop"
   alias lc="colorls"
   alias l="colorls -lA --sd"
   alias lr="colorls -report"

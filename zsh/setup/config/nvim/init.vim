@@ -43,7 +43,7 @@ nnoremap <C-j> <C-w><C-j>
 nnoremap <C-k> <C-w><C-k>
 nnoremap <C-l> <C-w><C-l>
 " Telescope
-nnoremap <leader>tl <cmd>Telescope find_files<cr>
+nnoremap <leader>ts <cmd>Telescope find_files<cr>
 nnoremap <leader>to <cmd>Telescope oldfiles<cr>
 nnoremap <leader>tb <cmd>Telescope buffers<cr>
 " NERDTree

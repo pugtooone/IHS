@@ -43,7 +43,7 @@ nnoremap <C-j> <C-w><C-j>
 nnoremap <C-k> <C-w><C-k>
 nnoremap <C-l> <C-w><C-l>
 " Telescope
-nnoremap <leader>ts <cmd>Telescope find_files<cr>
+nnoremap <leader>tl <cmd>Telescope find_files<cr>
 nnoremap <leader>to <cmd>Telescope oldfiles<cr>
 nnoremap <leader>tb <cmd>Telescope buffers<cr>
 " NERDTree
@@ -61,7 +61,9 @@ call plug#begin()
 "Visual
 " syntax highlighting
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-" statusline
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight' " NERDTree syntax highlighting
+Plug 'Xuyuanp/nerdtree-git-plugin' "NERDTree git status flags
+"statusline
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 " icon
@@ -113,11 +115,15 @@ call plug#end()
   let g:airline_powerline_fonts = 1 " enable powerline fonts
 
 " NERDTree config
+  " NERDTree settings
+    let NERDTreeSortHiddenFirst = 1
+    let NERDTreeShowHidden = 1
+    let NERDTreeShowLineNumbers = 1
   " Exit Vim if NERDTree is the only window remaining in the only tab.
-  autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+    autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
   " Start NERDTree when Vim is started without file arguments.
-  autocmd StdinReadPre * let s:std_in=1
-  autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | NERDTree | endif
+    autocmd StdinReadPre * let s:std_in=1
+    autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | NERDTree | endif
 
 " nvim-cmp setup
 set completeopt=menu,menuone,noselect

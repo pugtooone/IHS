@@ -1,42 +1,85 @@
-#! /bin/zsh -xv
+#! /bin/zsh
 
 # script for Kipling batch to vendor
 # created by Zeric Chan
 
+# Problems
+# 1) script stops after the numeric expression
+# 2) notify the user to update swatch base, say has not updated for 3 days
+
 emulate -LR zsh
 setopt extended_glob
+setopt verbose
+setopt xtrace
 
-cd $1
-local PARENT="$(pwd)"
-mkdir Images
-touch swatch.txt
-local SWATCH="swatch.txt"
+if [[ -e $1 ]]; then
 
-# array for Kipling grid size
+    cd $1
+    local PARENT="$(pwd)"
+    
+    # set swatch base for every different device
+    local SWATCH_BASE="$HOME/Desktop/IHS/unix test/.kipling_swatches"
+    
+    touch swatch.txt missing_swatch.txt
+    mkdir new_swatch
+    local SWATCH_SEARCH="$PARENT/swatch.txt"
+    local MISS_SWATCH="$PARENT/missing_swatch.txt"
+    local NEW_SWATCH="$PARENT/new_swatch"
+    
+    if [[ ! -d Images ]]; then
+        mkdir Images
+    fi
+    
+    # array for Kipling grid size
+    
+    GRID=( A1 A2 A3 A4 A5 B1 B2 B3 B4 B5 B6 TBC )
+    
+    # move all product folders to the designated master grid size folders
+    
+    for (( i=1 ; i<13 ; i++ )); do
 
-KIPGRID=( A1 A2 A3 A4 A5 B1 B2 B3 B4 B5 B6 TBC )
+	    for dir in **/*"${GRID[i]}"; do
 
-# move all product folders to the designated master grid size folders
+		    mkdir Images/"${GRID[i]}"
+		    local MGRID="${PARENT}/Images/${GRID[i]}"
 
-for (( i=1 ; i<13 ; i++ )); do
+		    for dir in [^I]*/**/*${GRID[i]}; do
+                	    
+			    ls -1 $dir | while read; do
 
-	for dir in **/*"${KIPGRID[i]}"; do
+			    print "OR name: ${REPLY: -3}" >> $SWATCH_SEARCH
 
-		mkdir Images/"${KIPGRID[i]}"
-		local MGRID="${PARENT}/Images/${KIPGRID[i]}"
+			        if [[ -e $SWATCH_BASE/${REPLY: -3}.jpg || -e $SWATCH_BASE/${REPLY: -3}.tif ]]; then
+			            
+				        cp $SWATCH_BASE/${REPLY: -3}.(jpg|tif) ${dir}/${REPLY}
 
-		for dir in [^I]*/**/*${KIPGRID[i]}; do
-                	
-			ls -1 $dir | while read; do
+			        else
 
-			print "OR name: ${REPLY: -3}" >> $SWATCH
+				        print ${REPLY: -3} > $MISS_SWATCH
+					# copy to new_swatch directory
+				        cp ${dir}/${REPLY}/${REPLY}_1.tif ${NEW_SWATCH}/${REPLY: -3}.tif
+					# another copy to swatch base to prevent duplicates of new swatch
+				        cp ${dir}/${REPLY}/${REPLY}_1.tif ${SWATCH_BASE}/new_${REPLY: -3}.tif 
 
-			done
-			
-			cd $dir
-			mv -i * $MGRID
-			cd $PARENT
+			        fi
 
-		done
-	done
-done
+			    done
+			    
+			    cd $dir
+			    mv -i * $MGRID
+			    cd $PARENT
+
+		    done
+	    done
+    done
+
+    touch temp.txt
+    cat $SWATCH_SEARCH | sort | uniq > temp.txt
+    temp.txt > $SWATCH_SEARCH
+    rm temp.txt
+
+else
+
+	print "target directory missing!!!"
+
+fi

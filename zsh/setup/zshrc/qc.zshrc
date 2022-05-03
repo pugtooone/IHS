@@ -123,11 +123,14 @@ source $ZSH/oh-my-zsh.sh
 # zeric's startup {{{
 
 # Options
+  # setopt always_to_end
   # setopt auto_cd
   # setopt auto_pushd
-  # setopt extened_glob
+  # setopt extended_glob
+  # setopt hist_ignore_dups
+  # setopt hist_verify
+  setopt inc_append_history
   setopt list_ambiguous
-  setopt no_global_rcs
   setopt prompt_subst
   setopt rc_expand_param
   setopt rc_quotes
@@ -148,6 +151,9 @@ source $ZSH/oh-my-zsh.sh
     zstyle ':completion:*' auto-description 'specify: %d'
     zstyle ':completion:*:default' list-prompt '%S%P%M%s' #prompt setup for complist
     zstyle ':completion:*:default' menu 'select=0' 
+    zstyle ':completion:::::' completer _complete _approximate #approximate completion setup
+    zstyle ':completion:*:approximate:*' max-errors 2
+    zstyle ':completion:*:corrections' format '%B%d [errors: %e]%b'
   autoload -U backitup
   autoload -U retest
   autoload -U l1

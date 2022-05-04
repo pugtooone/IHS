@@ -14,16 +14,18 @@ setopt xtrace
 
 if [[ -e $1 ]]; then
 
+    # check the last modified time of the swatch base
+    # if $(stat -f %Sm -t %Y%m%d ${SWATCH_BASE}) 
+
     cd $1
     local PARENT="$(pwd)"
     
     # set swatch base for every different device
-    local SWATCH_BASE="$HOME//Desktop/.kipling_swatch"
+    local SWATCH_BASE="$HOME/Desktop/.kipling_swatch"
     
-    touch swatch.txt missing_swatch.txt
+    touch swatch_search.txt
+    local SWATCH_SEARCH="$PARENT/swatch_search.txt"
     mkdir new_swatch
-    local SWATCH_SEARCH="$PARENT/swatch.txt"
-    local MISS_SWATCH="$PARENT/missing_swatch.txt"
     local NEW_SWATCH="$PARENT/new_swatch"
     
     if [[ ! -d Images ]]; then
@@ -55,7 +57,6 @@ if [[ -e $1 ]]; then
 
 			        else
 
-				        print ${REPLY: -3} >> $MISS_SWATCH
 					# duplicate the swatch into the product folder itself
 					cp ${dir}/${REPLY}/${REPLY}_1.tif ${dir}/${REPLY}/${REPLY: -3}.tif
 					# copy to new_swatch directory
@@ -75,10 +76,10 @@ if [[ -e $1 ]]; then
 	    done
     done
 
-    touch temp.txt
-    cat $SWATCH_SEARCH | sort | uniq > temp.txt
-    cat temp.txt > $SWATCH_SEARCH
-    rm temp.txt
+    touch tmp.txt
+    cat $SWATCH_SEARCH | sort | uniq > tmp.txt
+    cat tmp.txt > $SWATCH_SEARCH
+    rm tmp.txt
 
 else
 

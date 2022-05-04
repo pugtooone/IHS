@@ -126,12 +126,14 @@ source $ZSH/oh-my-zsh.sh
   # setopt always_to_end
   # setopt auto_cd
   # setopt auto_pushd
+  setopt csh_null_glob
   # setopt extended_glob
   # setopt hist_ignore_dups
   # setopt hist_verify
   setopt inc_append_history
   setopt list_ambiguous
   setopt prompt_subst
+  # setopt pushd_ignore_dups
   setopt rc_expand_param
   setopt rc_quotes
 
@@ -157,14 +159,13 @@ source $ZSH/oh-my-zsh.sh
   autoload -U backitup
   autoload -U retest
   autoload -U l1
-  autoload -U jpgdrag
-  autoload -U pngdrag
+  # autoload -U imgdrag
   # autoload -U imgsort
   # autoload -U qcstart
 
 # Parameters
   PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
-  typeset -U PATH="$(brew --prefix)/Cellar/ruby/3.1.2/bin:$(brew --prefix)/lib/ruby/gems/3.1.0/bin:$PATH:/Users/zeric.chan/homebrew/bin"
+  typeset -U PATH="$(brew --prefix)/Cellar/ruby/3.1.2/bin:$(brew --prefix)/lib/ruby/gems/3.1.0/bin:$PATH:/Users/zeric.chan/homebrew/bin:$HOME/.zbin"
   typeset -U CDPATH="$HOME/Desktop"
   typeset -U FPATH="$FPATH:$HOME/.zfunc"
   NVIM="$HOME/.config/nvim"
@@ -176,10 +177,11 @@ source $ZSH/oh-my-zsh.sh
 
 # Alias
   # builtins 
-  alias D="cd $HOME/Desktop"
-  alias zgit="cd $HOME/.zeric/.zgit"
-  alias zfunc="cd $HOME/.zfunc"
-  alias config="cd $HOME/.config"
+  alias D="cd $HOME/Desktop/"
+  alias zgit="cd $HOME/.zeric/.zgit/"
+  alias zfunc="cd $HOME/.zfunc/"
+  alias zer="cd $HOME/.zeric/"
+  alias config="cd $HOME/.config/"
   alias pgrep="pgrep -li"
   alias -g O="open ."
   # external commands

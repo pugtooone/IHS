@@ -4,11 +4,11 @@
 # created by Zeric Chan
 
 # Problems
-# 1) script stops after the numeric expression
-# 2) notify the user to update swatch base, say has not updated for 3 days
+# 1) notify the user to update swatch base, say has not updated for 3 days
 
 emulate -LR zsh
 setopt extended_glob
+setopt csh_null_glob
 setopt verbose
 setopt xtrace
 
@@ -18,7 +18,7 @@ if [[ -e $1 ]]; then
     local PARENT="$(pwd)"
     
     # set swatch base for every different device
-    local SWATCH_BASE="$HOME/Desktop/IHS/unix test/.kipling_swatches"
+    local SWATCH_BASE="$HOME//Desktop/.kipling_swatch"
     
     touch swatch.txt missing_swatch.txt
     mkdir new_swatch
@@ -55,7 +55,9 @@ if [[ -e $1 ]]; then
 
 			        else
 
-				        print ${REPLY: -3} > $MISS_SWATCH
+				        print ${REPLY: -3} >> $MISS_SWATCH
+					# duplicate the swatch into the product folder itself
+					cp ${dir}/${REPLY}/${REPLY}_1.tif ${dir}/${REPLY}/${REPLY: -3}.tif
 					# copy to new_swatch directory
 				        cp ${dir}/${REPLY}/${REPLY}_1.tif ${NEW_SWATCH}/${REPLY: -3}.tif
 					# another copy to swatch base to prevent duplicates of new swatch
@@ -75,7 +77,7 @@ if [[ -e $1 ]]; then
 
     touch temp.txt
     cat $SWATCH_SEARCH | sort | uniq > temp.txt
-    temp.txt > $SWATCH_SEARCH
+    cat temp.txt > $SWATCH_SEARCH
     rm temp.txt
 
 else

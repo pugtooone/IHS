@@ -4,8 +4,10 @@
 
 # Removing the unicode zero-width space \u200b
 # sed "s/$(echo -ne '\u200b')//g" *.csv
-
 # sed 's/\r//g' removing ^M
+
+# problem to be solved
+# 1) % at the end of the last row of csv needs to be removed
 
 if [[ -e $1 ]]; then
 
@@ -13,9 +15,9 @@ if [[ -e $1 ]]; then
 
     cat *.csv | sed 's/\r//g' | while IFS=, read -r oldname newname; do
 
-		                    rename -s $oldname $newname Images/*
+        rename -s $oldname $newname **/*(.)
 
-	                        done
+    done
 
 else
 

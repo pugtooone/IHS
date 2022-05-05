@@ -8,16 +8,21 @@
 
 emulate -LR zsh
 setopt extended_glob
-setopt csh_null_glob
+setopt null_glob
 setopt verbose
 setopt xtrace
 
-if [[ -e $1 ]]; then
+# applescript for dialog box for choosing folder
+local target_folder_apple=$(osascript -e 'set theDocument to choose folder with prompt "Select the Kipling folder to process:"')
+local target_folder=$(print $target_folder_apple | sed -e 's/alias //' -e 's/Macintosh HD//' -e 's/:/\//g')
+
+# test if target_folder start with KPK
+# if [[ -e ${target_folder:t} == KPK ]]; then
 
     # check the last modified time of the swatch base
     # if $(stat -f %Sm -t %Y%m%d ${SWATCH_BASE}) 
 
-    cd $1
+    cd $target_folder
     local PARENT="$(pwd)"
     
     # set swatch base for every different device
@@ -34,18 +39,18 @@ if [[ -e $1 ]]; then
     
     # array for Kipling grid size
     
-    GRID=( A1 A2 A3 A4 A5 B1 B2 B3 B4 B5 B6 TBC )
+    typeset -a GRID=( A1 A2 A3 A4 A5 B1 B2 B3 B4 B5 B6 TBC )
     
     # move all product folders to the designated master grid size folders
     
     for (( i=1 ; i<13 ; i++ )); do
 
-	    for dir in **/*"${GRID[i]}"; do
+	    for dir in **/"${GRID[i]}"; do
 
 		    mkdir Images/"${GRID[i]}"
 		    local MGRID="${PARENT}/Images/${GRID[i]}"
 
-		    for dir in [^I]*/**/*${GRID[i]}; do
+		    for dir in [^I]*/**/${GRID[i]}; do
                 	    
 			    ls -1 $dir | while read; do
 
@@ -53,7 +58,7 @@ if [[ -e $1 ]]; then
 
 			        if [[ -e $SWATCH_BASE/${REPLY: -3}.jpg || -e $SWATCH_BASE/${REPLY: -3}.tif ]]; then
 			            
-				        cp $SWATCH_BASE/${REPLY: -3}.(jpg|tif) ${dir}/${REPLY}
+				        cp $SWATCH_BASE/${REPLY: -3}.jpg ${dir}/${REPLY}
 
 			        else
 
@@ -69,7 +74,7 @@ if [[ -e $1 ]]; then
 			    done
 			    
 			    cd $dir
-			    mv -i * $MGRID
+			    mv -i KPK* $MGRID
 			    cd $PARENT
 
 		    done
@@ -81,8 +86,8 @@ if [[ -e $1 ]]; then
     cat tmp.txt > $SWATCH_SEARCH
     rm tmp.txt
 
-else
+#else
 
-	print "target directory missing!!!"
+#	print "target directory missing!!!"
 
-fi
+#fi

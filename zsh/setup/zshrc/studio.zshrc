@@ -6,6 +6,7 @@
   setopt always_to_end
   setopt auto_cd
   setopt auto_pushd
+  setopt csh_null_glob
   setopt extended_glob
   setopt hist_ignore_dups
   setopt hist_ignore_space
@@ -49,7 +50,8 @@
   PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
   typeset -U CDPATH="$CDPATH:$HOME/Desktop/(Production|PRODUCTION)"
   typeset -U FPATH="$FPATH:$HOME/.zfunc"
-  HISTFILE="${HISTFILE:+$HOME/.zsh_history}"
+  SHELL_SESSION_HISTORY=0
+  HISTFILE="${HISTFILE:-$HOME/.zsh_history}"
   HISTSIZE=10000
   SAVEHIST=10000
   DIRSTACKSIZE=8

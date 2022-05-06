@@ -186,7 +186,7 @@ source $ZSH/oh-my-zsh.sh
   alias -g O="open ."
   # external commands
   # alias htop="sudo htop"
-  alias lc="colorls"
+  alias ls="colorls"
   alias l="colorls -lA --sd"
   alias lr="colorls -report"
   alias ltree="colorls --tree"
@@ -205,9 +205,9 @@ source $ZSH/oh-my-zsh.sh
   neofetch
   # cowsay -f dragon 'Roar!! I don''t want OT!!'
   # File management
-    mv -i $HOME/Desktop/Screenshot* "$HOME/Desktop/DOCUMENTS/Screenshots" 2>/dev/null
-    mv -i $HOME/Desktop/RL/Sending/sent* $HOME/Desktop/RL/Sent 2>/dev/null
-    rm $HOME/Desktop/**/*Thumbs.db 2>/dev/null
+    mv -i $HOME/Desktop/Screenshot* "$HOME/Desktop/DOCUMENTS/Screenshots"
+    mv -i $HOME/Desktop/RL/Sending/sent* $HOME/Desktop/RL/Sent
+    rm $HOME/Desktop/**/Thumbs.db
 
 # Sourcing programs
   source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

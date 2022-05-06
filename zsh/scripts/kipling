@@ -23,8 +23,8 @@ local target_folder=$(print $target_folder_apple | sed -e 's/alias //' -e 's/Mac
     # if $(stat -f %Sm -t %Y%m%d ${SWATCH_BASE}) 
 
     cd $target_folder
-    local PARENT="$(pwd)"
-    
+    local PARENT="$(print $target_folder)"
+
     # set swatch base for every different device
     local SWATCH_BASE="$HOME/Desktop/.kipling_swatch"
     

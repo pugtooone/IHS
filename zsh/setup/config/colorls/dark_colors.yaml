@@ -1,12 +1,12 @@
 # Main Colors
-unrecognized_file: gold
-recognized_file:   yellow
-executable_file:   lime
-dir:               darkorange
+unrecognized_file: darkorange
+recognized_file:   darkorange
+executable_file:   darkorange
+dir:               teal
 
 # Link
 dead_link: red
-link:      cyan
+link:      webpurple
 
 # special files
 socket:    green
@@ -14,10 +14,10 @@ blockdev:  green
 chardev:   green
 
 # Access Modes
-write:     darkkhaki
-read:      limegreen
-exec:      red
-no_access: indianred
+write:     moccasin
+read:      moccasin
+exec:      moccasin
+no_access: moccasin
 
 # Age
 day_old:     mediumspringgreen
@@ -32,7 +32,7 @@ file_small:  peachpuff
 # Random
 report: white
 user:   moccasin
-tree:   cyan
+tree:   slategray
 empty:  yellow
 error:  red
 normal: darkkhaki

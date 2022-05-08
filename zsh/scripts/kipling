@@ -17,7 +17,7 @@ local target_folder_apple=$(osascript -e 'set theDocument to choose folder with 
 local target_folder=$(print $target_folder_apple | sed -e 's/alias //' -e 's/Macintosh HD//' -e 's/:/\//g')
 
 # test if target_folder start with KPK
-# if [[ -e ${target_folder:t} == KPK ]]; then
+# if [[  ${target_folder:t} == Kipling ]]; then
 
     # check the last modified time of the swatch base
     # if $(stat -f %Sm -t %Y%m%d ${SWATCH_BASE}) 

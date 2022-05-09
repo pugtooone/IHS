@@ -172,7 +172,7 @@ source $ZSH/oh-my-zsh.sh
   typeset -U path=(
                    $(brew --prefix)/Cellar/ruby/3.1.2/bin
 		   $(brew --prefix)/lib/ruby/gems/3.1.0/bin
-		   $PATH
+		   $path
 		   /Users/zeric.chan/homebrew/bin
 		   $HOME/.zbin
 		   )
@@ -183,7 +183,7 @@ source $ZSH/oh-my-zsh.sh
 		     )
 
   typeset -U fpath=(
-                    $FPATH
+                    $fpath
 		    $HOME/.zfunc
 		    )
 
@@ -212,6 +212,7 @@ source $ZSH/oh-my-zsh.sh
   alias l="colorls -lA --sd"
   alias lr="colorls -report"
   alias ltree="colorls --tree"
+  alias py3="python3"
   # IHS
   alias brand="open $HOME/Desktop/DOCUMENTS/Brand"
   alias imgdrag="mv -i **/*(.) ." 

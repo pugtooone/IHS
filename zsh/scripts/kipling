@@ -17,7 +17,7 @@ local target_folder_apple=$(osascript -e 'set theDocument to choose folder with 
 local target_folder=$(print $target_folder_apple | sed -e 's/alias //' -e 's/Macintosh HD//' -e 's/:/\//g')
 
 # test if target_folder start with KPK
-# if [[  ${target_folder:t} == Kipling ]]; then
+if [[  $((print ${target_folder:t}) | cut -c 1-7) == Kipling ]]; then
 
     # check the last modified time of the swatch base
     # if $(stat -f %Sm -t %Y%m%d ${SWATCH_BASE}) 
@@ -56,9 +56,13 @@ local target_folder=$(print $target_folder_apple | sed -e 's/alias //' -e 's/Mac
 
 			    print "OR name: ${REPLY: -3}" >> $SWATCH_SEARCH
 
-			        if [[ -e $SWATCH_BASE/${REPLY: -3}.jpg || -e $SWATCH_BASE/${REPLY: -3}.tif ]]; then
+			        if [[ -e $SWATCH_BASE/${REPLY: -3}.jpg ]]; then
 			            
-				        cp $SWATCH_BASE/${REPLY: -3}.jpg ${dir}/${REPLY}
+				        cp $SWATCH_BASE/${REPLY: -3}.jpg ${dir}/${REPLY}/${REPLY: -3}.jpg
+
+				elif [[ -e $SWATCH_BASE/${REPLY: -3}.tif ]]; then	
+
+				        cp $SWATCH_BASE/${REPLY: -3}.tif ${dir}/${REPLY}/${REPLY: -3}.tif
 
 			        else
 
@@ -86,8 +90,8 @@ local target_folder=$(print $target_folder_apple | sed -e 's/alias //' -e 's/Mac
     cat tmp.txt > $SWATCH_SEARCH
     rm tmp.txt
 
-#else
+else
 
-#	print "target directory missing!!!"
+	print "The selected folder is not a Kipling folder. Please re-select."
 
-#fi
+fi

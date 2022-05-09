@@ -126,12 +126,16 @@ source $ZSH/oh-my-zsh.sh
   # setopt always_to_end
   # setopt auto_cd
   # setopt auto_pushd
+  setopt chase_links
   setopt csh_null_glob
   # setopt extended_glob
+  setopt hist_allow_clobber
   # setopt hist_ignore_dups
+  setopt hist_reduce_blanks
   # setopt hist_verify
   setopt inc_append_history
   setopt list_ambiguous
+  setopt no_clobber
   setopt prompt_subst
   # setopt pushd_ignore_dups
   setopt rc_expand_param
@@ -165,15 +169,33 @@ source $ZSH/oh-my-zsh.sh
 
 # Parameters
   PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
-  typeset -U PATH="$(brew --prefix)/Cellar/ruby/3.1.2/bin:$(brew --prefix)/lib/ruby/gems/3.1.0/bin:$PATH:/Users/zeric.chan/homebrew/bin:$HOME/.zbin"
-  typeset -U CDPATH="$HOME/Desktop"
-  typeset -U FPATH="$FPATH:$HOME/.zfunc"
+  typeset -U path=(
+                   $(brew --prefix)/Cellar/ruby/3.1.2/bin
+		   $(brew --prefix)/lib/ruby/gems/3.1.0/bin
+		   $PATH
+		   /Users/zeric.chan/homebrew/bin
+		   $HOME/.zbin
+		   )
+
+  typeset -U cdpath=(
+                     .
+                     $HOME/Desktop
+		     )
+
+  typeset -U fpath=(
+                    $FPATH
+		    $HOME/.zfunc
+		    )
+
   NVIM="$HOME/.config/nvim"
   NVIM_INIT="$HOME/.config/nvim/init.vim"
   ZFUNC="$HOME/.zfunc"
   ZGIT="$HOME/.zeric/.zgit"
   # associative array for the IHS zshrc
-  typeset -A ihsrc=( qc $HOME/.zeric/.zgit/IHS/zsh/setup/zshrc/qc.zshrc studio $HOME/.zeric/.zgit/IHS/zsh/setup/zshrc/studio.zshrc ) 
+  typeset -A ihsrc=( 
+                    qc $HOME/.zeric/.zgit/IHS/zsh/setup/zshrc/qc.zshrc 
+		    studio $HOME/.zeric/.zgit/IHS/zsh/setup/zshrc/studio.zshrc 
+		    ) 
 
 # Alias
   # builtins 

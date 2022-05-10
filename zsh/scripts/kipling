@@ -93,5 +93,6 @@ if [[  $((print ${target_folder:t}) | cut -c 1-7) == Kipling ]]; then
 else
 
 	print "The selected folder is not a Kipling folder. Please re-select."
+	osascript -e 'display dialog "The selected folder is not a Kipling folder. Please re-select!"'
 
 fi

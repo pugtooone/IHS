@@ -13,11 +13,11 @@ setopt verbose
 setopt xtrace
 
 # applescript for dialog box for choosing folder
-local target_folder_apple=$(osascript -e 'set theDocument to choose folder with prompt "Select the Kipling folder to process:"')
+local target_folder_apple=$(osascript -e 'set theDocument to choose folder with prompt "Select the Kipling batch to process:"')
 local target_folder=$(print $target_folder_apple | sed -e 's/alias //' -e 's/Macintosh HD//' -e 's/:/\//g')
 
 # test if target_folder start with KPK
-if [[  $((print ${target_folder:t}) | cut -c 1-7) == Kipling ]]; then
+if [[  ${"$(basename ${target_folder})":0:7} == Kipling ]]; then
 
     # check the last modified time of the swatch base
     # if $(stat -f %Sm -t %Y%m%d ${SWATCH_BASE}) 

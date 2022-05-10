@@ -1,0 +1,22 @@
+#! /bin/zsh
+
+emulate -LR zsh
+setopt null_glob
+setopt extended_glob
+setopt verbose
+setopt xtrace
+
+# prepend current date and move directory to QCing
+if [[ $(print $1 | cut -c 1-7) == Kipling ]]; then
+
+    local SWATCH_BASE=$HOME/Desktop/.kipling_swatch/
+    
+    for dir in **/*KPK*(/); do
+        cp $SWATCH_BASE/${dir: -3}.jpg ${dir}/${dir: -3}.jpg 
+    done
+
+else
+
+    print 'Not a Kipling batch!!!'
+
+fi

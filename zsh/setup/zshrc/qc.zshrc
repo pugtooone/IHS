@@ -161,11 +161,11 @@ source $ZSH/oh-my-zsh.sh
     zstyle ':completion:*:approximate:*' max-errors 2
     zstyle ':completion:*:corrections' format '%B%d [errors: %e]%b'
   autoload -U backitup
-  autoload -U retest
-  autoload -U l1
   # autoload -U imgdrag
   # autoload -U imgsort
-  # autoload -U qcstart
+  autoload -U l1
+  autoload -U qcstart
+  autoload -U retest
 
 # Parameters
   PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'

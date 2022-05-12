@@ -209,7 +209,7 @@ source $ZSH/oh-my-zsh.sh
   # external commands
   # alias htop="sudo htop"
   alias ls="colorls"
-  alias l="colorls -lA --sd"
+  alias l="colorls -lA --sd --git-status"
   alias lr="colorls -report"
   alias ltree="colorls --tree"
   alias py3="python3"

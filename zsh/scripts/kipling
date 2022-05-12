@@ -3,31 +3,36 @@
 # script for Kipling batch to vendor
 # created by Zeric Chan
 
-# Problems
-# 1) notify the user to update swatch base, say has not updated for 3 days
+# Problem to be solved
+# 1) convert the new swatch to jpeg
 
 emulate -LR zsh
 setopt extended_glob
 setopt null_glob
-setopt verbose
 setopt xtrace
+
+local PS4=$'+%1N:[%i]:%_> '
+exec > /tmp/kipling.log 2>&1 #log file
 
 # applescript for dialog box for choosing folder
 local target_folder_apple=$(osascript -e 'set theDocument to choose folder with prompt "Select the Kipling batch to process:"')
 local target_folder=$(print $target_folder_apple | sed -e 's/alias //' -e 's/Macintosh HD//' -e 's/:/\//g')
 
-# test if target_folder start with KPK
+# test if the target_folder is a valid Kipling batch
 if [[  ${"$(basename ${target_folder})":0:7} == Kipling ]]; then
-
-    # check the last modified time of the swatch base
-    # if $(stat -f %Sm -t %Y%m%d ${SWATCH_BASE}) 
 
     cd $target_folder
     local PARENT="$(print $target_folder)"
 
     # set swatch base for every different device
-    local SWATCH_BASE="$HOME/Desktop/.kipling_swatch"
-    
+    local SWATCH_BASE="$(dirname "$0")/../Resources/kipling_swatch"
+
+    # check if the last modified time of the swatch base is older than 3 days
+    if [[ $(( $(date +%Y%m%d) - $(stat -f %Sm -t %Y%m%d ${SWATCH_BASE}) > 3 )) ]]; then
+	    print 'The swatch base has not been updated for more than 3 days'
+	    osascript -e 'display alert "The swatch base has not been updated for more than 3 days" message "Find zeric for help"'
+    fi
+
     touch swatch_search.txt
     local SWATCH_SEARCH="$PARENT/swatch_search.txt"
     mkdir new_swatch
@@ -68,10 +73,10 @@ if [[  ${"$(basename ${target_folder})":0:7} == Kipling ]]; then
 
 					# duplicate the swatch into the product folder itself
 					cp ${dir}/${REPLY}/${REPLY}_1.tif ${dir}/${REPLY}/${REPLY: -3}.tif
-					# copy to new_swatch directory
+					# copy to new_swatch directory (for the end users to backup to server)
 				        cp ${dir}/${REPLY}/${REPLY}_1.tif ${NEW_SWATCH}/${REPLY: -3}.tif
 					# another copy to swatch base to prevent duplicates of new swatch
-				        cp ${dir}/${REPLY}/${REPLY}_1.tif ${SWATCH_BASE}/new_${REPLY: -3}.tif 
+				        cp ${dir}/${REPLY}/${REPLY}_1.tif ${SWATCH_BASE}/${REPLY: -3}.tif 
 
 			        fi
 
@@ -85,14 +90,16 @@ if [[  ${"$(basename ${target_folder})":0:7} == Kipling ]]; then
 	    done
     done
 
-    touch tmp.txt
-    cat $SWATCH_SEARCH | sort | uniq > tmp.txt
-    cat tmp.txt > $SWATCH_SEARCH
-    rm tmp.txt
+	touch tmp.txt
+	cat $SWATCH_SEARCH | sort | uniq > tmp.txt
+	cat tmp.txt > $SWATCH_SEARCH
+	rm tmp.txt
+
+	osascript -e 'display dialog "Backup the new swatches to the server" message "We will be eternally grateful"'
 
 else
 
-	print "The selected folder is not a Kipling folder. Please re-select."
-	osascript -e 'display dialog "The selected folder is not a Kipling folder. Please re-select!"'
+	osascript -e 'display alert "Man, this is not a Kipling batch" message ":("'
+	exit 1
 
 fi

@@ -95,7 +95,7 @@ if [[  ${"$(basename ${target_folder})":0:7} == Kipling ]]; then
 	cat tmp.txt > $SWATCH_SEARCH
 	rm tmp.txt
 
-	osascript -e 'display dialog "Backup the new swatches to the server" message "We will be eternally grateful"'
+	osascript -e 'display alert "Backup the new swatches to the server" message "We will be eternally grateful"'
 
 else
 

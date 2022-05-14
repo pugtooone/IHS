@@ -14,92 +14,96 @@ setopt xtrace
 local PS4=$'+%1N:[%i]:%_> '
 exec > /tmp/kipling.log 2>&1 #log file
 
-# applescript for dialog box for choosing folder
-local target_folder_apple=$(osascript -e 'set theDocument to choose folder with prompt "Select the Kipling batch to process:"')
-local target_folder=$(print $target_folder_apple | sed -e 's/alias //' -e 's/Macintosh HD//' -e 's/:/\//g')
+while true; do
 
-# test if the target_folder is a valid Kipling batch
-if [[  ${"$(basename ${target_folder})":0:7} == Kipling ]]; then
+	# applescript for dialog box for choosing folder
+	local target_folder_apple=$(osascript -e 'set theDocument to choose folder with prompt "Select the Kipling batch to process:"')
+	local target_folder=$(print $target_folder_apple | sed -e 's/alias //' -e 's/Macintosh HD//' -e 's/:/\//g')
 
-    cd $target_folder
-    local PARENT="$(print $target_folder)"
+	# test if the target_folder is a valid Kipling batch
+	if [[  ${"$(basename ${target_folder})":0:7} == Kipling ]]; then
 
-    # set swatch base for every different device
-    local SWATCH_BASE="$(dirname "$0")/../Resources/kipling_swatch"
+    		cd $target_folder
+    		local PARENT="$(print $target_folder)"
+		
+    		# set swatch base for every different device
+    		local SWATCH_BASE="$(dirname "$0")/../Resources/kipling_swatch"
+		
+    		# check if the last modified time of the swatch base is older than 3 days
+		if [[ $(( $(date +%Y%m%d) - $(stat -f %Sm -t %Y%m%d ${SWATCH_BASE}) )) > 3 ]]; then
+	    		print 'The swatch base has not been updated for more than 3 days'
+	    		osascript -e 'display alert "The swatch base has not been updated for more than 3 days" message "Find zeric for help"'
+			exit 2
+    		fi
+		
+    		touch swatch_search.txt
+    		local SWATCH_SEARCH="$PARENT/swatch_search.txt"
+    		mkdir new_swatch
+    		local NEW_SWATCH="$PARENT/new_swatch"
+    		
+    		if [[ ! -d Images ]]; then
+        		mkdir Images
+    		fi
+    		
+    		# array for Kipling grid size
+    		
+    		typeset -a GRID=( A1 A2 A3 A4 A5 B1 B2 B3 B4 B5 B6 TBC )
+    		
+    		# move all product folders to the designated master grid size folders
+    		
+    		for (( i=1 ; i<13 ; i++ )); do
+		
+	    		for dir in **/"${GRID[i]}"; do
 
-    # check if the last modified time of the swatch base is older than 3 days
-    if [[ $(( $(date +%Y%m%d) - $(stat -f %Sm -t %Y%m%d ${SWATCH_BASE}) > 3 )) ]]; then
-	    print 'The swatch base has not been updated for more than 3 days'
-	    osascript -e 'display alert "The swatch base has not been updated for more than 3 days" message "Find zeric for help"'
-    fi
+		    		mkdir Images/"${GRID[i]}"
+		    		local MGRID="${PARENT}/Images/${GRID[i]}"
 
-    touch swatch_search.txt
-    local SWATCH_SEARCH="$PARENT/swatch_search.txt"
-    mkdir new_swatch
-    local NEW_SWATCH="$PARENT/new_swatch"
-    
-    if [[ ! -d Images ]]; then
-        mkdir Images
-    fi
-    
-    # array for Kipling grid size
-    
-    typeset -a GRID=( A1 A2 A3 A4 A5 B1 B2 B3 B4 B5 B6 TBC )
-    
-    # move all product folders to the designated master grid size folders
-    
-    for (( i=1 ; i<13 ; i++ )); do
+		    		for dir in [^I]*/**/${GRID[i]}; do
+                	    		
+			    		ls -1 $dir | while read; do
 
-	    for dir in **/"${GRID[i]}"; do
+			    		print "OR name: ${REPLY: -3}" >> $SWATCH_SEARCH
 
-		    mkdir Images/"${GRID[i]}"
-		    local MGRID="${PARENT}/Images/${GRID[i]}"
+			        		if [[ -e $SWATCH_BASE/${REPLY: -3}.jpg ]]; then
 
-		    for dir in [^I]*/**/${GRID[i]}; do
-                	    
-			    ls -1 $dir | while read; do
+				        		cp $SWATCH_BASE/${REPLY: -3}.jpg ${dir}/${REPLY}/${REPLY: -3}.jpg
 
-			    print "OR name: ${REPLY: -3}" >> $SWATCH_SEARCH
+						elif [[ -e $SWATCH_BASE/${REPLY: -3}.tif ]]; then	
 
-			        if [[ -e $SWATCH_BASE/${REPLY: -3}.jpg ]]; then
-			            
-				        cp $SWATCH_BASE/${REPLY: -3}.jpg ${dir}/${REPLY}/${REPLY: -3}.jpg
+				        		cp $SWATCH_BASE/${REPLY: -3}.tif ${dir}/${REPLY}/${REPLY: -3}.tif
 
-				elif [[ -e $SWATCH_BASE/${REPLY: -3}.tif ]]; then	
+			        		else
 
-				        cp $SWATCH_BASE/${REPLY: -3}.tif ${dir}/${REPLY}/${REPLY: -3}.tif
+							# duplicate the swatch into the product folder itself
+							cp ${dir}/${REPLY}/${REPLY}_1.tif ${dir}/${REPLY}/${REPLY: -3}.tif
+							# copy to new_swatch directory (for the end users to backup to server)
+				        		cp ${dir}/${REPLY}/${REPLY}_1.tif ${NEW_SWATCH}/${REPLY: -3}.tif
+							# another copy to swatch base to prevent duplicates of new swatch
+				        		cp ${dir}/${REPLY}/${REPLY}_1.tif ${SWATCH_BASE}/${REPLY: -3}.tif 
 
-			        else
+			        		fi
 
-					# duplicate the swatch into the product folder itself
-					cp ${dir}/${REPLY}/${REPLY}_1.tif ${dir}/${REPLY}/${REPLY: -3}.tif
-					# copy to new_swatch directory (for the end users to backup to server)
-				        cp ${dir}/${REPLY}/${REPLY}_1.tif ${NEW_SWATCH}/${REPLY: -3}.tif
-					# another copy to swatch base to prevent duplicates of new swatch
-				        cp ${dir}/${REPLY}/${REPLY}_1.tif ${SWATCH_BASE}/${REPLY: -3}.tif 
+			    		done
+			    		
+			    		cd $dir
+			    		mv -i KPK* $MGRID
+			    		cd $PARENT
 
-			        fi
+		    		done
+	    		done
+    		done
 
-			    done
-			    
-			    cd $dir
-			    mv -i KPK* $MGRID
-			    cd $PARENT
+			touch tmp.txt
+			cat $SWATCH_SEARCH | sort | uniq > tmp.txt
+			cat tmp.txt > $SWATCH_SEARCH
+			rm tmp.txt
+			osascript -e 'display alert "Backup the new swatches to the server" message "We will be eternally grateful"'
+			break
 
-		    done
-	    done
-    done
+	else
 
-	touch tmp.txt
-	cat $SWATCH_SEARCH | sort | uniq > tmp.txt
-	cat tmp.txt > $SWATCH_SEARCH
-	rm tmp.txt
+		osascript -e 'display alert "Man, this is not a Kipling batch" message "Please re-select"'
+		continue
 
-	osascript -e 'display alert "Backup the new swatches to the server" message "We will be eternally grateful"'
-
-else
-
-	osascript -e 'display alert "Man, this is not a Kipling batch" message ":("'
-	exit 1
-
-fi
+	fi
+done	

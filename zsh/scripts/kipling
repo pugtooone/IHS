@@ -25,15 +25,16 @@ while true; do
 
     		cd $target_folder
     		local PARENT="$(print $target_folder)"
-		
     		# set swatch base for every different device
     		local SWATCH_BASE="$(dirname "$0")/../Resources/kipling_swatch"
-		
+
     		# check if the last modified time of the swatch base is older than 3 days
 		if [[ $(( $(date +%Y%m%d) - $(stat -f %Sm -t %Y%m%d ${SWATCH_BASE}) )) > 3 ]]; then
+
 	    		print 'The swatch base has not been updated for more than 3 days'
 	    		osascript -e 'display alert "The swatch base has not been updated for more than 3 days" message "Find zeric for help"'
 			exit 2
+
     		fi
 		
     		touch swatch_search.txt
@@ -74,6 +75,7 @@ while true; do
 
 			        		else
 
+							# convert "${dir}/${REPLY}/${REPLY}_1.tif[0]" "${SWATCH_BASE}/${REPLY: -3}.jpg"
 							# duplicate the swatch into the product folder itself
 							cp ${dir}/${REPLY}/${REPLY}_1.tif ${dir}/${REPLY}/${REPLY: -3}.tif
 							# copy to new_swatch directory (for the end users to backup to server)

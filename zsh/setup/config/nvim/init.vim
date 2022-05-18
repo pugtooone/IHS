@@ -132,6 +132,7 @@ lua <<EOF
   -- Setup nvim-cmp.
   local cmp = require'cmp'
   local luasnip = require'luasnip'
+  local lspconfig = require('lspconfig')
 
   local kind_icons = {
   Text = "",
@@ -260,14 +261,18 @@ lua <<EOF
     })
   })
 
---[[
   -- Setup lspconfig.
-  local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
-  -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
-  require('lspconfig')['<YOUR_LSP_SERVER>'].setup {
-    capabilities = capabilities
-  }
-]]--
+  -- Add additional capabilities supported by nvim-cmp
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+  capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+  -- Enable some language servers with the additional completion capabilities offered by nvim-cmp
+  local servers = { 'pyright' }
+  for _, lsp in ipairs(servers) do
+    lspconfig[lsp].setup {
+      -- on_attach = my_custom_on_attach,
+      capabilities = capabilities,
+    }
+  end
 
   --nvim-treesitter config
   require'nvim-treesitter.configs'.setup {

@@ -200,6 +200,7 @@ source $ZSH/oh-my-zsh.sh
 # Alias
   # builtins 
   alias D="cd $HOME/Desktop/"
+  alias dv="dirs -v"
   alias zgit="cd $HOME/.zeric/.zgit/"
   alias zfunc="cd $HOME/.zfunc/"
   alias zer="cd $HOME/.zeric/"

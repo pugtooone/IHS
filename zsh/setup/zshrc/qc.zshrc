@@ -161,7 +161,7 @@ source $ZSH/oh-my-zsh.sh
     zstyle ':completion:*:approximate:*' max-errors 2
     zstyle ':completion:*:corrections' format '%B%d [errors: %e]%b'
   autoload -U backitup
-  # autoload -U imgdrag
+  # autoload -U jpgdrag
   # autoload -U imgsort
   autoload -U l1
   autoload -U qcstart
@@ -173,7 +173,7 @@ source $ZSH/oh-my-zsh.sh
                    $(brew --prefix)/Cellar/ruby/3.1.2/bin
 		   $(brew --prefix)/lib/ruby/gems/3.1.0/bin
 		   $path
-		   /Users/zeric.chan/homebrew/bin
+		   $(brew --prefix)/bin
 		   $HOME/.zbin
 		   )
 

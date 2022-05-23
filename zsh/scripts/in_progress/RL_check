@@ -1,0 +1,34 @@
+#! /bin/zsh
+
+# script for checking Ralph Lauren file names
+# created by Zeric Chan
+
+emulate -LR zsh
+setopt xtrace
+setopt extended_glob
+setopt null_glob 
+
+# array of correct file names
+typeset -a RL_name=(
+		    BagAngle
+		    BagFront
+		    BagBack
+		    BagDetail1
+		    BagInterior
+		    BagReversible
+		    ShoeAngle
+		    ShoeBack
+		    ShoeOverhead
+		    ShoeProfile
+		    ShoeDetail1
+		    TABLETOP
+		    TT-DETAIL1
+		    TT-DETAIL2
+		    LAYDOWN
+		    LAYDOWNBACK
+		    SL-DETAIL1
+		    BUST
+		    BUSTBACK
+		   )
+
+

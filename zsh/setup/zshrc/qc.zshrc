@@ -208,6 +208,7 @@ source $ZSH/oh-my-zsh.sh
   alias pgrep="pgrep -li"
   alias -g O="open ."
   # external commands
+  alias imgid="identify"
   # alias htop="sudo htop"
   alias ls="colorls"
   alias l="colorls -lA --sd --git-status"

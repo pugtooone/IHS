@@ -1,4 +1,7 @@
 # zeric's zsh startup script for IHS devices
+
+#{{{
+
 # run the following command on the command line to back this zshrc up, and create your own
 # cp $HOME/.zshrc $HOME/.zshrc_backup && vim $HOME/.zshrc
 
@@ -44,6 +47,7 @@
   alias l1="ls -1AG"
   alias prod="cd $HOME/Desktop/Production"
   alias pgrep="pgrep -li"
+  alias dv="dirs -v"
 
 # Parameters
   PS1=$'%S[%!]%s %n %S[%~]%s %# '
@@ -90,3 +94,5 @@ source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
   ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=blue,bg=yellow,blod'
 
 # vim: set foldmethod=marker foldlevel=0 :
+
+#}}}

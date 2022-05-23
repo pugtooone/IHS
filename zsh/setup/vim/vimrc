@@ -1,8 +1,13 @@
+" zeric's vim startup script for studio devices
+" Options
 set number
 set autoindent
 set hlsearch
 set incsearch
 syntax enable
+
+" Key-bindings
+nnoremap <space> :
 
 " fold
 set foldmethod=marker

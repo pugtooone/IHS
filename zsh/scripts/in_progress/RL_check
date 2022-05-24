@@ -8,27 +8,36 @@ setopt xtrace
 setopt extended_glob
 setopt null_glob 
 
+exec > /tmp/${0}.log
+
 # array of correct file names
 typeset -a RL_name=(
-		    BagAngle
-		    BagFront
-		    BagBack
-		    BagDetail1
-		    BagInterior
-		    BagReversible
-		    ShoeAngle
-		    ShoeBack
-		    ShoeOverhead
-		    ShoeProfile
-		    ShoeDetail1
-		    TABLETOP
-		    TT-DETAIL1
-		    TT-DETAIL2
-		    LAYDOWN
-		    LAYDOWNBACK
-		    SL-DETAIL1
-		    BUST
-		    BUSTBACK
+		    BagAngle BagFront BagBack BagDetail1 BagInterior BagReversible BagSide
+		    ShoeAngle ShoeBack ShoeOverhead ShoeProfile ShoeDetail1
+		    TABLETOP TT-DETAIL1 TT-DETAIL2 TT-DETAIL3 TT-DETAIL4
+		    LAYDOWN LAYDOWNBACK SL-DETAIL1
+		    BUST BUSTBACK
 		   )
 
+# 
+if [[ -e $1 ]]; then
+	cd $1
 
+	currentRL_image=($(print -l *.tif)) # files in current session
+	currentRL_product=($(print -l $currentRL_image | cut -d_ -f1 | uniq)) # products in current session
+	
+	for img in $currentRL_image; do
+		local product=$(print $img | cut -d_ -f1)
+		local img_name=$(print $img | cut -d_ -f2)
+
+		for cor_name in $RL_name; do
+			if [[ ${(L)img_name} != ${(L)cor_name} ]]; then
+				mv ${img}  
+
+	touch ${1}.txt && local RL_report=${1}.txt
+	echo -e "No. of Images: $(print ${#currentRL_image})\nNo. of Products: $(print ${#currentRL_product})\n\n$(print -l ${currentRL_product})" >> $RL_report
+			
+else
+	print " target directory is missing!!"
+	exit 2
+fi

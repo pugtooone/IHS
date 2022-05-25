@@ -11,11 +11,11 @@ setopt null_glob
 exec > /tmp/${0}.log
 
 # array of correct file names
-typeset -a RL_name=(
+typeset -a RL_shotname=(
 		    BagAngle BagFront BagBack BagDetail1 BagInterior BagReversible BagSide
 		    ShoeAngle ShoeBack ShoeOverhead ShoeProfile ShoeDetail1
 		    TABLETOP TT-DETAIL1 TT-DETAIL2 TT-DETAIL3 TT-DETAIL4
-		    LAYDOWN LAYDOWNBACK SL-DETAIL1
+		    LAYDOWN LAYDOWNBACK SL-DETAIL1 SL-DETAIL2
 		    BUST BUSTBACK
 		   )
 
@@ -27,12 +27,30 @@ if [[ -e $1 ]]; then
 	currentRL_product=($(print -l $currentRL_image | cut -d_ -f1 | uniq)) # products in current session
 	
 	for img in $currentRL_image; do
-		local product=$(print $img | cut -d_ -f1)
-		local img_name=$(print $img | cut -d_ -f2)
+		# if [[ $(print $img | grep comp) ]]
+		local img_product=$(print $img | cut -d_ -f1)
+		local img_shot=$(print $img | cut -d_ -f2)
+		local img_comp=$(print $img | cut -d_ -f3)
 
-		for cor_name in $RL_name; do
-			if [[ ${(L)img_name} != ${(L)cor_name} ]]; then
-				mv ${img}  
+		for cor_shot in $RL_shotname; do
+			if [[ $cor_shot == $img_shot ]]; then
+				break
+			elif [[ ${cor_shot} != ${img_shot} && $img_comp == "" ]]; then
+				mv -i "$img" "${img_product}_${cor_shot}.tif"
+			elif [[ ${cor_shot} != ${img_shot} && $img_comp != "" ]]; then
+				mv -i "$img" "${img_product}_${cor_shot}_${img_comp}"
+			else
+				print "$img is"$img
+
+		# if [[ $(print $RL_shotname | grep $img_shot) ]]; then #test if shot naming is correct
+			# break
+		# elif [[ $(print ${(L)RL_shotname}) | grep ${(L)img_shot} ]]; then
+			# mv -i $img ${img_product}_
+
+
+		# for cor_name in $RL_shotname; do
+			# if [[ ${(L)img_shot} != ${(L)cor_name} ]]; then
+				# mv ${img}
 
 	touch ${1}.txt && local RL_report=${1}.txt
 	echo -e "No. of Images: $(print ${#currentRL_image})\nNo. of Products: $(print ${#currentRL_product})\n\n$(print -l ${currentRL_product})" >> $RL_report

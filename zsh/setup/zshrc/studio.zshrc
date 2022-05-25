@@ -1,5 +1,8 @@
+#==================================================
 # zeric's zsh startup script for IHS devices
+#==================================================
 
+#==================================================
 #{{{
 
 # run the following command on the command line to back this zshrc up, and create your own
@@ -96,3 +99,4 @@ source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # vim: set foldmethod=marker foldlevel=0 :
 
 #}}}
+#==================================================

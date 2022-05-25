@@ -6,9 +6,9 @@ set hlsearch
 set incsearch
 syntax enable
 
-" Key-bindings
-nnoremap <space> :
-
 " fold
 set foldmethod=marker
 set foldlevel=0
+
+" Key-bindings
+nnoremap <space> :

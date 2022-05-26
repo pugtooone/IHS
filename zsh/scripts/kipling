@@ -11,8 +11,9 @@ setopt extended_glob
 setopt null_glob
 setopt xtrace
 
+local path=( $path $HOME/homebrew/bin ) # setting path for imagemagick (unique for device)
 local PS4=$'+%1N:[%i]:%_> '
-exec > /tmp/kipling.log 2>&1 #log file
+exec > /tmp/${0}.log 2>&1 #log file
 
 while true; do
 
@@ -47,54 +48,38 @@ while true; do
     		fi
     		
     		# array for Kipling grid size
-    		
     		typeset -a GRID=( A1 A2 A3 A4 A5 B1 B2 B3 B4 B5 B6 TBC )
     		
     		# move all product folders to the designated master grid size folders
-    		
     		for (( i=1 ; i<13 ; i++ )); do
-		
-	    		for dir in **/"${GRID[i]}"; do
 
+	    		for dir in **/"${GRID[i]}"; do
 		    		mkdir Images/"${GRID[i]}"
 		    		local MGRID="${PARENT}/Images/${GRID[i]}"
 
 		    		for dir in [^I]*/**/${GRID[i]}; do
-                	    		
+
 			    		ls -1 $dir | while read; do
-
-			    		print "OR name: ${REPLY: -3}" >> $SWATCH_SEARCH
-
-			        		if [[ -e $SWATCH_BASE/${REPLY: -3}.jpg ]]; then
-
-				        		cp $SWATCH_BASE/${REPLY: -3}.jpg ${dir}/${REPLY}/${REPLY: -3}.jpg
-
-						elif [[ -e $SWATCH_BASE/${REPLY: -3}.tif ]]; then	
-
-				        		cp $SWATCH_BASE/${REPLY: -3}.tif ${dir}/${REPLY}/${REPLY: -3}.tif
-
-			        		else
-
-							# convert "${dir}/${REPLY}/${REPLY}_1.tif[0]" "${SWATCH_BASE}/${REPLY: -3}.jpg"
-							# duplicate the swatch into the product folder itself
-							cp ${dir}/${REPLY}/${REPLY}_1.tif ${dir}/${REPLY}/${REPLY: -3}.tif
-							# copy to new_swatch directory (for the end users to backup to server)
-				        		cp ${dir}/${REPLY}/${REPLY}_1.tif ${NEW_SWATCH}/${REPLY: -3}.tif
-							# another copy to swatch base to prevent duplicates of new swatch
-				        		cp ${dir}/${REPLY}/${REPLY}_1.tif ${SWATCH_BASE}/${REPLY: -3}.tif 
-
-			        		fi
-
-			    		done
-			    		
+			    			print "OR name: ${REPLY: -3}" >> $SWATCH_SEARCH
+			        			if [[ -e $SWATCH_BASE/${REPLY: -3}.jpg ]]; then
+				        			cp $SWATCH_BASE/${REPLY: -3}.jpg ${dir}/${REPLY}/${REPLY: -3}.jpg
+							elif [[ -e $SWATCH_BASE/${REPLY: -3}.tif ]]; then	
+				        			cp $SWATCH_BASE/${REPLY: -3}.tif ${dir}/${REPLY}/${REPLY: -3}.tif
+			        			else
+								convert "${dir}/${REPLY}/${REPLY}_1.tif[0]" "${SWATCH_BASE}/${REPLY: -3}.jpg"
+								# duplicate the swatch into the product folder itself
+								cp ${SWATCH_BASE}/${REPLY: -3}.jpg ${dir}/${REPLY}/${REPLY: -3}.jpg
+								# copy to new_swatch directory (for the end users to backup to server)
+				        			cp ${SWATCH_BASE}/${REPLY: -3}.jpg ${NEW_SWATCH}/${REPLY: -3}.jpg
+			        			fi
+	
+			    			done
 			    		cd $dir
 			    		mv -i KPK* $MGRID
 			    		cd $PARENT
-
 		    		done
 	    		done
     		done
-
 			touch tmp.txt
 			cat $SWATCH_SEARCH | sort | uniq > tmp.txt
 			cat tmp.txt > $SWATCH_SEARCH
@@ -102,10 +87,10 @@ while true; do
 			osascript -e 'display alert "Backup the new swatches to the server" message "We will be eternally grateful"'
 			break
 
+	elif [[ ${target_folder_apple} == '' ]]; then
+		exit 2
 	else
-
 		osascript -e 'display alert "Man, this is not a Kipling batch" message "Please re-select"'
 		continue
-
 	fi
 done	

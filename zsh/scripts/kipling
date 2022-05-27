@@ -4,18 +4,18 @@
 # created by Zeric Chan
 
 # Problem to be solved
-# 1) convert the new swatch to jpeg
+
+exec > /tmp/kipling.log 2>&1 #log file
 
 emulate -LR zsh
 setopt extended_glob
 setopt null_glob
 setopt xtrace
-setopt clobber
 
-exec > /tmp/${0}.log 2>&1 #log file
-
-local path=( $path $HOME/homebrew/bin ) # setting path for imagemagick (unique for device)
+local path=( $path $HOME/homebrew/bin ) # setting path (unique for device) for imagemagick 
 local PS4=$'+%1N:[%i]:%_> '
+
+print "executed at $(date "+%Y%m%d %H:%M")"
 
 while true; do
 

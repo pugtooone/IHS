@@ -2,13 +2,13 @@
 
 # script for checking Ralph Lauren file names
 # created by Zeric Chan
+#
+exec > /tmp/RL_check.log 2>&1
 
 emulate -LR zsh
 setopt xtrace
 setopt extended_glob
 setopt null_glob 
-
-exec > /tmp/${0}.log 2>&1
 
 # array of correct file names
 typeset -a RL_shotname=(
@@ -32,16 +32,20 @@ if [[ -e $1 ]]; then
 		local img_shot=$(print $img | cut -d_ -f2)
 		local img_comp=$(print $img | cut -d_ -f3)
 
-		for cor_shot in $RL_shotname; do
-			if [[ $cor_shot == $img_shot ]]; then
-				break
-			elif [[ ${cor_shot} != ${img_shot} && $img_comp == "" ]]; then
-				mv -i "$img" "${img_product}_${cor_shot}.tif"
-			elif [[ ${cor_shot} != ${img_shot} && $img_comp != "" ]]; then
-				mv -i "$img" "${img_product}_${cor_shot}_${img_comp}"
-			else
-				print "$img is"$img
-
+		if [[ $(print "${RL_shotname}" | grep "${img_shot}") ]} ]]; then
+			break
+		elif [[ $(print "${(L)RL_shotname}" | grep "${(L)img_shot}") && $img_comp == "" ]]; then
+			mv "${img}" ${img_product}_
+		# for cor_shot in $RL_shotname; do
+			# if [[ $cor_shot == $img_shot ]]; then
+				# break
+			# elif [[ ${cor_shot} != ${img_shot} && $img_comp == "" ]]; then
+				# mv -i "$img" "${img_product}_${cor_shot}.tif"
+			# elif [[ ${cor_shot} != ${img_shot} && $img_comp != "" ]]; then
+				# mv -i "$img" "${img_product}_${cor_shot}_${img_comp}"
+			# else
+				# print "$img is"$img
+# 
 		# if [[ $(print $RL_shotname | grep $img_shot) ]]; then #test if shot naming is correct
 			# break
 		# elif [[ $(print ${(L)RL_shotname}) | grep ${(L)img_shot} ]]; then

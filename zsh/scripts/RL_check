@@ -1,0 +1,63 @@
+#! /bin/zsh
+
+# script for checking Ralph Lauren images
+# version: 1.0.0
+# created by Zeric Chan
+#
+# plan
+# 1) check image spec
+# 2) check filename with 1 character difference and rename them
+
+exec > /tmp/RL_check.log 2>&1
+
+emulate -LR zsh
+setopt xtrace
+setopt extended_glob
+setopt null_glob 
+
+# array of correct file names
+typeset -a RL_shotname=(
+		    BagAngle BagFront BagBack BagDetail1 BagInterior BagReversible BagSide
+		    ShoeAngle ShoeBack ShoeOverhead ShoeProfile ShoeDetail1
+		    TABLETOP TT-DETAIL1 TT-DETAIL2 TT-DETAIL3 TT-DETAIL4
+		    LAYDOWN LAYDOWNBACK SL-DETAIL1 SL-DETAIL2
+		    BUST BUSTBACK
+		   )
+
+# 
+if [[ -e $1 ]]; then
+	local parent_dir=$(pwd)
+	cd $1
+
+	local currentRL_image=($(print -l *.tif)) # files in current session
+	local currentRL_product=($(print -l $currentRL_image | cut -d_ -f1 | uniq)) # products in current session
+	print "RL_check Report\n\nno. of products: ${#currentRL_product}\nno. of images: ${#currentRL_image}\n\npotential wrong filenames:\n" > report && local RL_report=report
+
+	for img in $currentRL_image; do
+		# if [[ $(print $img | grep comp) ]]
+		local img_product=$(print $img | cut -d_ -f1)
+		local img_shot=$(print ${img:s/.tif//} | cut -d_ -f2)
+		local img_comp=$(print ${img:s/.tif//} | cut -d_ -f3)
+
+		if [[ $(print "${RL_shotname}" | grep -w "${img_shot}") ]]; then #total correct shot name
+			continue #break current $img for loop and continue to the next $img
+		elif [[ $(print "${(L)RL_shotname}" | grep -w "${(L)img_shot}") ]]; then #correct name but different capital
+			for cor_shot_name in $RL_shotname; do
+				if [[ ${(L)cor_shot_name} == ${(L)img_shot} && $img_comp == "" ]]; then
+					mv "${img}" "${img_product}_${cor_shot_name}.tif"
+					break
+				elif [[ ${(L)cor_shot_name} == ${(L)img_shot} && $img_comp != "" ]]; then
+					mv "${img}" "${img_product}_${cor_shot_name}_${img_comp}.tif"
+					break
+				fi
+			done
+		else
+			#rename wrong filename here
+			print "$img" >> $RL_report
+		fi
+	done
+	cd $parent_dir
+else
+	print " target directory is missing!!"
+	exit 2
+fi

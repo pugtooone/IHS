@@ -174,7 +174,8 @@ source $ZSH/oh-my-zsh.sh
 		   $(brew --prefix)/lib/ruby/gems/3.1.0/bin
 		   $path
 		   $(brew --prefix)/bin
-		   $HOME/.zbin
+		   $HOME/.bin/zbin
+		   $HOME/.bin/pybin
 		   )
 
   typeset -U cdpath=(

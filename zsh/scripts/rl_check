@@ -7,6 +7,7 @@
 # plan
 # 1) check image spec
 # 2) check filename with 1 character difference and rename them
+# 3) consider comp and insert
 
 exec > /tmp/RL_check.log 2>&1
 
@@ -32,6 +33,8 @@ if [[ -e $1 ]]; then
 	local currentRL_image=($(print -l *.tif)) # files in current session
 	local currentRL_product=($(print -l $currentRL_image | cut -d_ -f1 | uniq)) # products in current session
 	print "RL_check Report\n\nno. of products: ${#currentRL_product}\nno. of images: ${#currentRL_image}\n\npotential wrong filenames:\n" > report && local RL_report=report
+	mkdir rename
+	RL_rename=rename/
 
 	for img in $currentRL_image; do
 		# if [[ $(print $img | grep comp) ]]
@@ -54,6 +57,7 @@ if [[ -e $1 ]]; then
 		else
 			#rename wrong filename here
 			print "$img" >> $RL_report
+			mv ${img} $RL_rename
 		fi
 	done
 	cd $parent_dir

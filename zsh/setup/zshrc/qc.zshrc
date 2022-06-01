@@ -83,9 +83,9 @@ ZSH_THEME="agnoster"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git
+plugins=(
+	git
 	web-search
-	zsh-autosuggestions
 	)
 
 source $ZSH/oh-my-zsh.sh
@@ -237,6 +237,7 @@ source $ZSH/oh-my-zsh.sh
 
 # Sourcing programs
   source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+  source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
   source /Users/zeric.chan/.config/broot/launcher/bash/br
   source $(dirname $(gem which colorls))/tab_complete.sh
 

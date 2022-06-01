@@ -3,7 +3,8 @@
 # script for checking Ralph Lauren images
 # version: 1.0.1
 # 1.0.0: stable release
-# 1.0.1: image with 1 missing character rename & mispell 'comp' rename
+# 1.1.0: image with 1 missing character rename & mispell 'comp' rename
+# 1.1.1: fix bad substitue & rename comp bug; update shotname array; auto open report
 # created by Zeric Chan
 #
 # plan
@@ -20,10 +21,10 @@ setopt null_glob
 
 # array of correct file names
 typeset -a RL_shotname=(
-		    BagAngle BagFront BagBack BagDetail1 BagInterior BagReversible BagSide
+		    BagAngle BagFront BagBack BagDetail1 BagDetail2 BagDetail3 BagInterior BagReversible BagSide
 		    ShoeAngle ShoeBack ShoeOverhead ShoeProfile ShoeDetail1
 		    TABLETOP TT-DETAIL1 TT-DETAIL2 TT-DETAIL3 TT-DETAIL4
-		    LAYDOWN LAYDOWNBACK SL-DETAIL1 SL-DETAIL2
+		    LAYDOWN LAYDOWNBACK SL-DETAIL1 SL-DETAIL2 SL-DETAIL3
 		    BUST BUSTBACK
 		   )
 
@@ -34,13 +35,10 @@ if [[ -e $1 ]]; then
 
 	local currentRL_image=($(print -l *.tif)) # files in current session
 	local currentRL_product=($(print -l $currentRL_image | cut -d_ -f1 | uniq)) # products in current session
-	print "RL_check Report\n\n\
-	       no. of products: ${#currentRL_product}\n\
-	       no. of images: ${#currentRL_image}\n\n\
-	       potential wrong filenames:\n" > report && \
-	       local RL_report=report
 	mkdir rename
-	RL_rename=rename/
+	local RL_rename=rename/
+	print "RL_check Report\n\nno. of products: ${#currentRL_product}\nno. of images: ${#currentRL_image}\n\n\potential wrong filenames:\n" > rename/report && \
+	       local RL_report=rename/report
 
 	for img in $currentRL_image; do
 		local img_product=$(print $img | cut -d_ -f1)
@@ -48,12 +46,14 @@ if [[ -e $1 ]]; then
 		local img_comp=$(print ${img:s/.tif//} | cut -d_ -f3)
 		
 		# check comp
-		if [[ ${img_comp} == COMP[1-9] ]]; then #COMP
+		if [[ ${img_comp} == "" ]]; then
+			:
+		elif [[ ${img_comp} == COMP[1-9] ]]; then #COMP
 			:
 		elif [[ ${(U)img_comp} == COMP[1-9] ]]; then #comp or Comp
-			local img_comp="${(U)img_comp}"
+			mv "${img}" "${img_product}_${img_shot}_${(U)img_comp}.tif"
 		elif [[ ${img_comp} == *[1-9] ]]; then #wrong spelling but end with digit
-			local img_comp="COMP${img_comp[-1]}"
+			mv "${img}" "${img_product}_${img_product}_COMP${img_comp[-1]}.tif"
 		else 
 			print ${img} >> $RL_report
 			mv ${img} $RL_rename
@@ -78,10 +78,10 @@ if [[ -e $1 ]]; then
 				#rename file with missing 1 character
 				##### Can combin with sort #####
 				for (( i=1; i<(( ${#cor_shot_name} + 1 )); i++ )); do 
-					if [[ ${(L)cor_shot_name/${cor_shot_name[$i]/}} == ${(L)img_shot} && ${img_comp} == "" ]]; then
+					if [[ ${(L)cor_shot_name/${cor_shot_name[$i]}/} == ${(L)img_shot} && ${img_comp} == "" ]]; then
 						mv "${img}" "${img_product}_${cor_shot_name}.tif"
 						break
-					elif [[ ${(L)cor_shot_name/${cor_shot_name[$i]/}} == ${(L)img_shot} && ${img_comp} != "" ]]; then
+					elif [[ ${(L)cor_shot_name/${cor_shot_name[$i]}/} == ${(L)img_shot} && ${img_comp} != "" ]]; then
 						mv "${img}" "${img_product}_${cor_shot_name}_${img_comp}.tif"
 						break
 					fi
@@ -91,6 +91,7 @@ if [[ -e $1 ]]; then
 			mv ${img} $RL_rename
 		fi
 	done
+	open $RL_report
 	cd $PARENT
 else
 	print " target directory is missing!!"

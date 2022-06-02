@@ -40,8 +40,6 @@ if [[ -e $1 ]]; then
 	print "RL_check Report\n\nno. of products: ${#currentRL_product}\nno. of images: ${#currentRL_image}\n\n\potential wrong filenames:\n" > rename/report && \
 	       local RL_report=rename/report
 
-	
-
 	for img in $currentRL_image; do
 		local img_product=$(print $img | cut -d_ -f1)
 		local img_shot=$(print ${img:s/.tif//} | cut -d_ -f2)
@@ -53,14 +51,16 @@ if [[ -e $1 ]]; then
 		elif [[ ${img_comp} == COMP[1-9] ]]; then #COMP
 			:
 		elif [[ ${(U)img_comp} == COMP[1-9] ]]; then #comp or Comp
-			mv "${img}" "${img_product}_${img_shot}_${(U)img_comp}.tif"
+			local img_comp=${(U)img_comp}
+			mv "${img}" "${img_product}_${img_shot}_${img_comp}.tif"
 		elif [[ ${img_comp} == *[1-9] ]]; then #wrong spelling but end with digit
-			mv "${img}" "${img_product}_${img_product}_COMP${img_comp[-1]}.tif"
+			local img_comp="COMP${img_comp[-1]}"
+			mv "${img}" "${img_product}_${img_product}_${img_comp}.tif"
 		else 
 			print ${img} >> $RL_report
 			mv ${img} $RL_rename
 			continue
-
+		fi
 
 		# check shot name
 		if [[ $(print "${RL_shotname}" | grep -w "${img_shot}") ]]; then #total correct shot name without comp

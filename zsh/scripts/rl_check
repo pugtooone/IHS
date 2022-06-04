@@ -1,12 +1,13 @@
 #! /bin/zsh
 
 # script for checking Ralph Lauren images
-# version: 1.3.0
+# version: 1.3.1
 # 1.0.0: stable release
 # 1.1.0: image with 1 missing character rename & mispell 'comp' rename
 # 1.1.1: fix bad substitue & rename comp bug; update shotname array; auto open report
 # 1.2.0: introduce character sort function for renaming swapped character or one extra character
 # 1.3.0: introduce image resize and format convert & refactor renaming loops
+# 1.3.1: add ksh_glob for removing non-tif original image & fix minor convert bug
 # created by Zeric Chan
 #
 # plan
@@ -20,6 +21,7 @@ exec > /tmp/RL_check.log 2>&1
 emulate -LR zsh
 setopt xtrace
 setopt extended_glob
+setopt ksh_glob
 setopt null_glob 
 
 # array of correct file names
@@ -56,6 +58,11 @@ if [[ -e $1 ]]; then
 	       local RL_report=rename/report
 
 	for img in $currentRL_image; do
+		if [[ ${img} == *.(tiff|TIF|TIFF) ]]; then
+			mv "${img}" "${img%.*}.tif"
+			local img="${img%.*}.tif"
+		fi
+
 		# check and modify image spec (imagemagick as dependency)
 		local img_spec=($(identify -format '%r %h %x %e %z' "${img}[0]"))
 		cor_img_spec=0
@@ -75,17 +82,16 @@ if [[ -e $1 ]]; then
 			elif [[ ${img_spec[4]} != 300 ]]; then
 				convert -resample 300 "${img}[0]" "${img}"
 			elif [[ ${img_spec[5]} != tif ]]; then
-				if [[ ${img_spec[5]} == (tiff|TIF|TIFF) ]]; then
-					mv "${img}" "${img%.*}.tif"
-					local img="${img%.*}.tif"
-				else
-					convert "${img}" "${img%.*}.tif"
-				fi
+				convert "${img}" "${img%.*}.tif"
+				rm "${img}"
+				local img="${img%.*}.tif"
 			elif [[ ${img_spec[6]} != 8 ]]; then
 				convert -depth "${img}[0]" "${img}"
 			fi
 		else
-			convert -colorspace sRGB -resize x4000 -resample 300 -depth 8 "${img}" "${img%.*}"
+			convert -colorspace sRGB -resize x4000 -resample 300 -depth 8 "${img}" "${img%.*}.tif"
+			rm "${img%.*}.(!(tif))" # remove $img that is not tif extension (ksh_glob required)
+			local img="${img%.*}.tif"
 		fi
 
 		# check and rename image filename

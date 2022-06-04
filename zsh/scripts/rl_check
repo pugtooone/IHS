@@ -5,12 +5,15 @@
 # 1.0.0: stable release
 # 1.1.0: image with 1 missing character rename & mispell 'comp' rename
 # 1.1.1: fix bad substitue & rename comp bug; update shotname array; auto open report
+# 1.2.0: introduce character sort function for renaming swapped character or one extra character
+# 1.3.0: introduce image resize and format convert & refactor renaming loops
 # created by Zeric Chan
 #
 # plan
-# 1) check image spec
-# 2) check filename with 1 character difference and rename them
-# 3) consider insert
+# 1) [done] check image spec
+# 2) [done] check filename with 1 character difference and rename them
+# 3) [done] consider insert
+# 4) better report
 
 exec > /tmp/RL_check.log 2>&1
 
@@ -21,19 +24,31 @@ setopt null_glob
 
 # array of correct file names
 typeset -a RL_shotname=(
-		    BagAngle BagFront BagBack BagDetail1 BagDetail2 BagDetail3 BagInterior BagReversible BagSide
-		    ShoeAngle ShoeBack ShoeOverhead ShoeProfile ShoeDetail1
-		    TABLETOP TT-DETAIL1 TT-DETAIL2 TT-DETAIL3 TT-DETAIL4
-		    LAYDOWN LAYDOWNBACK SL-DETAIL1 SL-DETAIL2 SL-DETAIL3
+		    BagAngle BagFront BagBack BagDetail1 BagDetail2 BagInterior BagReversible BagSide
+		    ShoeAngle ShoeBack ShoeOverhead ShoeProfile ShoeDetail1 ShoeDetail2
+		    TABLETOP TT-DETAIL1 TT-DETAIL2
+		    LAYDOWN LAYDOWNBACK SL-DETAIL1 SL-DETAIL2
 		    BUST BUSTBACK
 		   )
 
-# 
 if [[ -e $1 ]]; then
 	local PARENT=$(pwd)
 	cd $1
 
-	local currentRL_image=($(print -l *.tif)) # files in current session
+	# parameter character sort function for wrong swap filename
+	function charsort(){
+		print $(print ${(L)1} | grep -o . | sort | tr -d '\n')
+	}
+
+	function rename_img(){
+		mv "${img}" "${img_product}_${cor_shot_name}.tif"
+	}
+
+	function rename_comp(){
+		mv "${img}" "${img_product}_${cor_shot_name}_${img_comp}.tif"
+	}
+
+	local currentRL_image=($(print -l *.(tif|tiff|TIF|TIFF))) # files in current session
 	local currentRL_product=($(print -l $currentRL_image | cut -d_ -f1 | uniq)) # products in current session
 	mkdir rename
 	local RL_rename=rename/
@@ -41,62 +56,118 @@ if [[ -e $1 ]]; then
 	       local RL_report=rename/report
 
 	for img in $currentRL_image; do
+		# check and modify image spec (imagemagick as dependency)
+		local img_spec=($(identify -format '%r %h %x %e %z' "${img}[0]"))
+		cor_img_spec=0
+		[[ ${img_spec[2]} == sRGB ]] && cor_img_spec=$(( $cor_img_spec + 1 ))
+		[[ ${img_spec[3]} == 4000 ]] && cor_img_spec=$(( $cor_img_spec + 1 ))
+		[[ ${img_spec[4]} == 300 ]] && cor_img_spec=$(( $cor_img_spec + 1 ))
+		[[ ${img_spec[5]} == tif ]] && cor_img_spec=$(( $cor_img_spec + 1 ))
+		[[ ${img_spec[6]} == 8 ]] && cor_img_spec=$(( $cor_img_spec + 1 ))
+
+		if [[ ${cor_img_spec} == 5 ]]; then
+			:
+		elif [[ ${cor_img_spec} == 4 ]]; then
+			if [[ ${img_spec[2]} != sRGB ]]; then
+				convert -colorspace sRGB "${img}[0]" "${img}"
+			elif [[ ${img_spec[3]} != 4000 ]]; then
+				convert -resize x4000 "${img}[0]" "${img}"
+			elif [[ ${img_spec[4]} != 300 ]]; then
+				convert -resample 300 "${img}[0]" "${img}"
+			elif [[ ${img_spec[5]} != tif ]]; then
+				if [[ ${img_spec[5]} == (tiff|TIF|TIFF) ]]; then
+					mv "${img}" "${img%.*}.tif"
+					local img="${img%.*}.tif"
+				else
+					convert "${img}" "${img%.*}.tif"
+				fi
+			elif [[ ${img_spec[6]} != 8 ]]; then
+				convert -depth "${img}[0]" "${img}"
+			fi
+		else
+			convert -colorspace sRGB -resize x4000 -resample 300 -depth 8 "${img}" "${img%.*}"
+		fi
+
+		# check and rename image filename
 		local img_product=$(print $img | cut -d_ -f1)
 		local img_shot=$(print ${img:s/.tif//} | cut -d_ -f2)
 		local img_comp=$(print ${img:s/.tif//} | cut -d_ -f3)
-		
-		# check comp
+
+		# modify RL_shotname to speedup loops
+		if [[ ${(L)img_shot:0:3} == 'bag' ]]; then
+			RL_shotname=($(print -l $RL_shotname | grep -i bag))
+		elif [[ ${(L)img_shot:0:4} == 'shoe' ]]; then
+			RL_shotname=($(print -l $RL_shotname | grep -i shoe))
+		fi
+
+		# rename comp
 		if [[ ${img_comp} == "" ]]; then
 			:
-		elif [[ ${img_comp} == COMP[1-9] ]]; then #COMP
+		elif [[ ${img_comp} == COMP[1-9] || ${img_comp} == 'INSERT' ]]; then #COMP or INSERT
 			:
-		elif [[ ${(U)img_comp} == COMP[1-9] ]]; then #comp or Comp
+		elif [[ ${(U)img_comp} == COMP[1-9] || ${(U)img_comp} == 'INSERT' ]]; then #comp or insert
 			local img_comp=${(U)img_comp}
-			mv "${img}" "${img_product}_${img_shot}_${img_comp}.tif"
+			rename_comp
 		elif [[ ${img_comp} == *[1-9] ]]; then #wrong spelling but end with digit
 			local img_comp="COMP${img_comp[-1]}"
-			mv "${img}" "${img_product}_${img_product}_${img_comp}.tif"
+			rename_comp
+		elif [[ $(charsort ${(U)img_comp}) == 'EINRST' ]]; then
+			local img_comp="INSERT"
+			rename_comp
 		else 
 			print ${img} >> $RL_report
 			mv ${img} $RL_rename
 			continue
 		fi
 
-		# check shot name
+		# rename shot name
 		if [[ $(print "${RL_shotname}" | grep -w "${img_shot}") ]]; then #total correct shot name without comp
-			continue #break current $img for loop and continue to the next $img
+			continue 
 		elif [[ $(print "${(L)RL_shotname}" | grep -w "${(L)img_shot}") ]]; then #correct name but different capital
 			for cor_shot_name in $RL_shotname; do
 				if [[ ${(L)cor_shot_name} == ${(L)img_shot} && ${img_comp} == "" ]]; then
-					mv "${img}" "${img_product}_${cor_shot_name}.tif"
+					rename_img
 					break
 				elif [[ ${(L)cor_shot_name} == ${(L)img_shot} && ${img_comp} != "" ]]; then
-					mv "${img}" "${img_product}_${cor_shot_name}_${img_comp}.tif"
+					rename_comp
 					break
 				fi
 			done
+			continue
 		else
 			for cor_shot_name in $RL_shotname; do
-				##### Can combin with sort #####
-				for (( i=1; i<(( ${#cor_shot_name} + 1 )); i++ )); do 
-					#rename file with missing 1 character
-					#remove character in [subscript] and compare
-					if [[ ${(L)cor_shot_name/${cor_shot_name[$i]}/} == ${(L)img_shot} && ${img_comp} == "" ]]; then
-						mv "${img}" "${img_product}_${cor_shot_name}.tif"
-						break
-					elif [[ ${(L)cor_shot_name/${cor_shot_name[$i]}/} == ${(L)img_shot} && ${img_comp} != "" ]]; then
-						mv "${img}" "${img_product}_${cor_shot_name}_${img_comp}.tif"
-						break
-					fi
+				# rename image with swapped character
+				if [[ $(charsort ${(L)cor_shot_name}) == $(charsort ${(L)img_shot}) && ${img_comp} == "" ]]; then
+					rename_img
+					break
+				elif [[ $(charsort ${(L)cor_shot_name}) == $(charsort ${(L)img_shot}) && ${img_comp} != "" ]]; then
+					rename_comp
+					break
+				fi
 
-					#rename image with character swap
-					#j=$(( i + 1 ))
-					#if [[ ${(L)cor_shot_name:(($i-1)):2} == ${(L)img_shot[$j]}${(L)img_shot[$i]} && ${img_comp} == "" ]]; then
-						#mv "${img}" "${img_product}_${cor_shot_name}.tif"
+				for (( i=1; i<(( ${#cor_shot_name} + 2 )); i++ )); do 
+					# rename image with missing 1 character
+					# remove 1 character from cor_shot_name and compare with img_shot
+					if [[ ${(L)cor_shot_name/${cor_shot_name[$i]}/} == ${(L)img_shot} && ${img_comp} == "" ]]; then
+						rename_img
+						break 2
+					elif [[ ${(L)cor_shot_name/${cor_shot_name[$i]}/} == ${(L)img_shot} && ${img_comp} != "" ]]; then
+						rename_comp
+						break 2
+					fi
+					# rename image with 1 extra character
+					# remove 1 character from img_shot and compare with cor_shot_name
+					if [[ $(charsort ${(L)cor_shot_name}) == $(charsort ${(L)img_shot/${(L)img_shot[$i]}/}) && ${img_comp} == "" ]]; then
+						rename_img
+						break 2
+					elif [[ $(charsort ${(L)cor_shot_name}) == $(charsort ${(L)img_shot/${(L)img_shot[$i]}/}) && ${img_comp} != "" ]]; then
+						rename_comp
+						break 2
+					fi
 				done
 			done
-			print "$img" >> $RL_report
-			mv ${img} $RL_rename
+			# print "$img" >> $RL_report
+			# mv ${img} $RL_rename
 		fi
 	done
 	open $RL_report

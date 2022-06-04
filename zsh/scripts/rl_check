@@ -1,7 +1,7 @@
 #! /bin/zsh
 
 # script for checking Ralph Lauren images
-# version: 1.0.1
+# version: 1.3.0
 # 1.0.0: stable release
 # 1.1.0: image with 1 missing character rename & mispell 'comp' rename
 # 1.1.1: fix bad substitue & rename comp bug; update shotname array; auto open report

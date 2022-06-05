@@ -134,6 +134,7 @@ source $ZSH/oh-my-zsh.sh
   setopt hist_reduce_blanks
   # setopt hist_verify
   setopt inc_append_history
+  setopt ksh_glob
   setopt list_ambiguous
   setopt no_clobber
   setopt prompt_subst

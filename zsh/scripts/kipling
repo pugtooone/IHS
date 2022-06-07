@@ -68,11 +68,19 @@ while true; do
 							elif [[ -e $SWATCH_BASE/${REPLY: -3}.tif ]]; then	
 				        			cp $SWATCH_BASE/${REPLY: -3}.tif ${dir}/${REPLY}/${REPLY: -3}.tif
 			        			else
-								convert "${dir}/${REPLY}/${REPLY}_1.tif[0]" "${SWATCH_BASE}/${REPLY: -3}.jpg"
 								# duplicate the swatch into the product folder itself
-								cp ${SWATCH_BASE}/${REPLY: -3}.jpg ${dir}/${REPLY}/${REPLY: -3}.jpg
-								# copy to new_swatch directory (for the end users to backup to server)
-				        			cp ${SWATCH_BASE}/${REPLY: -3}.jpg ${NEW_SWATCH}/${REPLY: -3}.jpg
+	-                                                       cp ${dir}/${REPLY}/${REPLY}_1.tif ${dir}/${REPLY}/${REPLY: -3}.tif
+	-                                                       # copy to new_swatch directory (for the end users to backup to server)
+	-                                                       cp ${dir}/${REPLY}/${REPLY}_1.tif ${NEW_SWATCH}/${REPLY: -3}.tif
+	-                                                       # another copy to swatch base to prevent duplicates of new swatch
+	-                                                       cp ${dir}/${REPLY}/${REPLY}_1.tif ${SWATCH_BASE}/${REPLY: -3}.tif
+
+								# Zeric's ver
+								# convert "${dir}/${REPLY}/${REPLY}_1.tif[0]" "${SWATCH_BASE}/${REPLY: -3}.jpg"
+								# # duplicate the swatch into the product folder itself
+								# cp ${SWATCH_BASE}/${REPLY: -3}.jpg ${dir}/${REPLY}/${REPLY: -3}.jpg
+								# # copy to new_swatch directory (for the end users to backup to server)
+				        			# cp ${SWATCH_BASE}/${REPLY: -3}.jpg ${NEW_SWATCH}/${REPLY: -3}.jpg
 			        			fi
 	
 			    			done

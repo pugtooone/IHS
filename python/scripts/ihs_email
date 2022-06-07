@@ -5,7 +5,14 @@
 # 1) paste the snippet directly onto the email draft
 # 2) parse the job folder, analyse and auto-fill the content of the snippet
 
-import sys, pyperclip # pyperclip is external module
+import sys, os
+import pyperclip as pyclip
+from pathlib import Path
+import tkinter
+from tkinter.filedialog import askdirectory
+
+jobDir = Path(askdirectory())
+# job = basename of jobDir
 
 TEXT = {'new_job': """Hi,\n\nPlease note that [job] is being uploaded to the server, including [no.] images along with the post-production guideline. Let me know if there is any question. Thanks!\n\n""",
         'amend_job': """Hi,\n\nPlease note that there are amendments required, which are being uploaded to the server under the folder [job], including [no.] images along with the feedback pdf. Let me know if there is any question. Thanks!\n\n"""}

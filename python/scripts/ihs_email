@@ -5,33 +5,33 @@
 # 1) paste the snippet directly onto the email draft
 # 2) parse the job folder, analyse and auto-fill the content of the snippet
 
-import sys, os
-import pyperclip as pyclip
-from pathlib import Path
-import tkinter
+import sys, os, re
+import pyperclip
 from tkinter.filedialog import askdirectory
-
-jobDir = Path(askdirectory())
-# job = basename of jobDir
-
-TEXT = {'new_job': """Hi,\n\nPlease note that [job] is being uploaded to the server, including [no.] images along with the post-production guideline. Let me know if there is any question. Thanks!\n\n""",
-        'amend_job': """Hi,\n\nPlease note that there are amendments required, which are being uploaded to the server under the folder [job], including [no.] images along with the feedback pdf. Let me know if there is any question. Thanks!\n\n"""}
+from pathlib import Path
 
 if len(sys.argv) < 2:
-    print('Usage: python3 ihs_email.py [keyphrase] - copy phrase')
+    print('Usage: python3 ihs_email.py [job] - copy phrase')
     sys.exit()
 
-keyphrase = sys.argv[1]
+jobDir = Path(askdirectory())
+job = os.path.basename(jobDir)
 
-if keyphrase in TEXT:
-    pyperclip.copy(TEXT[keyphrase])
-    print('Text for ' + keyphrase + 'copied to the clipboard')
+if 'Images' in os.listdir(jobDir):
+    imgNo = len(os.listdir(jobDir / 'Images'))
 else:
-    print('Keyphrase [' + keyphrase + '] not exist!\n')
-    print('====================')
-    print('Keyphrase includes:')
-    
-    i = 1
-    for k in TEXT.keys():
-        print(str(i) + ') ' + k)
-        i = i + 1
+    print('Missing: Images folder')
+    sys.exit()
+
+guides = ""
+
+# cant do, need regex
+if 'Post-production' in os.listdir(jobDir):
+    guides += 'post-production guidelines'
+elif 'Shoot Brief' in 
+
+if 'ref' in os.listdir(jobDir):
+    guides += 'and the reference images'
+
+newText = "Hi,\n\nPlease note that %s is being uploaded to the server, including %s images along with the %s. Let me know if there is any question. Thanks!\n\n" % (job, imgNo, guides)
+amendText = "Hi,\n\nPlease note that there are amendments required, which are being uploaded to the server under the folder %s, including %s images along with the feedback pdf. Let me know if there is any question. Thanks!\n\n" % (job, imgNo)

@@ -37,15 +37,15 @@ class FileManagement():
             os.mkdir(os.path.join(newpath,str(job)))
 
 
-def msgGenerate(job, imgcount, ppg):
+'''def msgGenerate(job, imgcount, ppg):
     imgcount = str(imgcount)
     return f'Hi,\n please note that {job} is being uploaded to the server, with {imgcount} images and the post-production guideline.\n let us know if there is any question, thank you very much.'
+'''
 
 #think about what function you need in this app?
 '''get jobs in gspreadsheet
    find deadline provide selection to the user
    open new folder
-
 '''
 class ImageCheck():
     dimension = ()

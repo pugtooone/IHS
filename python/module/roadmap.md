@@ -21,6 +21,19 @@ from pyheartstudios import FileManagement as fm
 setPath('Your own destinated path')
 initialize()
 ``` 
+
+## Image Check
+1. **setImageSpec()**
+<br><br>
+Initialize the required Image Spec for the class.
+
+```python
+from pyheartstudios import ImageCheck as ic
+
+ic.setImageSpec((1200,1200),300,1)
+#dimension, ppi, color profile
+```
+
 ## Future Plan
 
 * ### File Management
@@ -28,3 +41,6 @@ initialize()
     1. Combine **setPath()** function with the **initialize** function to reduce the function redundancy.
 
     2. More parameter for  **initialize()** function to let users have more choices in setting up their application.
+
+* ### Image Check
+    1. :joy:

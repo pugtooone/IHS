@@ -1,20 +1,14 @@
 #! /bin/zsh
 
 # script for checking Ralph Lauren images
-# version: 1.3.1
-# 1.0.0: stable release
-# 1.1.0: image with 1 missing character rename & mispell 'comp' rename
-# 1.1.1: fix bad substitue & rename comp bug; update shotname array; auto open report
-# 1.2.0: introduce character sort function for renaming swapped character or one extra character
-# 1.3.0: introduce image resize and format convert & refactor renaming loops
-# 1.3.1: add ksh_glob for removing non-tif original image & fix minor convert bug
+# version: 1.3.2
 # created by Zeric Chan
 #
 # plan
 # 1) [done] check image spec
 # 2) [done] check filename with 1 character difference and rename them
 # 3) [done] consider insert
-# 4) better report
+# 4) [working] better report
 
 exec > /tmp/RL_check.log 2>&1
 
@@ -38,28 +32,32 @@ if [[ -e $1 ]]; then
 	cd $1
 
 	# parameter character sort function for wrong swap filename
-	function charsort(){
-		print $(print ${(L)1} | grep -o . | sort | tr -d '\n')
+	function charsort(){ print $(print ${(L)1} | grep -o . | sort | tr -d '\n') }
+
+	function report_append(){
+		if [[ $(grep -e "${img}" $RL_report) ]]; then
+			return
+		else
+			print "${img}" >> $RL_report
+		fi
 	}
 
-	function rename_img(){
-		mv "${img}" "${img_product}_${cor_shot_name}.tif"
-	}
+	function rename_img(){ mv "${img}" "${img_product}_${cor_shot_name}.tif" }
 
-	function rename_comp(){
-		mv "${img}" "${img_product}_${cor_shot_name}_${img_comp}.tif"
-	}
+	function rename_comp(){ mv "${img}" "${img_product}_${cor_shot_name}_${img_comp}.tif" }
 
+	rename -d ' ' *(.)
 	local currentRL_image=($(print -l *.(tif|tiff|TIF|TIFF))) # files in current session
 	local currentRL_product=($(print -l $currentRL_image | cut -d_ -f1 | uniq)) # products in current session
 	mkdir rename
 	local RL_rename=rename/
-	print "RL_check Report\n\nno. of products: ${#currentRL_product}\nno. of images: ${#currentRL_image}\n\n\potential wrong filenames:\n" > rename/report && \
+	print "RL_check Report\n\nno. of products: ${#currentRL_product}\nno. of images: ${#currentRL_image}\n\n\renamed images:\n" > rename/report && \
 	       local RL_report=rename/report
 
 	for img in $currentRL_image; do
 		if [[ ${img} == *.(tiff|TIF|TIFF) ]]; then
 			mv "${img}" "${img%.*}.tif"
+			report_append
 			local img="${img%.*}.tif"
 		fi
 
@@ -114,14 +112,17 @@ if [[ -e $1 ]]; then
 		elif [[ ${(U)img_comp} == COMP[1-9] || ${(U)img_comp} == 'INSERT' ]]; then #comp or insert
 			local img_comp=${(U)img_comp}
 			rename_comp
+			report_append
 		elif [[ ${img_comp} == *[1-9] ]]; then #wrong spelling but end with digit
 			local img_comp="COMP${img_comp[-1]}"
 			rename_comp
+			report_append
 		elif [[ $(charsort ${(U)img_comp}) == 'EINRST' ]]; then
 			local img_comp="INSERT"
 			rename_comp
+			report_append
 		else 
-			print ${img} >> $RL_report
+			print "manual rename required: ${img}" >> $RL_report
 			mv ${img} $RL_rename
 			continue
 		fi
@@ -133,9 +134,11 @@ if [[ -e $1 ]]; then
 			for cor_shot_name in $RL_shotname; do
 				if [[ ${(L)cor_shot_name} == ${(L)img_shot} && ${img_comp} == "" ]]; then
 					rename_img
+					report_append
 					break
 				elif [[ ${(L)cor_shot_name} == ${(L)img_shot} && ${img_comp} != "" ]]; then
 					rename_comp
+					report_append
 					break
 				fi
 			done
@@ -145,9 +148,11 @@ if [[ -e $1 ]]; then
 				# rename image with swapped character
 				if [[ $(charsort ${(L)cor_shot_name}) == $(charsort ${(L)img_shot}) && ${img_comp} == "" ]]; then
 					rename_img
+					report_append
 					break
 				elif [[ $(charsort ${(L)cor_shot_name}) == $(charsort ${(L)img_shot}) && ${img_comp} != "" ]]; then
 					rename_comp
+					report_append
 					break
 				fi
 
@@ -156,18 +161,22 @@ if [[ -e $1 ]]; then
 					# remove 1 character from cor_shot_name and compare with img_shot
 					if [[ ${(L)cor_shot_name/${cor_shot_name[$i]}/} == ${(L)img_shot} && ${img_comp} == "" ]]; then
 						rename_img
+						report_append
 						break 2
 					elif [[ ${(L)cor_shot_name/${cor_shot_name[$i]}/} == ${(L)img_shot} && ${img_comp} != "" ]]; then
 						rename_comp
+						report_append
 						break 2
 					fi
 					# rename image with 1 extra character
 					# remove 1 character from img_shot and compare with cor_shot_name
 					if [[ $(charsort ${(L)cor_shot_name}) == $(charsort ${(L)img_shot/${(L)img_shot[$i]}/}) && ${img_comp} == "" ]]; then
 						rename_img
+						report_append
 						break 2
 					elif [[ $(charsort ${(L)cor_shot_name}) == $(charsort ${(L)img_shot/${(L)img_shot[$i]}/}) && ${img_comp} != "" ]]; then
 						rename_comp
+						report_append
 						break 2
 					fi
 				done

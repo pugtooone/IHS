@@ -23,15 +23,19 @@ else:
     print('Missing: Images folder')
     sys.exit()
 
-guides = ""
+guides = []
 
 # cant do, need regex
-if 'Post-production' in os.listdir(jobDir):
-    guides += 'post-production guidelines'
-elif 'Shoot Brief' in 
+if 'Post-production' in str(os.listdir(jobDir)):
+    guides.append('post-production guidelines')
+elif 'Shoot Brief' in str(os.listdir(jobDir)):
+    guides.append('shoot brief')
 
-if 'ref' in os.listdir(jobDir):
-    guides += 'and the reference images'
+if 'Retouch Note' in str(os.listdir(jobDir)):
+    guides.append('retouch note')
+
+if 'ref' in str(os.listdir(jobDir)):
+    guides.append('reference images')
 
 newText = "Hi,\n\nPlease note that %s is being uploaded to the server, including %s images along with the %s. Let me know if there is any question. Thanks!\n\n" % (job, imgNo, guides)
 amendText = "Hi,\n\nPlease note that there are amendments required, which are being uploaded to the server under the folder %s, including %s images along with the feedback pdf. Let me know if there is any question. Thanks!\n\n" % (job, imgNo)

@@ -1,41 +1,52 @@
 #! python3
-# copy email snippet to the clipboard
+# copy email template to the clipboard
+
+# version:
+# 1.0.0: first stable release with auto-fill function
 
 # plan: 
-# 1) paste the snippet directly onto the email draft
-# 2) parse the job folder, analyse and auto-fill the content of the snippet
+# 1) paste the draft directly onto the gmail
+# 2) [done] parse the job folder, analyse and auto-fill the content of the draft
 
-import sys, os, re
+import sys, os
 import pyperclip
 from tkinter.filedialog import askdirectory
 from pathlib import Path
 
-if len(sys.argv) < 2:
-    print('Usage: python3 ihs_email.py [job] - copy phrase')
-    sys.exit()
-
 jobDir = Path(askdirectory())
-job = os.path.basename(jobDir)
+job = jobDir.name
+imgDir = jobDir / 'Images'
 
-if 'Images' in os.listdir(jobDir):
-    imgNo = len(os.listdir(jobDir / 'Images'))
+if imgDir.is_dir(): #check if Images folder exists
+    # check if the Images folder contains product subfolders
+    # if os.listdir(imgDir)[1]
+    imgNo = len(os.listdir(imgDir))
 else:
     print('Missing: Images folder')
     sys.exit()
 
-guides = []
+guidesList = []
 
-# cant do, need regex
 if 'Post-production' in str(os.listdir(jobDir)):
-    guides.append('post-production guidelines')
+    guidesList.append('post-production guideline')
 elif 'Shoot Brief' in str(os.listdir(jobDir)):
-    guides.append('shoot brief')
+    guidesList.append('shoot brief')
 
 if 'Retouch Note' in str(os.listdir(jobDir)):
-    guides.append('retouch note')
+    guidesList.append('retouch note')
 
 if 'ref' in str(os.listdir(jobDir)):
-    guides.append('reference images')
+    # refNo = len(os.listdir(jobDir / 'ref'))
+    guidesList.append('reference images')
 
-newText = "Hi,\n\nPlease note that %s is being uploaded to the server, including %s images along with the %s. Let me know if there is any question. Thanks!\n\n" % (job, imgNo, guides)
-amendText = "Hi,\n\nPlease note that there are amendments required, which are being uploaded to the server under the folder %s, including %s images along with the feedback pdf. Let me know if there is any question. Thanks!\n\n" % (job, imgNo)
+guidesList[-1] = 'and ' + guidesList[-1]
+guides = ', '.join(guidesList)
+
+newJob = """Hi,\n\nPlease note that %s is being uploaded to the server, including %s images along with the %s. Let me know if there is any question. Thanks!\n\n""" % (job, imgNo, guides)
+
+amendJob = """Hi,\n\nPlease note that there are amendments required, which are being uploaded to the server under the folder %s, including %s images along with the feedback pdf. Let me know if there is any question. Thanks!\n\n""" % (job, imgNo)
+
+if 'amendment' in str(jobDir):
+    pyperclip.copy(amendJob)
+else:
+    pyperclip.copy(newJob)

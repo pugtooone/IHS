@@ -18,7 +18,7 @@ class FileManagement():
     def setPath(self,path):
         self.userpath = path
     
-    @classmethod
+    @classmethod #Get Image Count from user-defined path
     def getCount(self):
         if self.userpath != None:
             try:
@@ -52,7 +52,7 @@ class ImageCheck():
     ppi = None
     cprofile = None
 
-    @classmethod
+    @classmethod #initial setup for the class
     def setImageSpec(self, dimension:tuple,ppi:int,cprofile:int):
         if isinstance(dimension,tuple):
             self.dimension = dimension
@@ -62,7 +62,7 @@ class ImageCheck():
         self.cprofile = cprofile
 
     @classmethod
-    def checkSpec(self,dimension,ppi,cprofile):
+    def checkSpec(self,dimension,ppi,cprofile):#0xA001 is the keyword for colorprofile, if (0xA001) == 1 or exif.get(0x0001) == 'R98' then is RGB ref:https://exiftool.org/TagNames/EXIF.html
         returnflag = {'dimension':1, 'ppi':1, 'cprofile':1}
         if self.dimension != None and self.ppi != None and self.cprofile != None:
             if dimension != self.dimension:

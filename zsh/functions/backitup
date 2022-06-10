@@ -1,7 +1,11 @@
+# vim ft=zsh
 function backitup(){
-	if [[ -e $1 ]]; then
-		cp -r $1 $1_backup
+	if [[ $# > 0 ]]; then
+		for (( i=1; i<(( $# + 1 )); i++ )); do
+			cp -r ${i} ${i}_backup &
+		done
 	else
-		print "target file needed"
+		print "Usage: backitup [folder] ..."
+		return 2
 	fi
 }

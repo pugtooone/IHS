@@ -1,0 +1,11 @@
+# vim ft=zsh
+function qcstart () {
+	if [[ -e $1 ]]; then
+		rename -A "$(date +%Y%m%d) " "$1"
+		mv -i $1 "$HOME/Desktop/QCing/"
+		open "$HOME/Desktop/SENT/sent $1/"
+	else
+		print 'Usage: qcstart [job]'
+		return 2
+	fi
+}

@@ -1,3 +1,4 @@
+# vim ft=zsh
 # function to drag the JPEG directories out of the product folders
 
 # initial tree: 1) Images/Product/.tif
@@ -12,19 +13,16 @@
 
 function jpgdrag(){
 if [[ -e $1 ]]; then
-	
 	cd $1
 	PARENT="$(pwd)"
 
 	if [[ -d Images ]]; then
-		
-		rename -s jpeg jpg **/*(.)
+		rename -s jpeg jpg **/*.jpeg(.)
 		mv -i Images TIFF
 		mkdir JPEG
 		local MJPEG="$(pwd)/JPEG"
 		
 		for dir in [^J]*/**/JPEG; do
-			
 			cd $dir/..
 
 			# run if product folders existi (tree 1)
@@ -40,12 +38,9 @@ if [[ -e $1 ]]; then
 				mv -i JPEG/*.jpg $MJPEG
 				rm -r JPEG
 				cd $PARENT
-
 			fi
 		done
-
 		cd ..
-
 	else
 		print "Images folder not exist!!!"
 	fi

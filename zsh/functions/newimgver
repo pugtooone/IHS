@@ -1,3 +1,15 @@
+# vim ft=zsh
 function newimgver(){
-	
+	if [[ $# == 1 && -d $1 ]]; then
+		for img in ${1}/*.(tif|jpg|png); do
+			if [[ $(print ${img} | grep -i "_v\d\.") ]]; then
+				# append new version
+			else
+				rename -X -a '_v1' ${img}
+			fi
+		done
+	else
+		print "Usage: newimgver [image containing folder]"
+		return 2
+	fi
 }

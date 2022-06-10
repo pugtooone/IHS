@@ -1,9 +1,13 @@
+# vim ft=zsh
 function retest(){
-
-	if [[ -e $1 && -e $1_backup ]]; then
+	if [[ -e $1 && -e ${1}_backup ]]; then
 		rm -r $1
-		cp -r $1_backup $1 &
+		cp -r ${1}_backup $1 &
 	elif [[ -e $1 && ! -e $1_backup ]]; then
-		print "backup folder not exist!!"
+		print "Missing: backup folder"
+		return 2
+	else
+		print "Usage: retest [directory]"
+		return 2
 	fi
 }

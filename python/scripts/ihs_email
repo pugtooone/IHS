@@ -25,28 +25,43 @@ else:
     print('Missing: Images folder')
     sys.exit()
 
-guidesList = []
+newJobGuideList = []
 
-if 'Post-production' in str(os.listdir(jobDir)):
-    guidesList.append('post-production guideline')
-elif 'Shoot Brief' in str(os.listdir(jobDir)):
-    guidesList.append('shoot brief')
+if jobDir.glob('*Post-production*'):
+    newJobGuideList.append('the post-production guideline')
+elif jobDir.glob('*Shoot Brief*'):
+    newJobGuideList.append('the shoot brief')
 
-if 'Retouch Note' in str(os.listdir(jobDir)):
-    guidesList.append('retouch note')
+if jobDir.glob('*Retouch Note*'):
+    newJobGuideList.append('the retouch note')
 
-if 'ref' in str(os.listdir(jobDir)):
+if jobDir.glob('*ref*'):
     # refNo = len(os.listdir(jobDir / 'ref'))
-    guidesList.append('reference images')
+    newJobGuideList.append('the reference images')
 
-guidesList[-1] = 'and ' + guidesList[-1]
-guides = ', '.join(guidesList)
+newJobGuideList[-1] = 'and ' + newJobGuideList[-1]
+newGuides = ', '.join(newJobGuideList)
 
-newJob = """Hi,\n\nPlease note that %s is being uploaded to the server, including %s images along with the %s. Let me know if there is any question. Thanks!\n\n""" % (job, imgNo, guides)
+amendJobGuideList = []
 
-amendJob = """Hi,\n\nPlease note that there are amendments required, which are being uploaded to the server under the folder %s, including %s images along with the feedback pdf. Let me know if there is any question. Thanks!\n\n""" % (job, imgNo)
+if jobDir.glob('*feedback*'):
+    amendJobGuideList.append('the feedback pdf')
 
-if 'amendment' in str(jobDir):
+if jobDir.glob('*Retouch Note*'):
+    amendJobGuideList.append('the retouch note')
+
+if jobDir.glob('*ref*'):
+    # refNo = len(os.listdir(jobDir / 'ref'))
+    amendJobGuideList.append('the reference images')
+
+amendJobGuideList[-1] = 'and ' + amendJobGuideList[-1]
+amendGuides = ', '.join(amendJobGuideList)
+
+newJob = """Hi,\n\nPlease note that %s is being uploaded to the server, including %s images along with %s. Let me know if there is any question. Thanks!\n\n""" % (job, imgNo, newGuides)
+
+amendJob = """Hi,\n\nPlease note that there are amendments required, which are being uploaded to the server under the folder %s, including %s images along with %s. Let me know if there is any question. Thanks!\n\n""" % (job, imgNo, amendGuides)
+
+if 'Amendment' in str(jobDir):
     pyperclip.copy(amendJob)
 else:
     pyperclip.copy(newJob)

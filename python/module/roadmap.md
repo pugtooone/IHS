@@ -43,4 +43,4 @@ ic.setImageSpec((1200,1200),300,1)
     2. More parameter for  **initialize()** function to let users have more choices in setting up their application.
 
 * ### Image Check
-    1. :joy:
+    1. Increase the number of parameter to improve flexibility.

@@ -5,7 +5,8 @@ class FileManagement():
     userpath = ''
 
     @classmethod
-    def initialize(self):
+    def initialize(self,path:str):
+        self.userpath = path
         workdir = os.path.join(self.userpath,'Batch For Vendor')
         if os.path.exists(workdir) == False:
             os.mkdir(workdir)
@@ -14,19 +15,21 @@ class FileManagement():
         else:
             print('directory exist!')
 
-    @classmethod
-    def setPath(self,path):
-        self.userpath = path
     
     @classmethod #Get Image Count from user-defined path
-    def getCount(self):
+    def getCount(self) -> int:
+        """
+        Run initialize() first to set path
+        Parameters: None
+        Return: Count of image
+        """
         if self.userpath != None:
             try:
-                images = len(glob(f'{self.userpath}/*'))
-                if images == 0:
+                imagecount = len(glob(f'{self.userpath}/*.*'))
+                if imagecount == 0:
                     print('Is the directory not exist? Or the path is wrong?')
                 else:
-                    return images
+                    return imagecount
 
             except FileNotFoundError as F:
                 print(F)
@@ -39,7 +42,7 @@ class FileManagement():
 
 '''def msgGenerate(job, imgcount, ppg):
     imgcount = str(imgcount)
-    return f'Hi,\n please note that {job} is being uploaded to the server, with {imgcount} images and the post-production guideline.\n let us know if there is any question, thank you very much.'
+    return f'Hi,\n please note that {job} is being uploaded to the server, with {imgcount} imagecount and the post-production guideline.\n let us know if there is any question, thank you very much.'
 '''
 
 #think about what function you need in this app?
@@ -53,7 +56,7 @@ class ImageCheck():
     cprofile = None
 
     @classmethod #initial setup for the class
-    def setImageSpec(self, dimension:tuple,ppi:int,cprofile:int):
+    def setimagecountpec(self, dimension:tuple,ppi:int,cprofile:int):
         if isinstance(dimension,tuple):
             self.dimension = dimension
         else:

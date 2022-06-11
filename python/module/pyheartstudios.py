@@ -6,6 +6,11 @@ class FileManagement():
 
     @classmethod
     def initialize(self,path:str):
+        """
+        Parameters:
+        path (str): The user-defined path
+        Use this function before doing any things with file management
+        """
         self.userpath = path
         workdir = os.path.join(self.userpath,'Batch For Vendor')
         if os.path.exists(workdir) == False:

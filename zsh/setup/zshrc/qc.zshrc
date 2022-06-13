@@ -222,10 +222,8 @@ source $ZSH/oh-my-zsh.sh
   alias py3="python3"
   # IHS
   alias brand="open $HOME/Desktop/DOCUMENTS/Brand"
+  alias ihse="ihs_email.py"
   alias imgdrag="mv -i **/*(.) ." 
-  alias seeallfiles="ls **/*(.) | cat -n"
-  alias qcing="cd $HOME/Desktop/QCing"
-  alias purgescreenshot="rm $HOME/Desktop/DOCUMENTS/Screenshots/*"
   alias renamePNG="rename -d ' copy' $HOME/Desktop/PNG/*"
   # misc
   alias showargs="printf '>>>%s<<<\n'"

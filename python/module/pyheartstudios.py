@@ -1,15 +1,16 @@
 from glob import glob
 import os
 
+
 class FileManagement():
     userpath = ''
 
     @classmethod
     def initialize(self,path:str):
         """
-        Parameters:
-        path (str): The user-defined path
         Use this function before doing any things with file management
+
+        Parameters: path (str): The user-defined path
         """
         self.userpath = path
         workdir = os.path.join(self.userpath,'Batch For Vendor')
@@ -32,44 +33,53 @@ class FileManagement():
             try:
                 imagecount = len(glob(f'{self.userpath}/*.*'))
                 if imagecount == 0:
-                    print('Is the directory not exist? Or the path is wrong?')
+                    raise ValueError("Can't find any images")
+                    
                 else:
                     return imagecount
 
             except FileNotFoundError as F:
                 print(F)
 
-    def newJob(self,job,jobtype):
+    def newJob(self,job:int,jobtype:str):
         if self.userpath != None:
             newpath = os.path.join(self.userpath,jobtype)
             os.mkdir(os.path.join(newpath,str(job)))
 
+    def rename(self,):
+        '''
+        Rename recursively
+        '''
+        pass
 
-'''def msgGenerate(job, imgcount, ppg):
-    imgcount = str(imgcount)
-    return f'Hi,\n please note that {job} is being uploaded to the server, with {imgcount} imagecount and the post-production guideline.\n let us know if there is any question, thank you very much.'
-'''
-
-#think about what function you need in this app?
-'''get jobs in gspreadsheet
-   find deadline provide selection to the user
-   open new folder
-'''
-class ImageCheck():
+class Image():
     dimension = ()
-    ppi = None
-    cprofile = None
+    ppi = 300
+    cprofile = 1
 
-    @classmethod #initial setup for the class
-    def setimagecountpec(self, dimension:tuple,ppi:int,cprofile:int):
+    def __init__(self,imagepath:str):
+        '''Set up Image location'''
+        self.imagepath = imagepath
+    
+    def setImageSpec(self, dimension:tuple,ppi:int = 300,cprofile:int=1) -> list:#initial setup for the class
+        '''
+        Set up Image Spec
+
+        Parameters:
+        dimension (tuple): Width x Height of the image.
+        ppi (int): ppi of the image. Default is 300.
+        cprofile (int): Color Profile of the image, 1 is sRGB. Default is 1.
+
+        '''
         if isinstance(dimension,tuple):
             self.dimension = dimension
         else:
             raise TypeError('The value type of dimension should be tuple')
         self.ppi = ppi
         self.cprofile = cprofile
+        return [self.dimension,self.ppi,self.cprofile]
 
-    @classmethod
+
     def checkSpec(self,dimension,ppi,cprofile):#0xA001 is the keyword for colorprofile, if (0xA001) == 1 or exif.get(0x0001) == 'R98' then is RGB ref:https://exiftool.org/TagNames/EXIF.html
         returnflag = {'dimension':1, 'ppi':1, 'cprofile':1}
         if self.dimension != None and self.ppi != None and self.cprofile != None:
@@ -82,6 +92,13 @@ class ImageCheck():
             return returnflag
         else:
             raise ValueError('Missing Value of Image Spec')
+
+
+
+
+
+
+
 
 
 

@@ -28,22 +28,14 @@ while true; do
 
     		cd $target_folder
     		local PARENT="$(print $target_folder)"
-    		# set swatch base for every different device
-    		local SWATCH_BASE="$(dirname "$0")/../Resources/kipling_swatch"
+		local SWATCH_BASE="/Volumes/Studio/CLIENTS/Kipling/Post-production/Kipling Color Swatch"
 
     		# check if the last modified time of the swatch base is older than 3 days
-		if (( $(date +%Y%m%d) - $(stat -f %Sm -t %Y%m%d ${SWATCH_BASE}) > 3 )); then
-
-	    		print 'The swatch base has not been updated for more than 3 days'
-	    		osascript -e 'display alert "The swatch base has not been updated for more than 3 days" message "Find zeric for help"'
-			exit 2
-
-    		fi
-		
-    		touch swatch_search.txt
-    		local SWATCH_SEARCH="$PARENT/swatch_search.txt"
-    		mkdir new_swatch
-    		local NEW_SWATCH="$PARENT/new_swatch"
+		# if (( $(date +%Y%m%d) - $(stat -f %Sm -t %Y%m%d ${SWATCH_BASE}) > 3 )); then
+	    		# print 'The swatch base has not been updated for more than 3 days'
+	    		# osascript -e 'display alert "The swatch base has not been updated for more than 3 days" message "Find zeric for help"'
+			# exit 2
+    		# fi
     		
     		if [[ ! -d Images ]]; then
         		mkdir Images
@@ -62,45 +54,29 @@ while true; do
 		    		for dir in [^I]*/**/${GRID[i]}; do
 
 			    		ls -1 $dir | while read; do
-			    			print "OR name: ${REPLY: -3}" >> $SWATCH_SEARCH
 			        			if [[ -e $SWATCH_BASE/${REPLY: -3}.jpg ]]; then
-				        			cp $SWATCH_BASE/${REPLY: -3}.jpg ${dir}/${REPLY}/${REPLY: -3}.jpg
+				        			cp $SWATCH_BASE/${REPLY: -3}.jpg ${dir}/${REPLY}/
 							elif [[ -e $SWATCH_BASE/${REPLY: -3}.tif ]]; then	
-				        			cp $SWATCH_BASE/${REPLY: -3}.tif ${dir}/${REPLY}/${REPLY: -3}.tif
+				        			cp $SWATCH_BASE/${REPLY: -3}.tif ${dir}/${REPLY}/
 			        			else
 								# duplicate the swatch into the product folder itself
-	-                                                       cp ${dir}/${REPLY}/${REPLY}_1.tif ${dir}/${REPLY}/${REPLY: -3}.tif
-	-                                                       # copy to new_swatch directory (for the end users to backup to server)
-	-                                                       cp ${dir}/${REPLY}/${REPLY}_1.tif ${NEW_SWATCH}/${REPLY: -3}.tif
-	-                                                       # another copy to swatch base to prevent duplicates of new swatch
-	-                                                       cp ${dir}/${REPLY}/${REPLY}_1.tif ${SWATCH_BASE}/${REPLY: -3}.tif
-
-								# Zeric's ver
-								# convert "${dir}/${REPLY}/${REPLY}_1.tif[0]" "${SWATCH_BASE}/${REPLY: -3}.jpg"
-								# # duplicate the swatch into the product folder itself
-								# cp ${SWATCH_BASE}/${REPLY: -3}.jpg ${dir}/${REPLY}/${REPLY: -3}.jpg
-								# # copy to new_swatch directory (for the end users to backup to server)
-				        			# cp ${SWATCH_BASE}/${REPLY: -3}.jpg ${NEW_SWATCH}/${REPLY: -3}.jpg
+	                                                	cp ${dir}/${REPLY}/${REPLY}_1.tif ${dir}/${REPLY}/${REPLY: -3}.tif
+	                                                	# back up the new swatch to the server
+	                                                        cp ${dir}/${REPLY}/${REPLY}_1.tif ${SWATCH_BASE}/${REPLY: -3}.tif
 			        			fi
-	
 			    			done
 			    		cd $dir
-			    		mv -i KPK* $MGRID
+			    		mv -n KPK* $MGRID
 			    		cd $PARENT
 		    		done
 	    		done
     		done
-			touch tmp.txt
-			cat $SWATCH_SEARCH | sort | uniq > tmp.txt
-			cat tmp.txt > $SWATCH_SEARCH
-			rm tmp.txt
 			osascript -e 'display alert "Backup the new swatches to the server" message "We will be eternally grateful"'
 			break
-
 	elif [[ ${target_folder_apple} == '' ]]; then
 		exit 2
 	else
-		osascript -e 'display alert "Man, this is not a Kipling batch" message "Please re-select"'
+		osascript -e 'display alert "Please select a Kipling batch!"'
 		continue
 	fi
 done	

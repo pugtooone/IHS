@@ -1,28 +1,21 @@
 from glob import glob
-import os
+import os,re
+from pathlib import Path
 
 
 class FileManagement():
-    userpath = ''
+    
+    def __init__(self,jobtype:str):
+        self.wdir =  Path.home() / 'Batch for Vendor' #Define main folder path
+        if self.wdir.is_dir() == False:
+            os.mkdir(self.wdir)
 
-    @classmethod
-    def initialize(self,path:str):
-        """
-        Use this function before doing any things with file management
-
-        Parameters: path (str): The user-defined path
-        """
-        self.userpath = path
-        workdir = os.path.join(self.userpath,'Batch For Vendor')
-        if os.path.exists(workdir) == False:
-            os.mkdir(workdir)
-            #os.makedirs(os.path.join(workdir,'OnTheList'))
-            #os.makedirs(os.path.join(workdir,'Kipling'))#Check everytimes when creating a job is much better
-        else:
-            print('directory exist!')
+        self.jobdir = self.wdir / jobtype# create pathname as object
+        self.jobdir.mkdir()
+        
 
     
-    @classmethod #Get Image Count from user-defined path
+    #Get Image Count from user-defined path
     def getCount(self) -> int:
         """
         Run initialize() first to set path
@@ -61,7 +54,7 @@ class Image():
         '''Set up Image location'''
         self.imagepath = imagepath
     
-    def setImageSpec(self, dimension:tuple,ppi:int = 300,cprofile:int=1) -> list:#initial setup for the class
+    def setImageSpec(self, dimension:tuple,ppi:int = 300,cprofile:int=1) -> list:#0xA001 is the keyword for colorprofile, if (0xA001) == 1 or exif.get(0x0001) == 'R98' then is RGB ref:https://exiftool.org/TagNames/EXIF.html
         '''
         Set up Image Spec
 
@@ -80,7 +73,13 @@ class Image():
         return [self.dimension,self.ppi,self.cprofile]
 
 
-    def checkSpec(self,dimension,ppi,cprofile):#0xA001 is the keyword for colorprofile, if (0xA001) == 1 or exif.get(0x0001) == 'R98' then is RGB ref:https://exiftool.org/TagNames/EXIF.html
+    def checkSpec(self,dimension:tuple,ppi:int,cprofile:int):
+        '''
+        Function for checking exif content
+
+        Parameters:
+        dimension (tuple):
+        '''
         returnflag = {'dimension':1, 'ppi':1, 'cprofile':1}
         if self.dimension != None and self.ppi != None and self.cprofile != None:
             if dimension != self.dimension:

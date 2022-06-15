@@ -19,6 +19,8 @@ setopt extended_glob
 setopt ksh_glob
 setopt null_glob 
 
+local PS4=$'+%1N:[%i]:%_> '
+
 # array of correct file names
 typeset -a RL_shotname=(
 		    BagAngle BagFront BagBack BagDetail1 BagDetail2 BagInterior BagReversible BagSide

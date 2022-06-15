@@ -2,11 +2,11 @@
 # copy email template to the clipboard
 
 # version:
-# 1.0.0: first stable release with auto-fill function
+# 1.0.1: includes $job in the terminal print output
 
 # plan: 
 # 1) paste the draft directly onto the gmail
-# 2) [done] parse the job folder, analyse and auto-fill the content of the draft
+# 2) [amend] parse the job folder, analyse and auto-fill the content of the draft
 
 def ihs_email():
     import sys, os
@@ -64,10 +64,10 @@ def ihs_email():
 
     if 'Amendment' in str(jobDir):
         pyperclip.copy(amendJob)
-        print('Amendment job Email template copied to the clipboard')
+        print(f'Amendment job [ {job} ] Email template copied to the clipboard')
     else:
         pyperclip.copy(newJob)
-        print('Amendment job Email template copied to the clipboard')
+        print(f'New job [ {job} ] Email template copied to the clipboard')
 
 if __name__ == '__main__':
     ihs_email()

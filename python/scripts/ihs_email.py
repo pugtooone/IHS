@@ -2,11 +2,11 @@
 # copy email template to the clipboard
 
 # version:
-# 1.0.1: includes $job in the terminal print output
+# 1.2.0: fix 
 
 # plan: 
 # 1) paste the draft directly onto the gmail
-# 2) [amend] parse the job folder, analyse and auto-fill the content of the draft
+# 2) [done] parse the job folder, analyse and auto-fill the content of the draft
 
 def ihs_email():
     import sys, os
@@ -28,15 +28,21 @@ def ihs_email():
 
     newJobGuideList = []
 
-    if jobDir.glob('*Post-production*'):
+    def jobDirFind(pattern):
+        try:
+            next(jobDir.glob(pattern)).exists()
+        except StopIteration:
+            pass
+
+    if jobDirFind('*Post-production*'):
         newJobGuideList.append('the post-production guideline')
-    elif jobDir.glob('*Shoot Brief*'):
+    elif jobDirFind('*Shoot Brief*'):
         newJobGuideList.append('the shoot brief')
 
-    if jobDir.glob('*Retouch Note*'):
+    if jobDirFind('*Retouch Note*'):
         newJobGuideList.append('the retouch note')
 
-    if jobDir.glob('*ref*'):
+    if jobDirFind('*ref*'):
         # refNo = len(os.listdir(jobDir / 'ref'))
         newJobGuideList.append('the reference images')
 
@@ -45,22 +51,22 @@ def ihs_email():
 
     amendJobGuideList = []
 
-    if jobDir.glob('*feedback*'):
+    if jobDirFind('*feedback*'):
         amendJobGuideList.append('the feedback pdf')
 
-    if jobDir.glob('*Retouch Note*'):
+    if jobDirFind('*Retouch Note*'):
         amendJobGuideList.append('the retouch note')
 
-    if jobDir.glob('*ref*'):
+    if jobDirFind('*ref*'):
         # refNo = len(os.listdir(jobDir / 'ref'))
         amendJobGuideList.append('the reference images')
 
     amendJobGuideList[-1] = 'and ' + amendJobGuideList[-1]
     amendGuides = ', '.join(amendJobGuideList)
 
-    newJob = """Hi,\n\nPlease note that %s is being uploaded to the server, including %s images along with %s. Let me know if there is any question. Thanks!\n\n""" % (job, imgNo, newGuides)
+    newJob = f"Hi,\n\nPlease note that {job} is being uploaded to the server, including {imgNo} images along with {newGuides}. Let me know if there is any question. Thanks!\n\n"
 
-    amendJob = """Hi,\n\nPlease note that there are amendments required, which are being uploaded to the server under the folder %s, including %s images along with %s. Let me know if there is any question. Thanks!\n\n""" % (job, imgNo, amendGuides)
+    amendJob = f"Hi,\n\nPlease note that there are amendments required, which are being uploaded to the server under the folder {job}, including {imgNo} images along with {amendGuides}. Let me know if there is any question. Thanks!\n\n"
 
     if 'Amendment' in str(jobDir):
         pyperclip.copy(amendJob)

@@ -210,6 +210,8 @@ source $ZSH/oh-my-zsh.sh
   alias zfunc="cd $HOME/.zfunc/"
   alias zer="cd $HOME/.zeric/"
   alias config="cd $HOME/.config/"
+  alias pybin="$HOME/.bin/pybin/"
+  alias zbin="$HOME/.bin/zbin/"
   alias pgrep="pgrep -li"
   alias -g O="open ."
   # external commands

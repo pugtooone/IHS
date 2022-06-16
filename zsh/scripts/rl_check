@@ -47,7 +47,13 @@ if [[ -e $1 ]]; then
 
 	function rename_img(){ mv "${img}" "${img_product}_${cor_shot_name}.tif" }
 
-	function rename_comp(){ mv "${img}" "${img_product}_${img_shot}_${img_comp}.tif" }
+	function rename_comp(){ 
+		if [[ ${cor_shot_name} == "" ]]; then
+			mv "${img}" "${img_product}_${img_shot}_${img_comp}.tif" 
+		else
+			mv "${img}" "${img_product}_${cor_shot_name}_${img_comp}.tif"
+		fi
+	}
 
 	rename -d ' ' *(.)
 	local currentRL_image=($(print -l *.(tif|tiff|TIF|TIFF))) # files in current session

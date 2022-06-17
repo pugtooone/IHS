@@ -2,17 +2,18 @@
 # copy email template to the clipboard
 
 # version:
-# 1.2.0: fix 
+# 1.2.0: fix jobDirFind function
 
 # plan: 
 # 1) paste the draft directly onto the gmail
 # 2) [done] parse the job folder, analyse and auto-fill the content of the draft
 
+import sys, os
+import pyperclip
+from tkinter.filedialog import askdirectory
+from pathlib import Path
+
 def ihs_email():
-    import sys, os
-    import pyperclip
-    from tkinter.filedialog import askdirectory
-    from pathlib import Path
 
     jobDir = Path(askdirectory())
     job = jobDir.name
@@ -23,26 +24,22 @@ def ihs_email():
         # if os.listdir(imgDir)[1]
         imgNo = len(os.listdir(imgDir))
     else:
-        print('Missing: Images folder')
-        sys.exit()
+        raise Exception('Missing: job directorh')
 
     newJobGuideList = []
 
     def jobDirFind(pattern):
-        try:
-            next(jobDir.glob(pattern)).exists()
-        except StopIteration:
-            pass
+            list(jobDir.glob(pattern))
 
-    if jobDirFind('*Post-production*'):
+    if jobDirFind('*Post-production*') != []:
         newJobGuideList.append('the post-production guideline')
-    elif jobDirFind('*Shoot Brief*'):
+    elif jobDirFind('*Shoot Brief*') != []:
         newJobGuideList.append('the shoot brief')
 
-    if jobDirFind('*Retouch Note*'):
+    if jobDirFind('*Retouch Note*') != []:
         newJobGuideList.append('the retouch note')
 
-    if jobDirFind('*ref*'):
+    if jobDirFind('*ref*') != []:
         # refNo = len(os.listdir(jobDir / 'ref'))
         newJobGuideList.append('the reference images')
 
@@ -51,13 +48,13 @@ def ihs_email():
 
     amendJobGuideList = []
 
-    if jobDirFind('*feedback*'):
+    if jobDirFind('*feedback*') != []:
         amendJobGuideList.append('the feedback pdf')
 
-    if jobDirFind('*Retouch Note*'):
+    if jobDirFind('*Retouch Note*') != []:
         amendJobGuideList.append('the retouch note')
 
-    if jobDirFind('*ref*'):
+    if jobDirFind('*ref*') != []:
         # refNo = len(os.listdir(jobDir / 'ref'))
         amendJobGuideList.append('the reference images')
 
@@ -76,4 +73,8 @@ def ihs_email():
         print(f'New job [ {job} ] Email template copied to the clipboard')
 
 if __name__ == '__main__':
-    ihs_email()
+    try:
+        ihs_email()
+    except Exception:
+        print('Error: ' + str(Exception))
+        sys.exit()

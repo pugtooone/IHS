@@ -2,7 +2,7 @@
 # copy email template to the clipboard
 
 # version:
-# 1.3.0: fix jobDirFind func
+# 1.3.1: fix IndexError for empty GuideList
 
 # plan: 
 # 1) paste the draft directly onto the gmail
@@ -12,6 +12,8 @@ import sys, os
 import pyperclip
 from tkinter.filedialog import askdirectory
 from pathlib import Path
+
+# logging.basicConfig(filename='/tmp/ihs_email.log', level=logging.DEBUG, format=' %(asctime)s - %(levelname)s - %(message)s')
 
 def ihs_email():
 
@@ -47,7 +49,8 @@ def ihs_email():
         # refNo = len(os.listdir(jobDir / 'ref'))
         newJobGuideList.append('the reference images')
 
-    newJobGuideList[-1] = 'and ' + newJobGuideList[-1]
+    if len(newJobGuideList) > 1:
+        newJobGuideList[-1] = 'and ' + newJobGuideList[-1]
     newGuides = ', '.join(newJobGuideList)
 
     amendJobGuideList = []
@@ -62,7 +65,8 @@ def ihs_email():
         # refNo = len(os.listdir(jobDir / 'ref'))
         amendJobGuideList.append('the reference images')
 
-    amendJobGuideList[-1] = 'and ' + amendJobGuideList[-1]
+    if len(amendJobGuideList) > 1:
+        amendJobGuideList[-1] = 'and ' + amendJobGuideList[-1]
     amendGuides = ', '.join(amendJobGuideList)
 
     newJob = f"Hi,\n\nPlease note that {job} is being uploaded to the server, including {imgNo} images along with {newGuides}. Let me know if there is any question. Thanks!\n\n"

@@ -165,7 +165,7 @@ source $ZSH/oh-my-zsh.sh
   autoload -U charsort
   # autoload -U jpgdrag
   autoload -U l1
-  # autoload -U newimgver
+  autoload -U newimgver
   autoload -U qcstart
   autoload -U retest
 

@@ -10,10 +10,15 @@
 
 import sys, os
 import pyperclip
-from tkinter.filedialog import askdirectory
 from pathlib import Path
+from tkinter.filedialog import askdirectory
 
-# logging.basicConfig(filename='/tmp/ihs_email.log', level=logging.DEBUG, format=' %(asctime)s - %(levelname)s - %(message)s')
+"""
+# modules for gmail
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from getpass import getpass
+"""
 
 def ihs_email():
 
@@ -79,6 +84,24 @@ def ihs_email():
     else:
         pyperclip.copy(newJob)
         print(f'New job [ {job} ] Email template copied to the clipboard')
+
+    # prompt for password
+    """
+    ac = "zeric.chan@ihearstudios.com"
+    pw = getpass("Enter Password: ")
+
+    try:
+        driver = webdriver.Chrome()
+        driver.get('https://mail.google.com/mail/u/0/#inbox')
+
+        acInput = driver.find_element(By.ID, 'identifierId')
+        acInput.send_keys(ac)
+
+        nextButton = driver.find_element(By.ID, 'identifierNext')
+        nextButton.click()
+
+        pwInput = driver.find
+    """
 
 if __name__ == '__main__':
         ihs_email()

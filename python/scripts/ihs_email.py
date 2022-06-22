@@ -2,23 +2,21 @@
 # copy email template to the clipboard
 
 # version:
-# 1.3.1: fix IndexError for empty GuideList
+# 2.0.0: autofill gmail new message
 
 # plan: 
 # 1) paste the draft directly onto the gmail
 # 2) [done] parse the job folder, analyse and auto-fill the content of the draft
 
-import sys, os
-import pyperclip
+import sys, os, time
 from pathlib import Path
 from tkinter.filedialog import askdirectory
 
-"""
 # modules for gmail
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from getpass import getpass
-"""
+from selenium.webdriver.common.keys import Keys
+import pyinputplus as pyin
 
 def ihs_email():
 
@@ -79,29 +77,46 @@ def ihs_email():
     amendJob = f"Hi,\n\nPlease note that there are amendments required, which are being uploaded to the server under the folder {job}, including {imgNo} images along with {amendGuides}. Let me know if there is any question. Thanks!\n\n"
 
     if 'Amendment' in str(jobDir):
-        pyperclip.copy(amendJob)
-        print(f'Amendment job [ {job} ] Email template copied to the clipboard')
+        emailMSG = amendJob
     else:
-        pyperclip.copy(newJob)
-        print(f'New job [ {job} ] Email template copied to the clipboard')
+        emailMSG = newJob
 
     # prompt for password
-    """
-    ac = "zeric.chan@ihearstudios.com"
-    pw = getpass("Enter Password: ")
+    ac = 'zeric.chan@iheartstudios.com'
+    pw = pyin.inputPassword('Enter Your Password: ')
 
     try:
         driver = webdriver.Chrome()
         driver.get('https://mail.google.com/mail/u/0/#inbox')
 
-        acInput = driver.find_element(By.ID, 'identifierId')
+        acInput = driver.find_element(By.XPATH, '//*[@id ="identifierId"]')
         acInput.send_keys(ac)
+        acInput.send_keys(Keys.RETURN)
 
-        nextButton = driver.find_element(By.ID, 'identifierNext')
-        nextButton.click()
+        time.sleep(1)
 
-        pwInput = driver.find
-    """
+        pwInput = driver.find_element(By.XPATH, '//*[@id="password"]/div[1]/div/div[1]/input')
+        pwInput.send_keys(pw)
+        pwInput.send_keys(Keys.RETURN)
+
+        print('Login Success!')
+
+        time.sleep(1)
+
+        composeButt = driver.find_element(By.XPATH,'/html/body/div[7]/div[3]/div/div[2]/div[1]/div[1]/div[1]/div/div')
+        composeButt.click()
+
+        time.sleep(1)
+
+        emailSubInput = driver.find_element(By.XPATH, '//*[@id=":q3"]')
+        emailSubInput.send_keys(job)
+
+        time.sleep(1)
+
+        emailMSGInput = driver.find_element(By.XPATH, '//*[@id=":r8"]')
+        emailMSGInput.send_keys(emailMSG)
+    except:
+        print('autoEmail Failed!')
 
 if __name__ == '__main__':
         ihs_email()

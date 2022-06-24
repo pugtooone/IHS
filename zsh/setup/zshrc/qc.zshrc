@@ -227,6 +227,7 @@ source $ZSH/oh-my-zsh.sh
   alias ihse="ihs_email.py"
   alias imgdrag="mv -i **/*(.) ." 
   alias renamePNG="rename -d ' copy' $HOME/Desktop/PNG/*"
+  alias rl_check="time rl_check"
   # misc
   alias showargs="printf '>>>%s<<<\n'"
 

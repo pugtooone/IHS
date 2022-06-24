@@ -14,12 +14,6 @@ import pyperclip
 import tkinter as tk
 from tkinter.filedialog import askdirectory
 
-# modules for gmail
-# from selenium import webdriver
-# from selenium.webdriver.common.by import By
-# from selenium.webdriver.common.keys import Keys
-
-
 def ihs_email():
 
     jobDir = Path(askdirectory())
@@ -80,47 +74,11 @@ def ihs_email():
 
     if 'Amendment' in str(jobDir):
         pyperclip.copy(amendJob)
+        print(f'Amendment job [ {job} ] Email template copied to the clipboard')
     else:
         pyperclip.copy(newJob)
+        print(f'New job [ {job} ] Email template copied to the clipboard')
 
-"""autofill gmail
-    # prompt for password
-    ac = 'zeric.chan@iheartstudios.com'
-    pw = pyin.inputPassword('Enter Your Password: ')
-
-    try:
-        driver = webdriver.Chrome()
-        driver.get('https://mail.google.com/mail/u/0/#inbox')
-
-        acInput = driver.find_element(By.XPATH, '//*[@id ="identifierId"]')
-        acInput.send_keys(ac)
-        acInput.send_keys(Keys.RETURN)
-
-        time.sleep(1)
-
-        pwInput = driver.find_element(By.XPATH, '//*[@id="password"]/div[1]/div/div[1]/input')
-        pwInput.send_keys(pw)
-        pwInput.send_keys(Keys.RETURN)
-
-        print('Login Success!')
-
-        time.sleep(1)
-
-        composeButt = driver.find_element(By.XPATH,'/html/body/div[7]/div[3]/div/div[2]/div[1]/div[1]/div[1]/div/div')
-        composeButt.click()
-
-        time.sleep(1)
-
-        emailSubInput = driver.find_element(By.XPATH, '//*[@id=":q3"]')
-        emailSubInput.send_keys(job)
-
-        time.sleep(1)
-
-        emailMSGInput = driver.find_element(By.XPATH, '//*[@id=":r8"]')
-        emailMSGInput.send_keys(emailMSG)
-    except:
-        print('autoEmail Failed!')
-"""
 def tkWindow(script):
     root = tk.Tk()
     root.geometry('300x200+100+100')
@@ -133,4 +91,4 @@ def tkWindow(script):
     root.mainloop()
 
 if __name__ == '__main__':
-    tkWindow(ihs_email)
+    ihs_email()

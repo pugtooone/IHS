@@ -1,5 +1,5 @@
 #! python3
-# copy email template to the clipboard
+# copy email template
 
 # version:
 # 2.0.0: autofill gmail new message
@@ -8,15 +8,17 @@
 # 1) paste the draft directly onto the gmail
 # 2) [done] parse the job folder, analyse and auto-fill the content of the draft
 
-import sys, os, time
+import sys, os
 from pathlib import Path
+import pyperclip
+import tkinter as tk
 from tkinter.filedialog import askdirectory
 
 # modules for gmail
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-import pyinputplus as pyin
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By
+# from selenium.webdriver.common.keys import Keys
+
 
 def ihs_email():
 
@@ -77,10 +79,11 @@ def ihs_email():
     amendJob = f"Hi,\n\nPlease note that there are amendments required, which are being uploaded to the server under the folder {job}, including {imgNo} images along with {amendGuides}. Let me know if there is any question. Thanks!\n\n"
 
     if 'Amendment' in str(jobDir):
-        emailMSG = amendJob
+        pyperclip.copy(amendJob)
     else:
-        emailMSG = newJob
+        pyperclip.copy(newJob)
 
+"""autofill gmail
     # prompt for password
     ac = 'zeric.chan@iheartstudios.com'
     pw = pyin.inputPassword('Enter Your Password: ')
@@ -117,6 +120,17 @@ def ihs_email():
         emailMSGInput.send_keys(emailMSG)
     except:
         print('autoEmail Failed!')
+"""
+def tkWindow(script):
+    root = tk.Tk()
+    root.geometry('300x200+100+100')
+    root.attributes('-topmost', True)
+
+    dirButt = tk.Button(root, text='Select Job Folder', width=15, height=5, command=script)
+    dirButt.bind('<Button>', root.quit())
+    dirButt.pack()
+
+    root.mainloop()
 
 if __name__ == '__main__':
-        ihs_email()
+    tkWindow(ihs_email)

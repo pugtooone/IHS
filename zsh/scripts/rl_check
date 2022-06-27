@@ -10,6 +10,9 @@
 # 2) [done] check filename with 1 character difference and rename them
 # 3) [done] consider insert
 # 4) [working] better report, might need sed
+# 
+# issues
+# 1) renameing images with 1 missing character, only the first alphabet will be removed if there are more than 1 of the same alphabet
 
 exec > /tmp/RL_check.log 2>&1
 
@@ -26,7 +29,7 @@ typeset -a RL_shotname=(
 		    BagAngle BagFront BagBack BagDetail1 BagDetail2 BagInterior BagReversible BagSide
 		    ShoeAngle ShoeBack ShoeOverhead ShoeProfile ShoeDetail1 ShoeDetail2
 		    TABLETOP TT-DETAIL1 TT-DETAIL2 TT-DETAIL3
-		    LAYDOWN LAYDOWNBACK SL-DETAIL1 SL-DETAIL2
+		    LAYDOWN LAYDOWNBACK SL-DETAIL1 SL-DETAIL2 FABRICDETAIL
 		    BUST BUSTBACK
 		   )
 
@@ -199,6 +202,7 @@ if [[ -e $1 ]]; then
 				for (( i=1; i<(( ${#cor_shot_name} + 2 )); i++ )); do 
 					# rename image with missing 1 character
 					# remove 1 character from cor_shot_name and compare with img_shot
+					# problem: only the first alphabet will remove if there are two identical alphabets
 					if [[ ${(L)cor_shot_name/${cor_shot_name[$i]}/} == ${(L)img_shot} && ${img_comp} == "" ]]; then
 						rename_img
 						report_append_rename

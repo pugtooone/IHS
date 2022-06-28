@@ -53,7 +53,7 @@
   alias dv="dirs -v"
 
 # Parameters
-  PS1=$'%S[%!]%s %n %S[%~]%s %# '
+  PS1=$'%S[%!]%s %n %S[%1~]%s %# '
   PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
   typeset -U CDPATH="$CDPATH:$HOME/Desktop/(Production|PRODUCTION)"
   typeset -U FPATH="$FPATH:$HOME/.zfunc"

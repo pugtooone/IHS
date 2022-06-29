@@ -236,7 +236,6 @@ source $ZSH/oh-my-zsh.sh
   neofetch
   # cowsay -f dragon 'Roar!! I don''t want OT!!'
   # File management
-    mv -i $HOME/Desktop/Screenshot* "$HOME/Desktop/DOCUMENTS/Screenshots"
     mv -i $HOME/Desktop/RL/Sending/sent* $HOME/Desktop/RL/Sent
     rm $HOME/Desktop/**/Thumbs.db
 

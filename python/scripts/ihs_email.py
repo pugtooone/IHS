@@ -8,25 +8,32 @@
 # 1) paste the draft directly onto the gmail
 # 2) [done] parse the job folder, analyse and auto-fill the content of the draft
 
-import sys, os
+import os
 from pathlib import Path
 import pyperclip
 import tkinter as tk
 from tkinter.filedialog import askdirectory
 
-def ihs_email():
+class jobDir:
+    def __init__(self, path):
+        self.path = path
 
-    jobDir = Path(askdirectory())
-    job = jobDir.name
-    imgDir = jobDir / 'Images'
+    def get_job_name(self):
+        return self.path.name
 
-    if imgDir.is_dir(): #check if Images folder exists
-        # check if the Images folder contains product subfolders
-        # if os.listdir(imgDir)[1]
-        imgNo = len(os.listdir(imgDir))
-    else:
-        print('Missing: Images folder')
-        sys.exit()
+    def get_img_num(self):
+        try:
+            imgDir = self.path / 'Images'
+            return len(os.listdir(imgDir))
+        except:
+            print('Error: Images folder missing')
+
+def main():
+
+    path = Path(askdirectory())
+    currentJobDir = jobDir(path)
+    job = currentJobDir.get_job_name()
+    imgNo = currentJobDir.get_img_num()
 
     newJobGuideList = []
 
@@ -91,4 +98,4 @@ def tkWindow(script):
     root.mainloop()
 
 if __name__ == '__main__':
-    ihs_email()
+    main()

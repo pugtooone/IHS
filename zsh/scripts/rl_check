@@ -1,8 +1,8 @@
 #! /bin/zsh
 
 # script for checking Ralph Lauren images
-# version: 1.4.0
-# introduce REPORT parameters and related functions for better report format
+# version: 1.4.1
+# introduce reset_RL_shotname to reset $RL_shotname
 # created by Zeric Chan
 #
 # plan
@@ -13,6 +13,7 @@
 # 
 # issues
 # 1) renameing images with 1 missing character, only the first alphabet will be removed if there are more than 1 of the same alphabet
+# 2) reset_RL_shotname does not work
 
 exec > /tmp/RL_check.log 2>&1
 
@@ -58,6 +59,15 @@ if [[ -e $1 ]]; then
 		fi
 	}
 
+	function reset_RL_shotname(){ typeset -a RL_shotname=( 
+							     BagAngle BagFront BagBack BagDetail1 BagDetail2 BagInterior BagReversible BagSide
+							     ShoeAngle ShoeBack ShoeOverhead ShoeProfile ShoeDetail1 ShoeDetail2
+							     TABLETOP TT-DETAIL1 TT-DETAIL2 TT-DETAIL3
+							     LAYDOWN LAYDOWNBACK SL-DETAIL1 SL-DETAIL2 FABRICDETAIL
+							     BUST BUSTBACK
+							     )
+						     }
+
 	#====================================================================================================
 	# }}}
 	#====================================================================================================
@@ -82,6 +92,7 @@ if [[ -e $1 ]]; then
 #====================================================================================================
 
 	for img in $currentRL_image; do
+
 		if [[ ${img} == *.(tiff|TIF|TIFF) ]]; then
 			mv "${img}" "${img%.*}.tif"
 			report_append_rename
@@ -140,11 +151,12 @@ if [[ -e $1 ]]; then
 
 		# modify RL_shotname array to speedup loops
 		if [[ ${(L)img_shot:0:3} == 'bag' ]]; then
-			RL_shotname=($(print -l $RL_shotname | grep -i bag))
+			typeset -a RL_shotname=($(print -l $RL_shotname | grep -i bag))
 		elif [[ ${(L)img_shot:0:4} == 'shoe' ]]; then
-			RL_shotname=($(print -l $RL_shotname | grep -i shoe))
+			typeset -a RL_shotname=($(print -l $RL_shotname | grep -i shoe))
 		elif [[ ${(L)img_shot:0:5} == 'table' || ${(L)img_shot:0:2} == 'tt' ]]; then
-			RL_shotname=($(print -l $RL_shotname | grep '^T'))
+			print -l $RL_shotname | grep '^T'
+			typeset -a RL_shotname=($(print -l $RL_shotname))
 		fi
 
 		# rename comp
@@ -228,6 +240,7 @@ if [[ -e $1 ]]; then
 			report_append_manual
 			mv ${img} $RL_RENAME_DIR
 		fi
+		reset_RL_shotname
 	done
 	
 #====================================================================================================

@@ -28,6 +28,12 @@ class jobDir:
         except:
             print('Error: Images folder missing')
 
+    def jobDirFind(self, pattern):
+        try:
+            return next(self.path.glob(pattern))
+        except StopIteration:
+            return None
+
 def main():
 
     path = Path(askdirectory())
@@ -37,21 +43,15 @@ def main():
 
     newJobGuideList = []
 
-    def jobDirFind(pattern):
-        try:
-            return next(jobDir.glob(pattern))
-        except StopIteration:
-            return None
-
-    if jobDirFind('*Post-production*') != None:
+    if currentJobDir.jobDirFind('*Post-production*') != None:
         newJobGuideList.append('the post-production guideline')
-    elif jobDirFind('*Shoot Brief*') != None:
+    elif currentJobDir.jobDirFind('*Shoot Brief*') != None:
         newJobGuideList.append('the shoot brief')
 
-    if jobDirFind('*Retouch Note*') != None:
+    if currentJobDir.jobDirFind('*Retouch Note*') != None:
         newJobGuideList.append('the retouch note')
 
-    if jobDirFind('*ref*') != None:
+    if currentJobDir.jobDirFind('*ref*') != None:
         # refNo = len(os.listdir(jobDir / 'ref'))
         newJobGuideList.append('the reference images')
 
@@ -61,13 +61,13 @@ def main():
 
     amendJobGuideList = []
 
-    if jobDirFind('*feedback*') != None:
+    if currentJobDir.jobDirFind('*feedback*') != None:
         amendJobGuideList.append('the feedback pdf')
 
-    if jobDirFind('*Retouch Note*') != None:
+    if currentJobDir.jobDirFind('*Retouch Note*') != None:
         amendJobGuideList.append('the retouch note')
 
-    if jobDirFind('*ref*') != None:
+    if currentJobDir.jobDirFind('*ref*') != None:
         # refNo = len(os.listdir(jobDir / 'ref'))
         amendJobGuideList.append('the reference images')
 

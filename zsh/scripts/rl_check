@@ -1,19 +1,19 @@
 #! /bin/zsh
 
 # script for checking Ralph Lauren images
-# version: 1.4.1
-# introduce reset_RL_shotname to reset $RL_shotname
+# version: 1.4.2
+# relocate typeset RL_shotname at the beginning of every loop
 # created by Zeric Chan
 #
 # plan
 # 1) [done] check image spec
 # 2) [done] check filename with 1 character difference and rename them
 # 3) [done] consider insert
-# 4) [working] better report, might need sed
+# 4) [done] better report, might need sed
 # 
 # issues
 # 1) renameing images with 1 missing character, only the first alphabet will be removed if there are more than 1 of the same alphabet
-# 2) reset_RL_shotname does not work
+# 2) append number if COMP does not have one
 
 exec > /tmp/RL_check.log 2>&1
 
@@ -25,22 +25,14 @@ setopt null_glob
 
 local PS4=$'+%1N:[%i]:%_> '
 
-# array of correct file names
-typeset -a RL_shotname=(
-		    BagAngle BagFront BagBack BagDetail1 BagDetail2 BagInterior BagReversible BagSide
-		    ShoeAngle ShoeBack ShoeOverhead ShoeProfile ShoeDetail1 ShoeDetail2
-		    TABLETOP TT-DETAIL1 TT-DETAIL2 TT-DETAIL3
-		    LAYDOWN LAYDOWNBACK SL-DETAIL1 SL-DETAIL2 FABRICDETAIL
-		    BUST BUSTBACK
-		   )
 
 if [[ -e $1 ]]; then
 	local PARENT=$(pwd)
 	cd $1
 
-	#====================================================================================================
-	# functions {{{
-	#====================================================================================================
+#====================================================================================================
+# functions {{{
+#====================================================================================================
 
 	# parameter character sort function for wrong swap filename
 	function charsort(){ print $(print ${(L)1} | grep -o . | sort | tr -d '\n') }
@@ -59,18 +51,9 @@ if [[ -e $1 ]]; then
 		fi
 	}
 
-	function reset_RL_shotname(){ typeset -a RL_shotname=( 
-							     BagAngle BagFront BagBack BagDetail1 BagDetail2 BagInterior BagReversible BagSide
-							     ShoeAngle ShoeBack ShoeOverhead ShoeProfile ShoeDetail1 ShoeDetail2
-							     TABLETOP TT-DETAIL1 TT-DETAIL2 TT-DETAIL3
-							     LAYDOWN LAYDOWNBACK SL-DETAIL1 SL-DETAIL2 FABRICDETAIL
-							     BUST BUSTBACK
-							     )
-						     }
-
-	#====================================================================================================
-	# }}}
-	#====================================================================================================
+#====================================================================================================
+# }}}
+#====================================================================================================
 
 	rename -d ' ' *(.) # remove white space in filenames
 	local currentRL_image=($(print -l *.(tif|tiff|TIF|TIFF))) # files in current session
@@ -86,12 +69,21 @@ if [[ -e $1 ]]; then
 	local REPORT_RENAME="images renamed:\n\n"
 	local REPORT_MANUAL="manual rename required: ${img}\n\n"
 
-
+# main loop
 #====================================================================================================
 # convert {{{
 #====================================================================================================
 
 	for img in $currentRL_image; do
+
+		# array of correct file names
+		typeset -a RL_shotname=(
+				    BagAngle BagFront BagBack BagDetail1 BagDetail2 BagInterior BagReversible BagSide BagFrontOpen
+				    ShoeAngle ShoeBack ShoeOverhead ShoeProfile ShoeDetail1 ShoeDetail2
+				    TABLETOP TT-DETAIL1 TT-DETAIL2 TT-DETAIL3
+				    LAYDOWN LAYDOWNBACK SL-DETAIL1 SL-DETAIL2 FABRICDETAIL
+				    BUST BUSTBACK
+				   )
 
 		if [[ ${img} == *.(tiff|TIF|TIFF) ]]; then
 			mv "${img}" "${img%.*}.tif"
@@ -240,7 +232,6 @@ if [[ -e $1 ]]; then
 			report_append_manual
 			mv ${img} $RL_RENAME_DIR
 		fi
-		reset_RL_shotname
 	done
 	
 #====================================================================================================

@@ -9,8 +9,8 @@ def main():
     file = Path(askopenfilename())
     pdf = fitz.open(file)
 
-    Path.mkdir(Path.cwd() / 'Images')
-    os.chdir(Path.cwd() / 'Images')
+    Path.mkdir(file.parent / 'Images')
+    os.chdir(file.parent / 'Images')
 
     for pageNo in range(len(pdf)):
         page = pdf[pageNo]

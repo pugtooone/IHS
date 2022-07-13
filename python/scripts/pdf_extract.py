@@ -1,11 +1,12 @@
 #! python3
+# 1.0.2 introduce text_extract()
 
 from pathlib import Path
 from tkinter.filedialog import askopenfilename
 from PIL import Image
-import fitz, io, os
+import fitz, io, os, pyperclip
 
-def main():
+def img_extract():
     file = Path(askopenfilename())
     pdf = fitz.open(file)
 
@@ -28,6 +29,30 @@ def main():
             # writing the image and save with the text found (might cause error)
             image = Image.open(io.BytesIO(imgBytes))
             image.save(open(f"{imgNameList[imgIndex]}", "wb"))
+
+    print('Images copied')
+
+def text_extract():
+    file = Path(askopenfilename())
+    pdf = fitz.open(file)
+
+    text = ""
+
+    for pageNo in range(len(pdf)):
+        page = pdf[pageNo]
+
+        text += page.get_text()
+
+    pyperclip.copy(text)
+    print('Text copied')
+
+def main():
+    print('Extract [Text] or [Images] from PDF?')
+    answer = input()
+    if answer == 'Images':
+        img_extract()
+    elif answer == 'Text':
+        text_extract()
 
 if __name__ == "__main__":
     main()

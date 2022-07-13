@@ -2,13 +2,13 @@
 # copy email template
 
 # version:
-# 2.0.0: autofill gmail new message
+# 1.0.1: introduce sys.exit() to bail out if no target folder selected
 
 # plan: 
 # 1) paste the draft directly onto the gmail
 # 2) [done] parse the job folder, analyse and auto-fill the content of the draft
 
-import os
+import os, sys
 from pathlib import Path
 import pyperclip
 import tkinter as tk
@@ -27,6 +27,7 @@ class jobDir:
             return len(os.listdir(imgDir))
         except:
             print('Error: Images folder missing')
+            sys.exit()
 
     def jobDirFind(self, pattern):
         try:

@@ -1,15 +1,15 @@
 #! /bin/zsh
 
 # script for checking Ralph Lauren images
-# version: 1.4.2
-# relocate typeset RL_shotname at the beginning of every loop
+# version: 1.4.3
+# reset $cor_shot_name at the beginning of main loop
 # created by Zeric Chan
 #
 # plan
 # 1) [done] check image spec
 # 2) [done] check filename with 1 character difference and rename them
 # 3) [done] consider insert
-# 4) [done] better report, might need sed
+# 4) [working] better report, include info about oldname + newname
 # 
 # issues
 # 1) renameing images with 1 missing character, only the first alphabet will be removed if there are more than 1 of the same alphabet
@@ -76,7 +76,7 @@ if [[ -e $1 ]]; then
 
 	for img in $currentRL_image; do
 
-		# array of correct file names
+		# reset array of correct file names
 		typeset -a RL_shotname=(
 				    BagAngle BagFront BagBack BagDetail1 BagDetail2 BagInterior BagReversible BagSide BagFrontOpen
 				    ShoeAngle ShoeBack ShoeOverhead ShoeProfile ShoeDetail1 ShoeDetail2
@@ -84,6 +84,9 @@ if [[ -e $1 ]]; then
 				    LAYDOWN LAYDOWNBACK SL-DETAIL1 SL-DETAIL2 FABRICDETAIL
 				    BUST BUSTBACK
 				   )
+
+		# reset $cor_shot_name
+		local cor_shot_name=""
 
 		if [[ ${img} == *.(tiff|TIF|TIFF) ]]; then
 			mv "${img}" "${img%.*}.tif"

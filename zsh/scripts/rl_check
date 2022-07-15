@@ -1,8 +1,8 @@
 #! /bin/zsh
 
 # script for checking Ralph Lauren images
-# version: 1.4.3
-# reset $cor_shot_name at the beginning of main loop
+# version: 1.4.4
+# include session name in the report
 # created by Zeric Chan
 #
 # plan
@@ -62,7 +62,7 @@ if [[ -e $1 ]]; then
 	mkdir rename
 	local RL_RENAME_DIR=rename/
 
-	print "RL_check Report\n\nno. of products: ${#currentRL_product}\nno. of images: ${#currentRL_image}\n\n" > rename/report
+	print "RL_check Report\n\nsession: $1\n\nno. of products: ${#currentRL_product}\nno. of images: ${#currentRL_image}\n\n" > rename/report
 	local RL_report=rename/report
 
 	local REPORT_CONVERT="images converted:\n\n"

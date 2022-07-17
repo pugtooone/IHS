@@ -1,11 +1,11 @@
 #! python3
-# mouse click automation with user-defined numbers of mouse coordinates & clicks
-# 1.0.0 1st stable release
+# introduce pyinputplus for inter input validation
+# 1.0.1 1st stable release
 import pyautogui, time
+import pyinputplus as pyin
 
 def main():
-    numMouseCoor = input('Number of mouse target: ')
-    numMouseCoor = int(numMouseCoor)
+    numMouseCoor = pyin.inputInt('Number of mouse target: ')
 
     mouseCoorList = []
 
@@ -24,12 +24,12 @@ def main():
         print(f'Mouse coordinates saved: {mouseCoor}\n')
         mouseCoorList.append(mouseCoor)
 
-    clickNum = input('Total Clicks: ')
+    clickNum = pyin.inputInt('Total Clicks: ')
 
     # click to activate the window
     pyautogui.click(mouseCoorList[0])
 
-    for clickclick in range(int(clickNum)):
+    for clickclick in range(clickNum):
         for i in range(numMouseCoor):
             pyautogui.click(mouseCoorList[i])
             time.sleep(0.1)

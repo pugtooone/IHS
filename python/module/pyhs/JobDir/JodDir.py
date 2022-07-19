@@ -9,17 +9,11 @@ class JobDir:
         """
         self.jobDir = directory
         self.jobName = directory.name
+        self.imgList = os.listdir(self.jobDir / 'Images')
 
     def get_doc(self):
 
     def get_img_no(self):
-        len(ImgList.imgList)
+        return len(self.imgList)
 
-class ImgList:
-    def __init__(self, directory):
-        """
-        initialize ImgList
-        Parameter: Path obj of JobDir
-        """
-        self.imgDir = directory / 'Images'
-        self.imgList = os.listdir(self.imgDir)
+    def check_img_spec(self):

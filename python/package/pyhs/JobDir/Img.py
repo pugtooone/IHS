@@ -1,6 +1,6 @@
 import os
 
-class ImgList:
+class Img:
     def __init__(self, directory):
         """
         initialize ImgList obj

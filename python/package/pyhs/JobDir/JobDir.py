@@ -1,5 +1,5 @@
-from pathlib import Path
-import os, ImgList, DocList
+from Img import Img
+from Doc import Doc
 
 class JobDir:
     def __init__(self, directory):
@@ -9,13 +9,16 @@ class JobDir:
         """
         self.jobDir = directory
         self.jobName = directory.name
-        self.imgList = os.listdir(self.jobDir / 'Images')
+        self.imgObj = Img(self.jobDir)
+        self.docObj = Doc(self.jobDir)
 
     def get_doc(self):
-        return DocList.docList
+        self.docList = self.docObj.get_doc_list()
+        return self.docList
 
     def get_img_no(self):
-        return ImgList.imgNum
+        self.imgNum = self.imgObj.get_img_num()
+        return self.imgNum
 
     def check_img_spec(self):
         pass

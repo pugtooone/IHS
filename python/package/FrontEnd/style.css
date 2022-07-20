@@ -1,0 +1,45 @@
+body{
+    margin:0;
+    padding:0;
+    background-color: gray;
+}
+
+a{
+    text-decoration: none;
+}
+
+ul{
+    list-style-type: none;
+}
+
+.Sidebar{
+    position:absolute;
+    height:100%;
+    width:3%;
+    top:0;
+    left:0;
+    margin-right:45px;
+    background-color: #0f0f0f;
+}
+
+.Main{
+    position:absolute;
+    width:97%;
+    height:100%;
+    left:3%;
+}
+.Dashboard{
+    height:100%;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+    
+}
+
+.Buttons{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

@@ -12,6 +12,16 @@ class Doc:
     # globbing pattern for counting the documents, which is universal to all instances: {'pattern to search for': 'document'}
     docPattern = {'*Post-production*': 'post-production guideline', '*Shoot Brief*': 'shoot brief', '*Retouch Note*': 'retouch note', '*Swatch*': 'swatches', '*Overlay*': 'overlay', '*Feedback*': 'feedback.pdf'}
 
+    def get_doc_items(self):
+        """
+        return a string of document items for email usage
+        """
+        for i in range(len(self.docList) - 1):
+            self.docList[i] = 'the ' + self.docList[i]
+        self.docList[-1] = 'and the ' + self.docList[-1]
+        self.docItems = ', '.join(self.docList)
+        return self.docItems
+
     def get_doc_list(self):
         """
         create a dictionary that store the instances of documents
@@ -29,6 +39,7 @@ class Doc:
         could change to re for case-insensitive matching
         """
         try:
-            return next(self.docDir.glob(pattern))
+            if next(self.docDir.glob(pattern)):
+                return True
         except StopIteration:
-            return None
+            return False

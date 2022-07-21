@@ -7,7 +7,7 @@ class Doc:
         Parameter: Path obj of JobDir
         """
         self.docDir = directory / 'Documents'
-        self.docListDir = os.listdir(self.docDir)
+        self.docList = os.listdir(self.docDir)
 
     # globbing pattern for counting the documents, which is universal to all instances: {'pattern to search for': 'document'}
     docPattern = {'*Post-production*': 'post-production guideline', '*Shoot Brief*': 'shoot brief', '*Retouch Note*': 'retouch note', '*Swatch*': 'swatches', '*Overlay*': 'overlay', '*Feedback*': 'feedback.pdf'}
@@ -16,22 +16,19 @@ class Doc:
         """
         return a string of document items for email usage
         """
-        for i in range(len(self.docList) - 1):
-            self.docList[i] = 'the ' + self.docList[i]
-        self.docList[-1] = 'and the ' + self.docList[-1]
-        self.docItems = ', '.join(self.docList)
-        return self.docItems
-
-    def get_doc_list(self):
-        """
-        create a dictionary that store the instances of documents
-        """
-        self.docList = []
-        # append the documents(values) to the docList(list), if pattern(keys) present
+        self.docCountList = []
+        # append the documents(values) to the docCountList(list), if pattern(keys) present
         for pattern, doc in self.docPattern.items():
             if self._doc_glob(pattern):
-                self.docList.append(doc)
-        return self.docList
+                self.docCountList.append(doc)
+
+        for i in range(len(self.docCountList) - 1):
+            self.docCountList[i] = 'the ' + self.docCountList[i]
+        self.docCountList[-1] = 'and the ' + self.docCountList[-1]
+
+        self.docItems = ', '.join(self.docCountList)
+
+        return self.docItems
 
     def _doc_glob(self, pattern):
         """

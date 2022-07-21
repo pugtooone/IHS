@@ -1,3 +1,4 @@
+from PIL import Image
 import os
 
 class Img:
@@ -10,8 +11,7 @@ class Img:
         self.imgList = os.listdir(self.imgDir)
         self.imgNum = len(self.imgList)
 
-    def get_img_list(self):
-        return self.imgList
-
-    def get_img_num(self):
-        return self.imgNum
+    def check_img_spec(self):
+        for img in self.imgList:
+            imgPath = self.imgDir / img
+            imgObj = Image.open(imgPath)

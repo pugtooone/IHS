@@ -7,7 +7,10 @@ class Doc:
         Parameter: Path obj of JobDir
         """
         self.docDir = directory / 'Documents'
+
+    def get_doc_list(self):
         self.docList = os.listdir(self.docDir)
+        return self.docList
 
     # globbing pattern for counting the documents, which is universal to all instances: {'pattern to search for': 'document'}
     docPattern = {'*Post-production*': 'post-production guideline', '*Shoot Brief*': 'shoot brief', '*Retouch Note*': 'retouch note', '*Swatch*': 'swatches', '*Overlay*': 'overlay', '*Feedback*': 'feedback.pdf'}

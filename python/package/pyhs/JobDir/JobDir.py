@@ -47,4 +47,4 @@ class JobDir:
         self.docDirObj.get_doc_items()
 
     def check_img_spec(self):
-        pass
+        self.imgDirObj.check_img_spec(self.get_brand())

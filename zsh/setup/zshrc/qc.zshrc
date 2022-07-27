@@ -163,7 +163,7 @@ source $ZSH/oh-my-zsh.sh
     zstyle ':completion:*:corrections' format '%B%d [errors: %e]%b'
   autoload -U backitup
   autoload -U charsort
-  # autoload -U jpgdrag
+  autoload -U exportdrag
   autoload -U l1
   autoload -U newimgver
   autoload -U qcstart
@@ -194,7 +194,6 @@ source $ZSH/oh-my-zsh.sh
 
   NVIM="$HOME/.config/nvim"
   NVIM_INIT="$HOME/.config/nvim/init.vim"
-  ZFUNC="$HOME/.zfunc"
   ZGIT="$HOME/.zeric/.zgit"
   # associative array for the IHS zshrc
   typeset -A ihsrc=( 

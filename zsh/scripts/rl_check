@@ -85,7 +85,7 @@ if [[ -e $1 ]]; then
 		# reset array of correct file names
 		typeset -a RL_shotname=(
 				    BagAngle BagFront BagBack BagDetail1 BagDetail2 BagInterior BagReversible BagSide BagFrontOpen
-				    ShoeAngle ShoeBack ShoeOverhead ShoeProfile ShoeDetail1 ShoeDetail2
+				    ShoeAngle ShoeBack ShoeOverhead ShoeProfile ShoeDetail1 ShoeDetail2 ShoeBox ShoeSole
 				    TABLETOP TT-DETAIL1 TT-DETAIL2 TT-DETAIL3
 				    LAYDOWN LAYDOWNBACK SL-DETAIL1 SL-DETAIL2 FABRICDETAIL
 				    BUST BUSTBACK

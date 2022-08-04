@@ -209,7 +209,7 @@ source $ZSH/oh-my-zsh.sh
   alias zfunc="cd $HOME/.zfunc/"
   alias zer="cd $HOME/.zeric/"
   alias config="cd $HOME/.config/"
-  alias pyhs="cd $HOME/.zeric/.zgit/IHS/python/package/pyhs/"
+  alias pyhs="cd $HOME/.zeric/.zgit/pyhs"
   alias pybin="$HOME/.bin/pybin/"
   alias zbin="$HOME/.bin/zbin/"
   alias pgrep="pgrep -li"
@@ -222,12 +222,14 @@ source $ZSH/oh-my-zsh.sh
   alias lr="colorls -report"
   alias ltree="colorls --tree"
   alias py3="python3"
+  alias py3pyhs="python3 /Users/zeric.chan/.zeric/.zgit/pyhs/pyhs/Menu.py"
   # IHS
   alias brand="open $HOME/Desktop/DOCUMENTS/Brand"
   alias ihse="ihs_email.py"
   alias imgdrag="mv -i **/*(.) ." 
   alias renamePNG="rename -d ' copy' $HOME/Desktop/PNG/*"
   alias rl_check="time rl_check"
+  alias xl="open -a 'Microsoft Excel' '/Users/zeric.chan/Desktop/DOCUMENTS/QC/finder_search.xlsx'"
   # misc
   alias showargs="printf '>>>%s<<<\n'"
 

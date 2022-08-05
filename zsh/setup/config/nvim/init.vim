@@ -87,6 +87,8 @@ Plug 'saadparwaiz1/cmp_luasnip'
 "Plug 'rafamadriz/friendly-snippets'
 "autopairs
 Plug 'jiangmiao/auto-pairs'
+"commentary
+Plug 'preservim/nerdcommenter'
 
 " files searching 
 Plug 'preservim/nerdtree' "file system explorer

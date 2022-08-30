@@ -46,6 +46,7 @@ nnoremap <C-l> <C-w><C-l>
 nnoremap <leader>ts <cmd>Telescope find_files<cr>
 nnoremap <leader>to <cmd>Telescope oldfiles<cr>
 nnoremap <leader>tb <cmd>Telescope buffers<cr>
+nnoremap <leader>tg <cmd>Telescope git_status<cr>
 " NERDTree
 nnoremap <C-n> :NERDTree<CR>
 
@@ -110,7 +111,7 @@ call plug#end()
 " auto-pairs config
 
 " vim-airline config
-  let g:airline_theme = 'cool'
+  let g:airline_theme = 'jet'
   let g:airline#extensions#tabline#enabled = 1 "enable tab line
   let g:airline#extensions#tabline#left_sep = ' ' "tab line separator
   let g:airline#extensions#tabline#left_alt_sep = '|'

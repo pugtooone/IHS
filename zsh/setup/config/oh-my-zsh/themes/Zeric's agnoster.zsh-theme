@@ -116,7 +116,7 @@ prompt_git() {
 
 # Dir: current working directory
 prompt_dir() {
-  prompt_segment blue magenta ' %~ '
+  prompt_segment blue magenta ' %2~ '
 }
 
 # Status:

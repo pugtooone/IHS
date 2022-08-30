@@ -4,7 +4,7 @@
 from pathlib import Path
 from tkinter.filedialog import askopenfilename
 from PIL import Image
-import fitz, io, os, pyperclip
+import fitz, io, os, sys, pyperclip
 
 def img_extract():
     file = Path(askopenfilename())
@@ -16,9 +16,9 @@ def img_extract():
     for pageNo in range(len(pdf)):
         page = pdf[pageNo]
 
-        text = page.get_text()
-        # get_text() returns string, need split at newline and convert to list
-        imgNameList = list(text.split('\n'))
+        # text = page.get_text()
+        # # get_text() returns string, need split at newline and convert to list
+        # imgNameList = list(text.split('\n'))
 
         for imgIndex, img in enumerate(page.get_images()):
             xref = img[0]
@@ -26,9 +26,10 @@ def img_extract():
             imgBytes = baseImg['image']
             # imgExt = baseImg['ext']
             
-            # writing the image and save with the text found (might cause error)
             image = Image.open(io.BytesIO(imgBytes))
-            image.save(open(f"{imgNameList[imgIndex]}", "wb"))
+            #save img with the filename underneath
+            # image.save(open(f"{imgNameList[imgIndex]}", "wb"))
+            image.save(open(f"{imgIndex}.png", "wb"))
 
     print('Images copied')
 
@@ -47,12 +48,18 @@ def text_extract():
     print('Text copied')
 
 def main():
-    print('Extract [Text] or [Images] from PDF?')
-    answer = input()
-    if answer == 'Images':
-        img_extract()
-    elif answer == 'Text':
-        text_extract()
+    while True:
+        print('Extract [Text] or [Images] from PDF?')
+        answer = input()
+        try:
+            if answer.lower() == 'images':
+                img_extract()
+                sys.exit()
+            elif answer.lower() == 'text':
+                text_extract()
+                sys.exit()
+        except fitz.fitz.FileDataError:
+            print('No PDF selected')
 
 if __name__ == "__main__":
     main()

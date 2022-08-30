@@ -56,9 +56,9 @@ while true; do
 								cp $SWATCH_BASE/${REPLY: -3}.(jpg|tif) ${dir}/${REPLY}/
 			        			else
 								# duplicate the swatch into the product folder itself
-	                                                	cp ${dir}/${REPLY}/${REPLY}_1.tif ${dir}/${REPLY}/${REPLY: -3}.tif
+								cp ${dir}/${REPLY}/${REPLY}_(1|DSO).tif ${dir}/${REPLY}/${REPLY: -3}.tif
 	                                                	# back up the new swatch to the server
-	                                                        cp ${dir}/${REPLY}/${REPLY}_1.tif ${SWATCH_BASE}/${REPLY: -3}.tif
+								cp ${dir}/${REPLY}/${REPLY}_(1|DSO).tif ${SWATCH_BASE}/${REPLY: -3}.tif
 			        			fi
 			    			done
 			    		cd $dir

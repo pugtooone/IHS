@@ -164,10 +164,12 @@ source $ZSH/oh-my-zsh.sh
   autoload -U backitup
   autoload -U charsort
   autoload -U exportdrag
+  autoload -U kipswatch
   autoload -U l1
   autoload -U newimgver
   autoload -U qcstart
   autoload -U retest
+  autoload -U ToSend
 
 # Parameters
   PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
@@ -209,15 +211,16 @@ source $ZSH/oh-my-zsh.sh
   alias zfunc="cd $HOME/.zfunc/"
   alias zer="cd $HOME/.zeric/"
   alias config="cd $HOME/.config/"
-  alias pyhs="cd $HOME/.zeric/.zgit/pyhs"
+  alias pyhs="cd $HOME/.zeric/.zgit/pyhs/pyhs"
   alias pybin="$HOME/.bin/pybin/"
   alias zbin="$HOME/.bin/zbin/"
   alias pgrep="pgrep -li"
   alias -g O="open ."
   # external commands
+  alias dmen="open -a dmenu-mac"
   alias imgid="identify"
   # alias htop="sudo htop"
-  alias ls="colorls"
+  alias ls="colorls -A --sd"
   alias l="colorls -lA --sd --git-status"
   alias lr="colorls -report"
   alias ltree="colorls --tree"
@@ -229,6 +232,8 @@ source $ZSH/oh-my-zsh.sh
   alias imgdrag="mv -i **/*(.) ." 
   alias renamePNG="rename -d ' copy' $HOME/Desktop/PNG/*"
   alias rl_check="time rl_check"
+  alias rlaem="cat $RL_AC | pbcopy; sleep 2; cat $RL_PW | pbcopy"
+  alias tbq="cd $HOME/Desktop/To Be QC"
   alias xl="open -a 'Microsoft Excel' '/Users/zeric.chan/Desktop/DOCUMENTS/QC/finder_search.xlsx'"
   # misc
   alias showargs="printf '>>>%s<<<\n'"

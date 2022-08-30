@@ -3,3 +3,5 @@
 hosts.yml
 PureRef.ini
 gh
+dwm_launch
+chmod 755

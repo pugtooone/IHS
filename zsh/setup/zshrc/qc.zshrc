@@ -169,12 +169,13 @@ source $ZSH/oh-my-zsh.sh
   autoload -U newimgver
   autoload -U qcstart
   autoload -U retest
-  autoload -U ToSend
+  autoload -U rl_aem
+  autoload -U ToSendFolder
 
 # Parameters
   PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
   typeset -U path=(
-                   $(brew --prefix)/Cellar/ruby/3.1.2/bin
+                   $(brew --prefix)/Cellar/ruby/3.1.2_1/bin
 		   $(brew --prefix)/lib/ruby/gems/3.1.0/bin
 		   $path
 		   $(brew --prefix)/bin
@@ -228,11 +229,11 @@ source $ZSH/oh-my-zsh.sh
   alias py3pyhs="python3 /Users/zeric.chan/.zeric/.zgit/pyhs/pyhs/Menu.py"
   # IHS
   alias brand="open $HOME/Desktop/DOCUMENTS/Brand"
+  alias google_ser_ac="print $GOOGLE_SERVICE_AC | pbcopy; print 'Google Service Account copied to the clipboard'"
   alias ihse="ihs_email.py"
   alias imgdrag="mv -i **/*(.) ." 
   alias renamePNG="rename -d ' copy' $HOME/Desktop/PNG/*"
   alias rl_check="time rl_check"
-  alias rlaem="cat $RL_AC | pbcopy; sleep 2; cat $RL_PW | pbcopy"
   alias tbq="cd $HOME/Desktop/To Be QC"
   alias xl="open -a 'Microsoft Excel' '/Users/zeric.chan/Desktop/DOCUMENTS/QC/finder_search.xlsx'"
   # misc
@@ -250,7 +251,6 @@ source $ZSH/oh-my-zsh.sh
   source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
   source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
   source /Users/zeric.chan/.config/broot/launcher/bash/br
-  source $(dirname $(gem which colorls))/tab_complete.sh
 
 # config
   # run-help for builtin commands

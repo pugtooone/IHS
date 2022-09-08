@@ -1,0 +1,16 @@
+# vim ft=zsh
+function qcstart() {
+	if [[ $# == 1 && -d $1 ]]; then
+		new1="$(print -rP '%D{%Y%m%d}') ${1}"
+		mv $1 $new1
+
+		if [[ $HOST == "IHRTHKW11-2994.local" ]]; then
+			mv $new1 $HOME/Desktop/QCing/
+		elif [[ $HOST == "Zerics-MBP" ]]; then
+			mv $new1 $HOME/Desktop/IHS/QCing/
+		fi
+	else
+		print 'Error: Usage: qcstart [job folder]'
+		return 2
+	fi
+}

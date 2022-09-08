@@ -1,0 +1,6 @@
+# vim ft=zsh
+function charsort(){
+
+	print $(print ${(L)1} | grep -o . | sort | tr -d '\n')
+
+	}

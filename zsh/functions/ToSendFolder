@@ -1,0 +1,6 @@
+function ToSendFolder(){
+	if [[ $# == 1 ]]; then
+		mkdir -p "$HOME/Desktop/To Be Sent/$1/Images"
+		mkdir -p "$HOME/Desktop/To Be Sent/$1/Documents"
+	fi
+}

@@ -1,0 +1,26 @@
+# vim ft=zsh
+function newimgver(){
+	if [[ $# > 0 ]]; then # check if at least 1 arguement is provided
+		for dir in $*; do # check if arguments are directories
+			if [[ -d $dir ]]; then
+				:
+			else
+				print "Error: Argument type: not directory"
+				return 2
+			fi
+
+			for img in "${dir}"/**/*.(tif|jpg|jpeg|png); do
+				if [[ "$img" == *_v?* ]]; then
+					local img_ver="${${img##*_v}%%.*}"
+					local new_img_ver=$(( $img_ver + 1 ))
+					rename -s $img_ver $new_img_ver "${img}"
+				else
+					rename -X -a '_v2' "${img}"
+				fi
+			done
+		done
+	else
+		print "Error: Usage: newimgver [image containing folder]"
+		return 2
+	fi
+}

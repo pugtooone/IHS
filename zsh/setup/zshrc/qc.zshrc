@@ -195,6 +195,7 @@ source $ZSH/oh-my-zsh.sh
 
   export PYTHONPATH="$HOME/.bin/pybin/"
 
+  export SAVEHIST=50000
   NVIM="$HOME/.config/nvim"
   NVIM_INIT="$HOME/.config/nvim/init.vim"
   ZGIT="$HOME/.zeric/.zgit"
@@ -234,6 +235,7 @@ source $ZSH/oh-my-zsh.sh
   alias imgdrag="mv -i **/*(.) ." 
   alias renamePNG="rename -d ' copy' $HOME/Desktop/PNG/*"
   alias rl_check="time rl_check"
+  alias server="cd /Volumes/Studio/CLIENTS"
   alias tbq="cd $HOME/Desktop/To Be QC"
   alias xl="open -a 'Microsoft Excel' '/Users/zeric.chan/Desktop/DOCUMENTS/QC/finder_search.xlsx'"
   # misc

@@ -109,6 +109,7 @@ call plug#end()
   colorscheme pablo
 
 " auto-pairs config
+  autocmd FileType html let b:AutoPairs = {"<":">", "<!--":"-->", '"':'"'}
 
 " vim-airline config
   let g:airline_theme = 'jet'
@@ -182,7 +183,7 @@ lua <<EOF
       ['<C-f>'] = cmp.mapping.scroll_docs(4),
       ['<C-Space>'] = cmp.mapping.complete(),
       ['<C-e>'] = cmp.mapping.abort(),
-      ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+      --['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
       ['<Tab>'] = cmp.mapping(function(fallback)
       	if cmp.visible() then
         	cmp.select_next_item()
@@ -276,6 +277,13 @@ lua <<EOF
       capabilities = capabilities,
     }
   end
+    --Enable (broadcasting) snippet capability for completion
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+  capabilities.textDocument.completion.completionItem.snippetSupport = true
+  
+  require'lspconfig'.html.setup {
+    capabilities = capabilities,
+  }
 
   --nvim-treesitter config
   require'nvim-treesitter.configs'.setup {

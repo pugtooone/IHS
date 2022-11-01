@@ -33,7 +33,7 @@ def img_extract():
 
     print('Images copied')
 
-def text_extract():
+def all_text_extract():
     file = Path(askopenfilename())
     pdf = fitz.open(file)
 
@@ -93,16 +93,20 @@ def select_text_extract():
 
 def main():
     while True:
-        print('Extract [All Text] or [Selected Text] or [Images] from PDF?')
+        print('''Choose the digital assets to extract from PDF: 
+    [1]: All Text
+    [2]: Selected Text
+    [3]: Images
+            ''')
         answer = input()
-        if answer.lower() == 'images':
-            img_extract()
+        if answer == '1':
+            all_text_extract()
             sys.exit()
-        elif answer.lower() == 'all text':
-            text_extract()
-            sys.exit()
-        elif answer.lower() == 'selected text':
+        elif answer == '2':
             select_text_extract()
+            sys.exit()
+        elif answer == '3':
+            img_extract()
             sys.exit()
 
 if __name__ == "__main__":

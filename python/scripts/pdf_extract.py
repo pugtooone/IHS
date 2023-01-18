@@ -94,8 +94,9 @@ def select_text_extract():
 def main():
     while True:
         print('''Choose the digital assets to extract from PDF: 
+
     [1]: All Text
-    [2]: Selected Text
+    [2]: High-lighted Text
     [3]: Images
             ''')
         answer = input()

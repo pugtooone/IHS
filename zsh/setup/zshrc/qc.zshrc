@@ -21,7 +21,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="agnoster"
+ZSH_THEME="Zeric's agnoster"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -164,7 +164,8 @@ source $ZSH/oh-my-zsh.sh
   autoload -U backitup
   autoload -U charsort
   autoload -U exportdrag
-  autoload -U kipswatch
+  autoload -U imgcount
+  autoload -U drag_kip_swatch
   autoload -U l1
   autoload -U newimgver
   autoload -U qcstart
@@ -175,7 +176,7 @@ source $ZSH/oh-my-zsh.sh
 # Parameters
   PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
   typeset -U path=(
-                   $(brew --prefix)/Cellar/ruby/3.1.2_1/bin
+       $(brew --prefix)/Cellar/ruby/3.2.1/bin
 		   $(brew --prefix)/lib/ruby/gems/3.1.0/bin
 		   $path
 		   $(brew --prefix)/bin
@@ -193,27 +194,34 @@ source $ZSH/oh-my-zsh.sh
 		    $HOME/.zfunc
 		    )
 
+  export HOMEBREW_EDITOR=nvim
   export PYTHONPATH="$HOME/.bin/pybin/"
 
-  export SAVEHIST=50000
-  NVIM="$HOME/.config/nvim"
-  NVIM_INIT="$HOME/.config/nvim/init.vim"
-  ZGIT="$HOME/.zeric/.zgit"
+  typeset PYBIN="$HOME/.bin/pybin/"
+  typeset ZBIN="$HOME/.bin/zbin/"
+
+  typeset NVIM="$HOME/.config/nvim"
+  typeset NVIM_INIT="$HOME/.config/nvim/init.vim"
+  typeset ZGIT="$HOME/.zeric/.zgit"
+
   # associative array for the IHS zshrc
   typeset -A ihsrc=( 
                     qc $HOME/.zeric/.zgit/IHS/zsh/setup/zshrc/qc.zshrc 
-		    studio $HOME/.zeric/.zgit/IHS/zsh/setup/zshrc/studio.zshrc 
+		    stud $HOME/.zeric/.zgit/IHS/zsh/setup/zshrc/studio.zshrc 
 		    ) 
+
+  export SAVEHIST=50000
 
 # Alias
   # builtins 
   alias D="cd $HOME/Desktop/"
+  alias down="cd $HOME/Downloads"
   alias dv="dirs -v"
   alias zgit="cd $HOME/.zeric/.zgit/"
   alias zfunc="cd $HOME/.zfunc/"
   alias zer="cd $HOME/.zeric/"
   alias config="cd $HOME/.config/"
-  alias pyhs="cd $HOME/.zeric/.zgit/pyhs/pyhs"
+  alias pyhs="cd $HOME/.zeric/.zgit/pyhs"
   alias pybin="$HOME/.bin/pybin/"
   alias zbin="$HOME/.bin/zbin/"
   alias pgrep="pgrep -li"
@@ -233,10 +241,12 @@ source $ZSH/oh-my-zsh.sh
   alias google_ser_ac="print $GOOGLE_SERVICE_AC | pbcopy; print 'Google Service Account copied to the clipboard'"
   alias ihse="ihs_email.py"
   alias imgdrag="mv -i **/*(.) ." 
-  alias renamePNG="rename -d ' copy' $HOME/Desktop/PNG/*"
+  alias ppt="open -a 'Microsoft PowerPoint' '$HOME/Desktop/DOCUMENTS/QC/Retouch Note.pptx'"
+  alias renamePNG="rename -d ' copy' $HOME/Desktop/EXPORTS/PNG/*"
   alias rl_check="time rl_check"
-  alias server="cd /Volumes/Studio/CLIENTS"
+  alias ser="cd /Volumes/Studio/CLIENTS"
   alias tbq="cd $HOME/Desktop/To Be QC"
+  alias TSF="ToSendFolder"
   alias xl="open -a 'Microsoft Excel' '/Users/zeric.chan/Desktop/DOCUMENTS/QC/finder_search.xlsx'"
   # misc
   alias showargs="printf '>>>%s<<<\n'"
@@ -283,3 +293,5 @@ source $ZSH/oh-my-zsh.sh
 #=================================================================
 
 # vim: set foldmethod=marker foldlevel=0:
+
+source /Users/zeric.chan/.config/broot/launcher/bash/br

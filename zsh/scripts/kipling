@@ -22,7 +22,7 @@ while true; do
 	local target_folder=$(print $target_folder_apple | sed -e 's/alias //' -e 's/Macintosh HD//' -e 's/:/\//g')
 
 	# test if the target_folder is a valid Kipling batch
-	if [[  ${(L)target_folder:t} == kipling* ]]; then
+	if [[ ${(L)target_folder:t} == kipling* ]]; then
 
     		cd $target_folder
     		local PARENT="$(print $target_folder)"

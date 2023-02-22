@@ -21,6 +21,7 @@ set nocompatible
 set number
 set smartcase
 set splitbelow splitright
+set autoindent expandtab tabstop=2 shiftwidth=2
 
 " filetype on
 syntax enable
@@ -43,7 +44,7 @@ nnoremap <C-j> <C-w><C-j>
 nnoremap <C-k> <C-w><C-k>
 nnoremap <C-l> <C-w><C-l>
 " Telescope
-nnoremap <leader>ts <cmd>Telescope find_files<cr>
+nnoremap <leader>tf <cmd>Telescope find_files<cr>
 nnoremap <leader>to <cmd>Telescope oldfiles<cr>
 nnoremap <leader>tb <cmd>Telescope buffers<cr>
 nnoremap <leader>tg <cmd>Telescope git_status<cr>
@@ -71,6 +72,8 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'ryanoasis/vim-devicons'
 " indent-blankline
 Plug 'lukas-reineke/indent-blankline.nvim'
+" colour schemes
+Plug 'EdenEast/nightfox.nvim'
 
 "Editing
 " completions
@@ -106,7 +109,7 @@ call plug#end()
 "================================================================================
 
 " colorscheme
-  colorscheme pablo
+  colorscheme terafox
 
 " auto-pairs config
   autocmd FileType html let b:AutoPairs = {"<":">", "<!--":"-->", '"':'"'}
@@ -268,9 +271,9 @@ lua <<EOF
   -- Setup lspconfig.
   -- Add additional capabilities supported by nvim-cmp
   local capabilities = vim.lsp.protocol.make_client_capabilities()
-  capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+  capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
   -- Enable some language servers with the additional completion capabilities offered by nvim-cmp
-  local servers = { 'pyright' }
+  local servers = { 'pyright' ,'html', 'cssls', 'tsserver'}
   for _, lsp in ipairs(servers) do
     lspconfig[lsp].setup {
       -- on_attach = my_custom_on_attach,

@@ -10,7 +10,7 @@
 
 #=================================================================
 # oh-my-zsh setup {{{
-#================================================================================
+#=================================================================
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -168,6 +168,7 @@ source $ZSH/oh-my-zsh.sh
   autoload -U drag_kip_swatch
   autoload -U l1
   autoload -U newimgver
+  autoload -U pr_template
   autoload -U qcstart
   autoload -U retest
   autoload -U rl_aem
@@ -291,7 +292,3 @@ source $ZSH/oh-my-zsh.sh
 
 #}}}
 #=================================================================
-
-# vim: set foldmethod=marker foldlevel=0:
-
-source /Users/zeric.chan/.config/broot/launcher/bash/br

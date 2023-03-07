@@ -14,6 +14,8 @@
 
 " vim options
 set autoindent
+set foldmethod=marker
+set foldlevel=0
 set history=500
 set hlsearch
 set incsearch
@@ -21,9 +23,8 @@ set nocompatible
 set number
 set smartcase
 set splitbelow splitright
-set autoindent expandtab tabstop=2 shiftwidth=2
+set expandtab tabstop=2 shiftwidth=2
 
-" filetype on
 syntax enable
 
 " variables
@@ -299,4 +300,3 @@ EOF
 
 "}}}
 "================================================================================
-" vim: foldmethod=marker foldlevel=0 :

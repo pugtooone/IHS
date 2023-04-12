@@ -168,11 +168,12 @@ source $ZSH/oh-my-zsh.sh
   autoload -U drag_kip_swatch
   autoload -U l1
   autoload -U newimgver
-  autoload -U pr_template
+  autoload -U or_name_search
   autoload -U qcstart
   autoload -U retest
   autoload -U rl_aem
   autoload -U ToSendFolder
+  autoload -U vid_edit_template
 
 # Parameters
   PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
@@ -215,6 +216,7 @@ source $ZSH/oh-my-zsh.sh
 
 # Alias
   # builtins 
+  alias c+="clang++"
   alias D="cd $HOME/Desktop/"
   alias down="cd $HOME/Downloads"
   alias dv="dirs -v"
@@ -235,6 +237,7 @@ source $ZSH/oh-my-zsh.sh
   alias l="colorls -lA --sd --git-status"
   alias lr="colorls -report"
   alias ltree="colorls --tree"
+  alias pip3updateall="pip3 list --outdated | cut -d' ' -f1 | sed -n '3,$ p' | xargs -I % pip3 install --upgrade %"
   alias py3="python3"
   alias py3pyhs="python3 /Users/zeric.chan/.zeric/.zgit/pyhs/pyhs/Menu.py"
   # IHS
@@ -257,7 +260,7 @@ source $ZSH/oh-my-zsh.sh
   neofetch
   # cowsay -f dragon 'Roar!! I don''t want OT!!'
   # File management
-    mv -i $HOME/Desktop/RL/Sending/sent* $HOME/Desktop/RL/Sent
+    #mv -i $HOME/Desktop/RL/Sending/sent* $HOME/Desktop/RL/Sent
     rm $HOME/Desktop/**/Thumbs.db
 
 # Sourcing programs

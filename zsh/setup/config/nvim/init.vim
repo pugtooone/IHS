@@ -62,22 +62,25 @@ nnoremap <C-n> :NERDTree<CR>
 call plug#begin()
 
 "Visual
-" syntax highlighting
+"syntax highlighting
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight' " NERDTree syntax highlighting
 Plug 'Xuyuanp/nerdtree-git-plugin' "NERDTree git status flags
 "statusline
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-" icon
+"icon
 Plug 'ryanoasis/vim-devicons'
-" indent-blankline
+"indent-blankline
 Plug 'lukas-reineke/indent-blankline.nvim'
-" colour schemes
+"colour schemes
 Plug 'EdenEast/nightfox.nvim'
 
+"Typing Sound
+Plug 'skywind3000/vim-keysound'
+
 "Editing
-" completions
+"completions
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
@@ -86,7 +89,7 @@ Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'tamago324/cmp-zsh'
 Plug 'Shougo/deol.nvim'
-" snippet engine
+"snippet engine
 Plug 'L3MON4D3/LuaSnip'
 Plug 'saadparwaiz1/cmp_luasnip'
 "Plug 'rafamadriz/friendly-snippets'
@@ -95,7 +98,7 @@ Plug 'jiangmiao/auto-pairs'
 "commentary
 Plug 'preservim/nerdcommenter'
 
-" files searching 
+"files searching 
 Plug 'preservim/nerdtree' "file system explorer
 Plug 'nvim-telescope/telescope.nvim' "fuzzy finder
 Plug 'nvim-lua/plenary.nvim' "dependency for telescope
@@ -111,6 +114,10 @@ call plug#end()
 
 " colorscheme
   colorscheme terafox
+
+" vim-keysound
+  let g:keysound_enable = 1
+  let g:keysound_theme = 'typewriter'
 
 " auto-pairs config
   autocmd FileType html let b:AutoPairs = {"<":">", "<!--":"-->", '"':'"'}
@@ -274,7 +281,7 @@ lua <<EOF
   local capabilities = vim.lsp.protocol.make_client_capabilities()
   capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
   -- Enable some language servers with the additional completion capabilities offered by nvim-cmp
-  local servers = { 'pyright' ,'html', 'cssls', 'tsserver'}
+  local servers = { 'clangd', 'cssls', 'html', 'pyright', 'tsserver' }
   for _, lsp in ipairs(servers) do
     lspconfig[lsp].setup {
       -- on_attach = my_custom_on_attach,
@@ -299,4 +306,4 @@ lua <<EOF
 EOF
 
 "}}}
-"================================================================================
+"===============================================================================

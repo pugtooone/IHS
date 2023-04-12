@@ -72,60 +72,27 @@ mkdir $JOB_PATH
 
 for dir in ${RESULT}; do
   dir=$(print ${dir//;/ })
-  mv -i ${dir}/**/*.(jpeg|jpg|png) ${JOB_PATH}
-  rm -r ${dir}
+  mv -i ${dir}/**/*.(jpg|jpeg|png|tif|tiff) ${JOB_PATH}
+  # rm the original dir if more than 1 is selected; rm the subfolder inside if only 1 is selected
+  if [[ ${#RESULT} > 1 ]]; then
+    rm -r ${dir}
+  elif [[ ${#RESULT} == 1 ]]; then
+    rm -r ${dir}/*(/)
+  fi
 done
 
-#==================================================
-#}}}
-#==================================================
+print -l ${JOB_PATH}/*.(jpg|jpeg|png|tif|tiff) | while read; do
+	basename ${REPLY}
+done | pbcopy
 
-#==================================================
-#{{{ Archived Codes
-#==================================================
-## prompt user to input job name
-#JOB_NAME=$(osascript -l JavaScript <<-HERE
+osascript -l JavaScript <<-HERE
+  const app = Application.currentApplication();
+  app.includeStandardAdditions = true;
 
-  #function promptForJob(){
-
-    #const app = Application.currentApplication();
-    #app.includeStandardAdditions = true;
-
-    #const response = app.displayDialog("What's Batch Name?", {
-        #defaultAnswer: "",
-        #withIcon: "note",
-        #buttons: ["Cancel", "Continue"],
-        #defaultButton: "Continue"
-    #});
-
-    #if (response.textReturned == ""){
-      #return "";
-    #};
-
-    #app.displayAlert("Please Copy the information on the TEAMS template now", {
-      #buttons: ["Information Copied!"]
-    #});
-
-    #return response.textReturned;
-  #};
-
-  #promptForJob();
-
-#HERE
-#)
-
-## quit if "Cancel" was pushed in the app.displayDialog
-#if [[ ${JOB_NAME} == "" ]]; then
-  #osascript -l JavaScript <<-HERE
-
-    #const app = Application.currentApplication();
-    #app.includeStandardAdditions = true;
-
-    #app.displayAlert("No batch name has been input")
-
-#HERE
-  #return 2
-#fi
+  app.displayAlert("Images info is copied to your clipboard", {
+      buttons: ["Continue"]
+  });
+HERE
 
 #==================================================
 #}}}
@@ -142,24 +109,26 @@ osascript -l JavaScript <<-HERE
   const app = Application.currentApplication();
   app.includeStandardAdditions = true;
 
-  app.displayAlert("Please Copy the information on the TEAMS template now", {
+  const alertMsg = "Step 1: Paste the copied info onto Teams\n\nStep 2: Copy the csv info\n(from B2 to AC)"
+  app.displayAlert("Teams Information is needed\nPlease follow the following steps:", {
+    message: alertMsg,
     buttons: ["Information Copied!"]
   });
 HERE
 
 # check if the content on clipboard is the correct format
-if [[ "$(pbpaste | head -c 8)" != "filename" ]]; then
+while [[ "$(pbpaste | head -c 8)" != "filename" ]]; do
   osascript -l JavaScript <<-HERE
 
     const app = Application.currentApplication();
     app.includeStandardAdditions = true;
 
     app.displayAlert("Incorrect information", {
-      message: "Please make sure you copy the correct info."
+      message: "Please make sure you copy the correct info.",
+      buttons: ["Information Copied!"]
     });
 HERE
-  return 2
-fi
+done
 #==================================================
 #}}}
 #==================================================
@@ -181,3 +150,12 @@ iconv -f CP1252 -t UTF-8 ${TMP_CSV} >> ${CSV_TO_THE_DOT}
 #==================================================
 #}}}
 #==================================================
+
+osascript -l JavaScript <<-HERE
+    const app = Application.currentApplication();
+    app.includeStandardAdditions = true;
+
+    app.displayAlert("Batch is ready to upload!");
+HERE
+
+open ${JOB_PATH}

@@ -14,40 +14,75 @@ print "executed at $(date "+%Y%m%d %H:%M")"
 #{{{ Folder Selections & JOB_PATH Construct
 #==================================================
 
-# native MacOS GUI prompt user for folder selection
-RESULT=( $(print $(osascript -l JavaScript <<-HERE
-
-  const app = Application.currentApplication();
-  app.includeStandardAdditions = true;
-  
-  function getFolder (){
-
-    const outputFolder = app.chooseFolder({
-      withPrompt: "Please select the kipling folder",
-      multipleSelectionsAllowed: true
-    });
-
-    return outputFolder;
-  };
-  
-  getFolder();
-
-HERE
-) | sed -e 's/ /;/g' -e 's/Path(//' -e 's/),;Path(/ /g' -e 's/)//' -e 's/"//g') ) # replace space with ; which will be substitued back later
-
-# quit function if no folder has been chosen
-if [[ $RESULT == "" ]]; then
+function display_javascript_alert() {
   osascript -l JavaScript <<-HERE
     
     const app = Application.currentApplication();
     app.includeStandardAdditions = true;
 
-    app.displayAlert("No folder has been chosen");
+    app.displayAlert("${1}");
+HERE
+}
+
+while true; do
+  # native MacOS GUI prompt user for folder selection
+  RESULT=( $(print $(osascript -l JavaScript <<-HERE
+
+    const app = Application.currentApplication();
+    app.includeStandardAdditions = true;
+    
+    function getFolder (){
+
+      const outputFolder = app.chooseFolder({
+        withPrompt: "Please select the kipling folder",
+        multipleSelectionsAllowed: true
+      });
+
+      return outputFolder;
+    };
+    
+    getFolder();
 
 HERE
-  print "No folder has been chosen"
-  return 2
-fi
+  ) | sed -e 's/ /;/g' -e 's/Path(//' -e 's/),;Path(/ /g' -e 's/)//' -e 's/"//g') ) # replace space with ; which will be substitued back later
+
+  #continute to prompt for folder if none has been chosen
+  if [[ $RESULT == "" ]]; then
+    print "No folder has been chosen"
+    typeset RESPONSE=$(osascript -l JavaScript <<-HERE
+      
+      const app = Application.currentApplication();
+      app.includeStandardAdditions = true;
+
+      app.displayAlert("No folder has been chosen", {
+        buttons: ["Choose Again", "Cancel"],
+      });
+HERE
+    )
+    if [[ $RESPONSE == "buttonReturned:Cancel" ]]; then
+      return 1
+    fi
+    continue
+  fi
+
+  typeset NUM_WRONG_FOLDER=0
+  for dir in ${RESULT}; do
+    if [[ ${dir} == /Volumes/Studio/* ]]; then
+        display_javascript_alert "One of the selected folders is from server!\n\nPlease make sure the script is not used on server!"
+        exit 1
+    elif [[ "$(basename ${(L)dir})" != *kipling* ]]; then
+      print "Non-Kipling folder: $(basename ${(L)dir})"
+      $NUM_WRONG_FOLDER++
+    fi
+  done
+
+  if [[ $NUM_WRONG_FOLDER == 0 ]]; then
+    break
+  else
+    display_javascript_alert "None Kipling folder detected\nPlease double check"
+  fi
+
+done #end of while loop
 
 # construct $JOB_NAME by appending all batch no.
 local JOB_NAME="Kipling"
@@ -55,15 +90,6 @@ local JOB_NAME="Kipling"
 for dir in ${RESULT}; do
   dir=$(print ${dir//;/ })
   local JOB_NAME="${JOB_NAME} $(basename ${dir//Kipling /})"
-  if [[ "$(basename ${(L)dir})" != kipling* ]]; then
-    osascript -l JavaScript <<-HERE
-      const app = Application.currentApplication();
-      app.includeStandardAdditions = true;
-
-      app.displayAlert("Some of the selections are not Kipling batch")
-HERE
-    return 2
-  fi
 done
 
 # create $JOB_PATH as the master directory to store all the images to-be-uploaded
@@ -72,6 +98,8 @@ mkdir $JOB_PATH
 
 for dir in ${RESULT}; do
   dir=$(print ${dir//;/ })
+
+  #!!!ADD CONDITIONS FOR VARIOUS JOB TYPES
   mv -i ${dir}/**/*.(jpg|jpeg|png|tif|tiff) ${JOB_PATH}
   # rm the original dir if more than 1 is selected; rm the subfolder inside if only 1 is selected
   if [[ ${#RESULT} > 1 ]]; then
@@ -125,9 +153,12 @@ while [[ "$(pbpaste | head -c 8)" != "filename" ]]; do
 
     app.displayAlert("Incorrect information", {
       message: "Please make sure you copy the correct info.",
-      buttons: ["Information Copied!"]
+      buttons: ["Information Copied!", "Cancel"],
     });
 HERE
+  if [[ $RESPONSE == "buttonReturned:Cancel" ]]; then
+    return 1
+  fi
 done
 #==================================================
 #}}}
@@ -151,11 +182,6 @@ iconv -f CP1252 -t UTF-8 ${TMP_CSV} >> ${CSV_TO_THE_DOT}
 #}}}
 #==================================================
 
-osascript -l JavaScript <<-HERE
-    const app = Application.currentApplication();
-    app.includeStandardAdditions = true;
-
-    app.displayAlert("Batch is ready to upload!");
-HERE
+display_javascript_alert "Batch is ready to upload!";
 
 open ${JOB_PATH}

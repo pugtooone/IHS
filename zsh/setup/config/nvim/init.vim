@@ -77,7 +77,7 @@ Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'EdenEast/nightfox.nvim'
 
 "Typing Sound
-Plug 'skywind3000/vim-keysound'
+"Plug 'skywind3000/vim-keysound'
 
 "Editing
 "completions

@@ -172,14 +172,15 @@ source $ZSH/oh-my-zsh.sh
   autoload -U qcstart
   autoload -U retest
   autoload -U rl_aem
+  autoload -U show_ihs_ip
   autoload -U ToSendFolder
   autoload -U vid_edit_template
 
 # Parameters
   PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
-  typeset -U path=(
-       $(brew --prefix)/Cellar/ruby/3.2.1/bin
-		   $(brew --prefix)/lib/ruby/gems/3.1.0/bin
+  export -U path=(
+       $(brew --prefix)/Cellar/ruby/3.2.2/bin
+		   $(brew --prefix)/lib/ruby/gems/3.2.0/bin
 		   $path
 		   $(brew --prefix)/bin
 		   $HOME/.bin/zbin
@@ -209,14 +210,14 @@ source $ZSH/oh-my-zsh.sh
   # associative array for the IHS zshrc
   typeset -A ihsrc=( 
                     qc $HOME/.zeric/.zgit/IHS/zsh/setup/zshrc/qc.zshrc 
-		    stud $HOME/.zeric/.zgit/IHS/zsh/setup/zshrc/studio.zshrc 
-		    ) 
+                    stud $HOME/.zeric/.zgit/IHS/zsh/setup/zshrc/studio.zshrc 
+                    ) 
 
   export SAVEHIST=50000
 
 # Alias
   # builtins 
-  alias c+="clang++"
+  alias c+="clang++ -std=c++11 -Wall"
   alias D="cd $HOME/Desktop/"
   alias down="cd $HOME/Downloads"
   alias dv="dirs -v"
@@ -240,6 +241,7 @@ source $ZSH/oh-my-zsh.sh
   alias pip3updateall="pip3 list --outdated | cut -d' ' -f1 | sed -n '3,$ p' | xargs -I % pip3 install --upgrade %"
   alias py3="python3"
   alias py3pyhs="python3 /Users/zeric.chan/.zeric/.zgit/pyhs/pyhs/Menu.py"
+  alias xl2csv="xlsx2csv"
   # IHS
   alias brand="open $HOME/Desktop/DOCUMENTS/Brand"
   alias google_ser_ac="print $GOOGLE_SERVICE_AC | pbcopy; print 'Google Service Account copied to the clipboard'"
@@ -293,5 +295,7 @@ source $ZSH/oh-my-zsh.sh
     }
     AGNOSTER_PROMPT_SEGMENTS=("customize_agnoster" "${AGNOSTER_PROMPT_SEGMENTS[@]}")
 
+  # source the secrets
+    source ~/.zecret
 #}}}
 #=================================================================

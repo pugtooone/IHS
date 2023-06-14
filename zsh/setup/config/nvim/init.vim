@@ -1,12 +1,12 @@
 
-" " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " "
-"  ███████╗███████╗██████╗ ██╗ ██████╗    ███╗   ██╗██╗   ██╗██╗███╗   ███╗ "
-"  ╚══███╔╝██╔════╝██╔══██╗██║██╔════╝    ████╗  ██║██║   ██║██║████╗ ████║ "
-"    ███╔╝ █████╗  ██████╔╝██║██║         ██╔██╗ ██║██║   ██║██║██╔████╔██║ "
-"   ███╔╝  ██╔══╝  ██╔══██╗██║██║         ██║╚██╗██║╚██╗ ██╔╝██║██║╚██╔╝██║ "
-"  ███████╗███████╗██║  ██║██║╚██████╗    ██║ ╚████║ ╚████╔╝ ██║██║ ╚═╝ ██║ "
-"  ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝ ╚═════╝    ╚═╝  ╚═══╝  ╚═══╝  ╚═╝╚═╝     ╚═╝ "
-" " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " "
+" " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " 
+"  ██╗██╗  ██╗███████╗    ███╗   ██╗██╗   ██╗██╗███╗   ███╗ "
+"  ██║██║  ██║██╔════╝    ████╗  ██║██║   ██║██║████╗ ████║ "
+"  ██║███████║███████╗    ██╔██╗ ██║██║   ██║██║██╔████╔██║ "
+"  ██║██╔══██║╚════██║    ██║╚██╗██║╚██╗ ██╔╝██║██║╚██╔╝██║ "
+"  ██║██║  ██║███████║    ██║ ╚████║ ╚████╔╝ ██║██║ ╚═╝ ██║ "
+"  ╚═╝╚═╝  ╚═╝╚══════╝    ╚═╝  ╚═══╝  ╚═══╝  ╚═╝╚═╝     ╚═╝ "
+" " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " 
                                                                         
 "================================================================================
 "Options & Variables{{{
@@ -97,6 +97,8 @@ Plug 'saadparwaiz1/cmp_luasnip'
 Plug 'jiangmiao/auto-pairs'
 "commentary
 Plug 'preservim/nerdcommenter'
+"brackets surrounding
+Plug 'tpope/vim-surround'
 
 "files searching 
 Plug 'preservim/nerdtree' "file system explorer
@@ -120,7 +122,7 @@ call plug#end()
   let g:keysound_theme = 'typewriter'
 
 " auto-pairs config
-  autocmd FileType html let b:AutoPairs = {"<":">", "<!--":"-->", '"':'"'}
+  autocmd FileType html javascript let b:AutoPairs = {"<":">", "<!--":"-->", '"':'"'}
 
 " vim-airline config
   let g:airline_theme = 'jet'
@@ -152,29 +154,29 @@ lua <<EOF
   local kind_icons = {
   Text = "",
   Method = "m",
-  Function = "",
+  Function = "󰡱",
   Constructor = "",
   Field = "",
-  Variable = "",
-  Class = "",
+  Variable = "",
+  Class = "󰮂",
   Interface = "",
   Module = "",
   Property = "",
   Unit = "",
-  Value = "",
+  Value = "",
   Enum = "",
   Keyword = "",
   Snippet = "",
-  Color = "",
-  File = "",
+  Color = "",
+  File = "󰈰",
   Reference = "",
-  Folder = "",
+  Folder = "󰈯",
   EnumMember = "",
-  Constant = "",
+  Constant = "",
   Struct = "",
   Event = "",
-  Operator = "",
-  TypeParameter = "",
+  Operator = "",
+  TypeParameter = "",
 }
 
   cmp.setup({
@@ -281,7 +283,7 @@ lua <<EOF
   local capabilities = vim.lsp.protocol.make_client_capabilities()
   capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
   -- Enable some language servers with the additional completion capabilities offered by nvim-cmp
-  local servers = { 'clangd', 'cssls', 'html', 'pyright', 'tsserver' }
+  local servers = { 'clangd', 'cssls', 'html', 'pyright', 'tailwindcss', 'tsserver' }
   for _, lsp in ipairs(servers) do
     lspconfig[lsp].setup {
       -- on_attach = my_custom_on_attach,

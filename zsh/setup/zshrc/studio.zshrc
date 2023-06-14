@@ -29,6 +29,7 @@
 
 # Functions
   autoload -U compinit
+  autoload -U dialog
   compinit
   # zsh Completions
     zstyle ':completion:*' format %d
@@ -51,17 +52,20 @@
   alias prod="cd $HOME/Desktop/Production"
   alias pgrep="pgrep -li"
   alias dv="dirs -v"
+  alias sozsh="source ~/.zshrc"
 
 # Parameters
-  PS1=$'%S[%!]%s %n %S[%1~]%s %# '
-  PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
+  typeset PS1=$'%S[%!]%s %m %S[%1~]%s %# '
+  typeset PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
+  typeset COLORTERM=truecolor
+  typeset -U PATH="$(brew --prefix)/bin:$PATH"
   typeset -U CDPATH="$CDPATH:$HOME/Desktop/(Production|PRODUCTION)"
   typeset -U FPATH="$FPATH:$HOME/.zfunc"
-  SHELL_SESSION_HISTORY=0
-  HISTFILE="${HISTFILE:-$HOME/.zsh_history}"
-  HISTSIZE=10000
-  SAVEHIST=10000
-  DIRSTACKSIZE=8
+  typeset SHELL_SESSION_HISTORY=0
+  typeset HISTFILE="${HISTFILE:-$HOME/.zsh_history}"
+  typeset HISTSIZE=10000
+  typeset SAVEHIST=10000
+  typeset DIRSTACKSIZE=8
 
 # File Management
   # create HISTFILE if there is none
@@ -70,10 +74,10 @@
   fi
 
   # Clean up Desktop screenshots
-  if [[ ! -d $HOME/Desktop/Screenshots ]]; then
+  if [[ ! -d $HOME/Desktop/Screenshots && -f $HOME/Desktop/Screenshot* ]]; then
   	mkdir $HOME/Desktop/Screenshots
   	mv -i $HOME/Desktop/Screenshot*(.) $HOME/Desktop/Screenshots(/)
-  else
+  elif [[ -d $HOME/Desktop/Screenshots && -f $HOME/Desktop/Screenshot* ]]; then
   	mv -i $HOME/Desktop/Screenshot*(.) $HOME/Desktop/Screenshots(/)
   fi
 
@@ -84,8 +88,8 @@
 
 # Sourcing plugins
 # download git by running the command: xcode-select --install, which is used to clone the plugins to the device
-source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
-source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+  source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+  source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # zsh-syntax-highlighting config
   ZSH_HIGHLIGHT_HIGHLIGHTERS=( main brackets )

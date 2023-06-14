@@ -30,6 +30,7 @@ brand_data = {
         'Kipling': {'folder': 'Kipling/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '(KPK[A-Z0-9]+)_(\\d|DSO)\\.tif'},
         'New Balance': {'folder': 'New Balance/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': ''},
         'OnTheList': {'folder': 'On the List/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([a-zA-Z0-9-]+)(_1|_2|-[1-9])(|_COMP[0-9]+|_INSERT)\\.tif'},
+        'Satami': {'folder': 'Satami/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': "([A-Z]{2}-[A-Z0-9]+-[A-Z0-9]{2})_(FRONT|BACK|DETAIL)(|_COMP[0-9]+|_INSERT)\\.tif"},
         'Sau Lee': {'folder': 'Sau Lee/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': ''},
         'Speedo': {'folder': 'Arena/Production/', 'session': check_date.strftime('%Y%m%d') + '_Speedo' + '*', 'prod_re': '([A-Z0-9]+)(_[0-9])(|_TOP|_BOTTOM)(|_COMP[0-9]+|_INSERT)(|_[a-zA-Z0-9\\s]+)\\.tif'},
         'Tommy Hilfiger': {'folder': 'Tommy Hilfiger/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': 'C11_02_AAA([A-Z0-9]+)_(FL|MO)-ST-([BDF][1-2])\\.tif'},
@@ -47,8 +48,6 @@ def main():
     gc = gspread.service_account_from_dict(cred_dict)
     ppbook = gc.open('2023 HK Production Planning')
     status_sheet = ppbook.worksheet('Brand Status')
-    # ssbook = gc.open('IHS Studio Schedule 2023')
-    # schedule_sheet = ssbook.worksheet('Studio Schedule')
 
     #Brand Status sheet
     statsheet_status_col = status_sheet.find('Status').col
@@ -65,10 +64,6 @@ def main():
     total_row = summary_sheet.find('Total').row
     total_cell = summary_sheet.cell(total_row, to_write_col).address
 
-    #Studio Schedule sheet
-    # schsheet_brand_col = schedule_sheet.find('Brand').col
-    # schsheet_date_format = yesterday.strftime('%a, %d %m')
-
     grand_product_shot = 0;
 
     server_path = Path("/Volumes/Studio/CLIENTS/")
@@ -81,7 +76,7 @@ def main():
             brand_prod_path = server_path / brand_data[brand]['folder']
             session_shot_yesterday_list = brand_prod_path.glob(brand_data[brand]['session'])
             product_list = [] #products been shot
-            reshot_produuct_list = [] #products been reshot
+            reshot_product_list = [] #products been reshot
             reshoot_product_list = [] #products need reshoot
             brand_img_name = re.compile(r'{}'.format(brand_data[brand]['prod_re']))
             print('\n==========================================================================================\n')
@@ -100,11 +95,16 @@ def main():
                         ans = ''
                         while ans == '':
                             ans = input('\nignore? (Y/N): ')
-                            if ans.lower() == 'y':
-                                product = input('Please manually input the product code: ')
+                            if ans.lower() == 'y' or ans.lower() == 'yes':
+                                product = ''
+                                while product == '':
+                                    product = input('Please manually input the product code: ')
                                 break
-                            elif ans.lower() == 'n':
+                            elif ans.lower() == 'n' or ans.lower() == 'no':
                                 sys.exit(1)
+                            else:
+                                ans = ''
+                                continue
 
                     #parse the img metadata to check if it is mac colour-labelled
                     colour_label = struct.unpack("<16H", xattr.getxattr(img, "com.apple.FinderInfo"))
@@ -116,14 +116,15 @@ def main():
 
                         if product not in reshoot_product_list:
                             reshoot_product_list.append(product)
-                        if product in reshot_produuct_list:
-                            reshot_produuct_list.remove(product)
+                        if product in reshot_product_list:
+                            reshot_product_list.remove(product)
                         if product in product_list:
                             product_list.remove(product)
                         continue
 
-                    if img.parent.name.lower() == "reshoot" or img.parent.name.lower() == "reshot":
-                        reshot_produuct_list.append(product)
+                    if 'reshoot' in str(img.absolute()).lower() or 'reshot' in str(img.absolute()).lower():
+                        if product not in reshot_product_list:
+                            reshot_product_list.append(product)
                         continue
 
                     if product not in product_list:
@@ -146,8 +147,8 @@ def main():
             if product_list != []:
                 print(f'\nNo. of products shot: {num_product_shot_ytd}')
 
-            num_product_reshot_ytd = len(reshot_produuct_list)
-            if reshot_produuct_list != []:
+            num_product_reshot_ytd = len(reshot_product_list)
+            if reshot_product_list != []:
                 print(f'No. of products reshot: {num_product_reshot_ytd}')
 
             if reshoot_product_list != []:

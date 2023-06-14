@@ -122,6 +122,8 @@ source $ZSH/oh-my-zsh.sh
 #=================================================================
 # zeric's startup {{{
 
+  source ~/.zecret
+
 # Options
   # setopt always_to_end
   # setopt auto_cd
@@ -163,39 +165,45 @@ source $ZSH/oh-my-zsh.sh
     zstyle ':completion:*:corrections' format '%B%d [errors: %e]%b'
   autoload -U backitup
   autoload -U charsort
-  autoload -U exportdrag
-  autoload -U imgcount
+  autoload -U colour-print
+  autoload -U curl-chafa
   autoload -U drag_kip_swatch
+  autoload -U exportdrag
+  autoload -U dialog
   autoload -U l1
   autoload -U newimgver
   autoload -U or_name_search
   autoload -U qcstart
   autoload -U retest
   autoload -U rl_aem
-  autoload -U show_ihs_ip
-  autoload -U ToSendFolder
+  autoload -U scp-from-imac
+  autoload -U scp-to-imac
+  autoload -U show-ihs-ip
+  autoload -U ssh-ihs
+  autoload -U ssh-ihs-all
   autoload -U vid_edit_template
 
 # Parameters
-  PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
+  export PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
   export -U path=(
-       $(brew --prefix)/Cellar/ruby/3.2.2/bin
-		   $(brew --prefix)/lib/ruby/gems/3.2.0/bin
-		   $path
-		   $(brew --prefix)/bin
-		   $HOME/.bin/zbin
-		   $HOME/.bin/pybin
-		   )
+                 $(brew --prefix)/Cellar/ruby/3.2.2/bin
+                 $(brew --prefix)/lib/ruby/gems/3.2.0/bin
+                 $path
+                 $(brew --prefix)/bin
+                 $HOME/.bin/zbin/
+                 $HOME/.bin/pybin
+                 )
 
   typeset -U cdpath=(
                      .
                      $HOME/Desktop
-		     )
+                     )
 
   typeset -U fpath=(
                     $fpath
-		    $HOME/.zfunc
-		    )
+                    $HOME/.zfunc/
+                    $HOME/.zfunc/**/*
+                    )
 
   export HOMEBREW_EDITOR=nvim
   export PYTHONPATH="$HOME/.bin/pybin/"
@@ -218,29 +226,31 @@ source $ZSH/oh-my-zsh.sh
 # Alias
   # builtins 
   alias c+="clang++ -std=c++11 -Wall"
+  alias config="cd $HOME/.config/"
   alias D="cd $HOME/Desktop/"
   alias down="cd $HOME/Downloads"
   alias dv="dirs -v"
-  alias zgit="cd $HOME/.zeric/.zgit/"
-  alias zfunc="cd $HOME/.zfunc/"
-  alias zer="cd $HOME/.zeric/"
-  alias config="cd $HOME/.config/"
-  alias pyhs="cd $HOME/.zeric/.zgit/pyhs"
-  alias pybin="$HOME/.bin/pybin/"
-  alias zbin="$HOME/.bin/zbin/"
   alias pgrep="pgrep -li"
+  alias pybin="$HOME/.bin/pybin/"
+  alias pyhs="cd $HOME/.zeric/.zgit/pyhs"
+  alias showargs="printf '>>>%s<<<\n'"
+  alias sozsh="source ~/.zshrc"
+  alias zbin="$HOME/.bin/zbin/"
+  alias zer="cd $HOME/.zeric/"
+  alias zfunc="cd $HOME/.zfunc/"
+  alias zgit="cd $HOME/.zeric/.zgit/"
   alias -g O="open ."
   # external commands
   alias dmen="open -a dmenu-mac"
-  alias imgid="identify"
+  alias ripgrep="rg"
   # alias htop="sudo htop"
   alias ls="colorls -A --sd"
   alias l="colorls -lA --sd --git-status"
   alias lr="colorls -report"
-  alias ltree="colorls --tree"
+  alias ltree="exa --long --tree"
   alias pip3updateall="pip3 list --outdated | cut -d' ' -f1 | sed -n '3,$ p' | xargs -I % pip3 install --upgrade %"
   alias py3="python3"
-  alias py3pyhs="python3 /Users/zeric.chan/.zeric/.zgit/pyhs/pyhs/Menu.py"
+  alias py3pyhs="python3 /Users/zeric.chan/.zeric/.zgit/pyhs/Menu.py"
   alias xl2csv="xlsx2csv"
   # IHS
   alias brand="open $HOME/Desktop/DOCUMENTS/Brand"
@@ -254,16 +264,19 @@ source $ZSH/oh-my-zsh.sh
   alias tbq="cd $HOME/Desktop/To Be QC"
   alias TSF="ToSendFolder"
   alias xl="open -a 'Microsoft Excel' '/Users/zeric.chan/Desktop/DOCUMENTS/QC/finder_search.xlsx'"
-  # misc
-  alias showargs="printf '>>>%s<<<\n'"
+  # Work
+  alias ssh-van="ssh -i $VAN_WEB_KEY -p $VAN_WEB_PORT $VAN_WEB_SERVER"
 
 # Startup commands
   clear  
   neofetch
   # cowsay -f dragon 'Roar!! I don''t want OT!!'
+  curl -s https://cultofthepartyparrot.com/parrots/hd/shuffleparrot.gif | chafa -
   # File management
     #mv -i $HOME/Desktop/RL/Sending/sent* $HOME/Desktop/RL/Sent
-    rm $HOME/Desktop/**/Thumbs.db
+    if [[ -f $HOME/Desktop/**/Thumbs.db ]]; then
+      rm $HOME/Desktop/**/Thumbs.db
+    fi
 
 # Sourcing programs
   source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -295,7 +308,5 @@ source $ZSH/oh-my-zsh.sh
     }
     AGNOSTER_PROMPT_SEGMENTS=("customize_agnoster" "${AGNOSTER_PROMPT_SEGMENTS[@]}")
 
-  # source the secrets
-    source ~/.zecret
 #}}}
 #=================================================================

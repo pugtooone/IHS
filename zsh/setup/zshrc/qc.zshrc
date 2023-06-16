@@ -273,15 +273,13 @@ source $ZSH/oh-my-zsh.sh
   # cowsay -f dragon 'Roar!! I don''t want OT!!'
   curl -s https://cultofthepartyparrot.com/parrots/hd/shuffleparrot.gif | chafa -
   # File management
-    #mv -i $HOME/Desktop/RL/Sending/sent* $HOME/Desktop/RL/Sent
-    if [[ -f $HOME/Desktop/**/Thumbs.db ]]; then
-      rm $HOME/Desktop/**/Thumbs.db
-    fi
+  [[ -f $HOME/Desktop/**/Thumbs.db ]] && rm $HOME/Desktop/**/Thumbs.db
 
 # Sourcing programs
   source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
   source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
   source /Users/zeric.chan/.config/broot/launcher/bash/br
+  eval $(thefuck --alias)
 
 # config
   # run-help for builtin commands

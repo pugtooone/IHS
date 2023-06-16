@@ -1,9 +1,0 @@
-# vim ft=zsh
-function backitup(){
-	if [[ -e $1 ]]; then
-		cp -r $1 $1_backup &
-	else
-		print "Usage: backitup [folder] ..."
-		return 2
-	fi
-}

@@ -1,8 +1,0 @@
-# vim ft=zsh
-function l1(){
-	if [[ $(which colorls) == *"not found"* ]]; then
-		[[ -e $1 ]] && command ls -1AG $1 | cat -n || command ls -1AG | cat -n
-	else
-		[[ -e $1 ]] && colorls -1AG $1 || colorls -1AG
-	fi
-}

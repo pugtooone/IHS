@@ -59,12 +59,15 @@ def main():
         active_brand_List.append(brand)
 
     #Brand Summary sheet
-    summary_sheet = ppbook.worksheet('Brand Summary')
-    to_write_col = summary_sheet.find('Products Shot Ytd').col
+    summary_sheet = ppbook.worksheet('Production Summary')
+    prod_shot_ytd_col = summary_sheet.find('Products Shot Ytd').col
+    prod_need_reshoot_col = summary_sheet.find('Products need Reshoot').col
     total_row = summary_sheet.find('Total').row
-    total_cell = summary_sheet.cell(total_row, to_write_col).address
+    total_shot_ytd_cell = summary_sheet.cell(total_row, prod_shot_ytd_col).address
+    total_need_reshoot_cell = summary_sheet.cell(total_row, prod_need_reshoot_col).address
 
-    grand_product_shot = 0;
+    grand_product_shot = 0
+    grand_product_need_reshoot = 0
 
     server_path = Path("/Volumes/Studio/CLIENTS/")
     while not server_path.is_dir():
@@ -83,7 +86,7 @@ def main():
             print('Brand: ' + brand + '\n')
 
             for session in session_shot_yesterday_list:
-                if 'model' in session.name.lower():
+                if 'model' in session.name.lower() or 'creative' in session.name.lower():
                     continue
                 print(session.name)
                 img_list = sorted((session / 'Output').glob('**/*.tif'))
@@ -101,7 +104,7 @@ def main():
                                     product = input('Please manually input the product code: ')
                                 break
                             elif ans.lower() == 'n' or ans.lower() == 'no':
-                                sys.exit(1)
+                                sys.exit(2)
                             else:
                                 ans = ''
                                 continue
@@ -131,17 +134,20 @@ def main():
                         product_list.append(product)
                     
             num_product_shot_ytd = len(product_list)
+            num_product_need_reshoot = len(reshoot_product_list)
             grand_product_shot += num_product_shot_ytd
+            grand_product_need_reshoot += num_product_need_reshoot
 
-            summary_sheet = ppbook.worksheet('Brand Summary')
-            to_write_col = summary_sheet.find('Products Shot Ytd').col
+            #Write to Production Summary brand row
             try:
-                to_write_row = summary_sheet.find(brand).row
+                brand_row = summary_sheet.find(brand).row
             except AttributeError:
                 print(f'Error: {brand} cannot be found on "Brand Summary" worksheet.')
                 continue
-            cell_to_write = summary_sheet.cell(to_write_row, to_write_col).address
-            summary_sheet.update(cell_to_write, num_product_shot_ytd)
+            prod_shot_ytd_cell = summary_sheet.cell(brand_row, prod_shot_ytd_col).address
+            prod_need_reshoot_cell = summary_sheet.cell(brand_row, prod_need_reshoot_col).address
+            summary_sheet.update(prod_shot_ytd_cell, num_product_shot_ytd) if num_product_shot_ytd != 0 else print(f'No products shot for {brand}')
+            summary_sheet.update(prod_need_reshoot_cell, num_product_need_reshoot) if num_product_shot_ytd != 0 else print(f'No products need shoot for {brand}')
 
             #Terminal Reporting
             if product_list != []:
@@ -155,7 +161,9 @@ def main():
                 print('\nProducts Required Reshoot:')
                 print(*reshoot_product_list)
 
-    summary_sheet.update(total_cell, grand_product_shot)
+    #Write to Production Summary Total row
+    summary_sheet.update(total_shot_ytd_cell, grand_product_shot)
+    summary_sheet.update(total_need_reshoot_cell, grand_product_need_reshoot)
     print('\n==========================================================================================\n')
 
 if __name__ == "__main__":

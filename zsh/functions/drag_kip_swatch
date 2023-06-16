@@ -1,9 +1,0 @@
-# vim ft=zsh
-function kipswatch(){
-	SWATCH_BASE="/Volumes/Studio/CLIENTS/Kipling/Post-production/Kipling Color Swatch"
-	if [[ $# == 1 ]]; then
-		for dir in $1/**/KP*(/); do
-			cp "${SWATCH_BASE}"/${dir: -3}.* $dir
-		done
-	fi
-}

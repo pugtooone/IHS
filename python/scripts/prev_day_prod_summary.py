@@ -18,29 +18,36 @@ from pathlib import Path
 from time import sleep
 
 import gspread
-
-#construct check_date as yesterday or last friday if today is Monday
-check_date = date.today() - timedelta(days=3) if date.today().strftime('%a') == 'Mon' else date.today() - timedelta(days=1)
-
-brand_data = {
-        'Agnes b': {'folder': 'Agnes B/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([A-Z0-9]+_[0-9]{3,4})_([0-9])(|_COMP[0-9]+|_INSERT)\\.tif'},
-        'Alphabox': {'folder': 'Alphabox/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': ''},
-        'Arena': {'folder': 'Arena/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([A-Z0-9]+)(_[0-9])(|_TOP|_BOTTOM)(|_COMP[0-9]?|_INSERT)(|_[a-zA-Z0-9\\s]+)\\.tif'},
-        'Fred Perry': {'folder': 'Fred Perry/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([A-Z0-9]{2,7}_[A-Z0-9]{3})_V2_Q124_([A-Z0-9]+)(|_COMP[0-9]?[ a-zA-Z0-9]*|_INSERT)\\.tif'},
-        'Kipling': {'folder': 'Kipling/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '(KPK[A-Z0-9]+)_(\\d|DSO)\\.tif'},
-        'New Balance': {'folder': 'New Balance/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': ''},
-        'OnTheList': {'folder': 'On the List/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([a-zA-Z0-9-]+)(_1|_2|-[1-9])(|_COMP[0-9]+|_INSERT)\\.tif'},
-        'Satami': {'folder': 'Satami/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': "([A-Z]{2}-[A-Z0-9]+-[A-Z0-9]{2})_(FRONT|BACK|DETAIL)(|_COMP[0-9]+|_INSERT)\\.tif"},
-        'Sau Lee': {'folder': 'Sau Lee/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': ''},
-        'Speedo': {'folder': 'Arena/Production/', 'session': check_date.strftime('%Y%m%d') + '_Speedo' + '*', 'prod_re': '([A-Z0-9]+)(_[0-9])(|_TOP|_BOTTOM)(|_COMP[0-9]+|_INSERT)(|_[a-zA-Z0-9\\s]+)\\.tif'},
-        'Tommy Hilfiger': {'folder': 'Tommy Hilfiger/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': 'C11_02_AAA([A-Z0-9]+)_(FL|MO)-ST-([BDF][1-2])\\.tif'},
-        'Toys R Us': {'folder': 'Toys R Us/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': ''},
-        'Ralph Lauren': {'folder': 'Ralph Lauren/Production/', 'session': check_date.strftime('%m%d%Y') + '*[!T]', 'prod_re': '([0-9]+)_([-a-zA-Z0-9]+)(|_[a-zA-Z0-9]+)\\.tif'},
-        'Ralph Lauren Premarket': {'folder': 'Ralph Lauren/Production/', 'session': check_date.strftime('%m%d%Y') + '*PREMARKET*', 'prod_re': '([0-9]+)_([-a-zA-Z0-9]+)(|_[a-zA-Z0-9]+)\\.tif'},
-        'Vans': {'folder': 'Vans/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([0-9]+)_([-a-zA-Z]+)(|_[a-zA-Z0-9]+)\\.tif'}
-        }
+import pyinputplus as pyip
 
 def main():
+    #prompt the user to see if yesterday is public holiday, and amend the days to be subtracted from today
+    holiday_check = pyip.inputYesNo('Is yesterday public holiday? ')
+    day_to_subtract = 2 if holiday_check == "yes" else 1
+
+    print('Parsing server...')
+
+    #construct check_date as yesterday or last friday if today is Monday
+    check_date = date.today() - timedelta(days=3) if date.today().strftime('%a') == 'Mon' else date.today() - timedelta(days=day_to_subtract)
+
+    brand_data = {
+            'Agnes b': {'folder': 'Agnes B/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([A-Z0-9]+_[0-9]{3,4})_([0-9])(|_COMP[0-9]+|_INSERT)\\.tif'},
+            'Alphabox': {'folder': 'Alphabox/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': ''},
+            'Arena': {'folder': 'Arena/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([A-Z0-9]+)(_[0-9])(|_TOP|_BOTTOM)(|_COMP[0-9]?|_INSERT)(|_[a-zA-Z0-9\\s]+)\\.tif'},
+            'Fred Perry': {'folder': 'Fred Perry/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([A-Z0-9]{2,7}_[A-Z0-9]{3})_V2_Q124_([A-Z0-9]+)(|_COMP[0-9]?[ a-zA-Z0-9]*|_INSERT)\\.tif'},
+            'Kipling': {'folder': 'Kipling/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '(KPK[A-Z0-9]+)_(\\d|DSO)\\.tif'},
+            'New Balance': {'folder': 'New Balance/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': ''},
+            'OnTheList': {'folder': 'On the List/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([a-zA-Z0-9-]+)(_[1-9]|-[1-9])(|_COMP[0-9]+|_INSERT)\\.tif'},
+            'Satami': {'folder': 'Satami/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': "([A-Z]{2}-[A-Z0-9]+-[A-Z0-9]{2})_(FRONT|BACK|DETAIL)(|_COMP[0-9]+|_INSERT)\\.tif"},
+            'Sau Lee': {'folder': 'Sau Lee/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': ''},
+            'Speedo': {'folder': 'Arena/Production/', 'session': check_date.strftime('%Y%m%d') + '_Speedo' + '*', 'prod_re': '([A-Z0-9]+)(_[0-9])(|_TOP|_BOTTOM)(|_COMP[0-9]+|_INSERT)(|_[a-zA-Z0-9\\s]+)\\.tif'},
+            'Tommy Hilfiger': {'folder': 'Tommy Hilfiger/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': 'C11_02_AAA([A-Z0-9]+)_(FL|MO)-ST-([BDF][1-2])\\.tif'},
+            'Toys R Us': {'folder': 'Toys R Us/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': ''},
+            'Ralph Lauren': {'folder': 'Ralph Lauren/Production/', 'session': check_date.strftime('%m%d%Y') + '*[!T]', 'prod_re': '([0-9]+)_([-a-zA-Z0-9]+)(|_[a-zA-Z0-9]+)\\.tif'},
+            'Ralph Lauren Premarket': {'folder': 'Ralph Lauren/Production/', 'session': check_date.strftime('%m%d%Y') + '*PREMARKET*', 'prod_re': '([0-9]+)_([-a-zA-Z0-9]+)(|_[a-zA-Z0-9]+)\\.tif'},
+            'Vans': {'folder': 'Vans/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([0-9]+)_([-a-zA-Z]+)(|_[a-zA-Z0-9]+)\\.tif'}
+            }
+
     service_account_json = Path('/Users/zeric.chan/.zeric/resources/service_account.json')
     with service_account_json.open(mode='r', encoding='utf-8') as cred_json:
         #convert to dict type as gspread.auth.service_account accepts only filename path or dict
@@ -135,6 +142,7 @@ def main():
                     
             num_product_shot_ytd = len(product_list)
             num_product_need_reshoot = len(reshoot_product_list)
+            num_product_reshot_ytd = len(reshot_product_list)
             grand_product_shot += num_product_shot_ytd
             grand_product_need_reshoot += num_product_need_reshoot
 
@@ -146,20 +154,21 @@ def main():
                 continue
             prod_shot_ytd_cell = summary_sheet.cell(brand_row, prod_shot_ytd_col).address
             prod_need_reshoot_cell = summary_sheet.cell(brand_row, prod_need_reshoot_col).address
-            summary_sheet.update(prod_shot_ytd_cell, num_product_shot_ytd) if num_product_shot_ytd != 0 else print(f'No products shot for {brand}')
-            summary_sheet.update(prod_need_reshoot_cell, num_product_need_reshoot) if num_product_shot_ytd != 0 else print(f'No products need shoot for {brand}')
+            summary_sheet.update(prod_shot_ytd_cell, num_product_shot_ytd) if num_product_shot_ytd != 0 else print(f'--- No products shot for {brand} ---')
+            summary_sheet.update(prod_need_reshoot_cell, num_product_need_reshoot) if num_product_need_reshoot != 0 else print(f'--- No products need reshoot for {brand} ---')
 
             #Terminal Reporting
             if product_list != []:
                 print(f'\nNo. of products shot: {num_product_shot_ytd}')
 
-            num_product_reshot_ytd = len(reshot_product_list)
             if reshot_product_list != []:
                 print(f'No. of products reshot: {num_product_reshot_ytd}')
 
             if reshoot_product_list != []:
+                print(f'No. of products reshot: {num_product_need_reshoot}')
                 print('\nProducts Required Reshoot:')
-                print(*reshoot_product_list)
+                for prod in reshoot_product_list:
+                    print("\t" + prod)
 
     #Write to Production Summary Total row
     summary_sheet.update(total_shot_ytd_cell, grand_product_shot)

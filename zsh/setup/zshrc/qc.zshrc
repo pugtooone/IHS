@@ -206,6 +206,8 @@ source $ZSH/oh-my-zsh.sh
                     )
 
   export HOMEBREW_EDITOR=nvim
+
+  #python env
   export PYTHONPATH="$HOME/.bin/pybin/"
 
   typeset PYBIN="$HOME/.bin/pybin/"
@@ -242,15 +244,16 @@ source $ZSH/oh-my-zsh.sh
   alias -g O="open ."
   # external commands
   alias dmen="open -a dmenu-mac"
-  alias ripgrep="rg"
   # alias htop="sudo htop"
   alias ls="colorls -A --sd"
   alias l="colorls -lA --sd --git-status"
   alias lr="colorls -report"
-  alias ltree="exa --long --tree"
+  alias ltree="exa --long --tree --sort=type"
   alias pip3updateall="pip3 list --outdated | cut -d' ' -f1 | sed -n '3,$ p' | xargs -I % pip3 install --upgrade %"
   alias py3="python3"
   alias py3pyhs="python3 /Users/zeric.chan/.zeric/.zgit/pyhs/Menu.py"
+  alias ripgrep="rg"
+  alias stable-diffusion="cd $ZGIT/Stable-Diffusion/; ./webui.sh"
   alias xl2csv="xlsx2csv"
   # IHS
   alias brand="open $HOME/Desktop/DOCUMENTS/Brand"

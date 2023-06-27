@@ -1,7 +1,5 @@
 /*
 
-Check Amendment Trackers by clicking a custom menu item to run script
-
 OAuth scope set up:
 1. Google Sheet > Extensions > Apps Script > Project Settings
 2. Turn on 'Show "appsscript.json" manifest file in editor'
@@ -15,29 +13,8 @@ function onOpen() {
   const ui = SpreadsheetApp.getUi();
   ui.createMenu('IHS Functions')
     .addItem('Check Amendment', 'checkAmendment')
-    .addItem('Integrate Shotlists', 'integrateShotlistsUI')
+    .addItem('Integrate Shotlists', 'integrateShotlists')
     .addToUi();
-};
-
-function createTimeTrigger() {
-  //time-trigger to run everyday between 0800-0900
-  ScriptApp.newTrigger('integrateShotlists')
-                      .timeBased()
-                      .atHour(8)
-                      .everyDays(1)
-                      .inTimezone("Asia/Hong_Kong")
-                      .create();
-  
-  ScriptApp.newTrigger('checkAmendment')
-                      .timeBased()
-                      .atHour(8)
-                      .everyDays(1)
-                      .inTimezone("Asia/Hong_Kong")
-                      .create();
-};
-
-function integrateShotlistsUI() {
-  integrateShotlists();
 };
 
 function integrateShotlists() {
@@ -46,14 +23,13 @@ function integrateShotlists() {
 
   const sourceSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Brand Status');
 
-  //get the coordinates for headeer "Brand"
-  let txtFinder = sourceSheet.createTextFinder('Brand');
-  let brandRange = txtFinder.findNext();
+  //get the coordinates for header "Brand"
+  const brandRange = sourceSheet.createTextFinder('Brand').matchEntireCell(true).findNext();
   const brandRow = brandRange.getRow();
   const brandCol = brandRange.getColumn();
 
-  //change the 4th arugment if new header is added
-  const sourceHeader = sourceSheet.getRange(brandRow, brandCol, 1, 19).getValues();
+  //mapping the source header with the col num
+  const sourceHeader = sourceSheet.getRange(brandRow, brandCol, 1, 19).getValues(); //setting: change 4th argument
   const sourceHeaderObj = {};
   for (let i = 0; i < sourceHeader[0].length; i++) {
     const header = sourceHeader[0][i];
@@ -61,6 +37,7 @@ function integrateShotlists() {
     sourceHeaderObj[header] = col;
   };
 
+  //logging the brand source
   const prettySourceHeaderObj =JSON.stringify(sourceHeaderObj, null, 2);
   Logger.log(prettySourceHeaderObj);
 
@@ -68,7 +45,7 @@ function integrateShotlists() {
 
   const sourceActiveBrandList = sourceSheet.createTextFinder('Active').matchEntireCell(true).findAll(); //getting the range of all 'Active' cells
   
-  //defining global variable for kipling to remove it from the active brand list later
+  //defining global variable for kipling
   let kiplingCell;
 
   for (let i = 0; i < sourceActiveBrandList.length; i++) {
@@ -89,19 +66,55 @@ function integrateShotlists() {
       activeBrandData[key] = val;
       delete activeBrandData.Brand;
     };
-
     brandObj[activeBrand] = activeBrandData;
   };
-
-  sourceActiveBrandList.pop(kiplingCell);
-  
+ 
   Logger.log('No. of Active Brands: ' + sourceActiveBrandList.length);
-  Logger.log('brand obj: ' + Object.keys(brandObj).length);
   const prettyBrandObj = JSON.stringify(brandObj, null, 2);
-  Logger.log(prettyBrandObj);
+  Logger.log('Received Unshot: \n' + prettyBrandObj);
 
-  //construct brand report
+//=======================================================================================================================================================================================
+// Est Unshot Products
+//=======================================================================================================================================================================================
 
+  const estSourceSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Est Product Delivery');
+  const estBrandCol = estSourceSheet.createTextFinder('Brand').matchEntireCell(true).findNext().getColumn();
+  const estBrandRow = estSourceSheet.createTextFinder('Brand').matchEntireCell(true).findNext().getRow();
+  const estShootTypeCol = estSourceSheet.createTextFinder('Shoot Type').matchEntireCell(true).findNext().getColumn();
+  const estNumProdCol = estSourceSheet.createTextFinder('No. of Products').matchEntireCell(true).findNext().getColumn();
+  const receivedNumProdCol = estSourceSheet.createTextFinder('No. of Recived Products').matchEntireCell(true).findNext().getColumn();
+  const receivedStatusCol = estSourceSheet.createTextFinder('Received').matchEntireCell(true).findNext().getColumn();
+
+  let estBrandObj = {};
+  for (let i=0; i<estSourceSheet.getLastRow(); i++) {
+    const brand = estSourceSheet.getRange(estBrandRow + 1 + i, estBrandCol).getValue();
+    const receivedStatus = estSourceSheet.getRange(estBrandRow + 1 + i, receivedStatusCol).getValue();
+    if (brand == '') {
+      break;
+    } else if (receivedStatus == 'TRUE') {
+      continue;
+    };
+    (!estBrandObj[brand]) ? estBrandObj[brand] = {}: {}; //init estBrandObj[brand] as {}
+    const shootType = estSourceSheet.getRange(estBrandRow + 1 + i, estShootTypeCol).getValue();
+    const estNumProd = estSourceSheet.getRange(estBrandRow + 1 + i, estNumProdCol).getValue();
+    let receivedNumProd = estSourceSheet.getRange(estBrandRow + 1 + i, receivedNumProdCol).getValue();
+    receivedNumProd == '' ? receivedNumProd = 0 : {}; //if no item is received, change the value to 0 instead of ''
+    const outstandingEstNumProd = estNumProd - receivedNumProd;
+    if (estBrandObj[brand][shootType]) {
+      estBrandObj[brand][shootType] += outstandingEstNumProd;
+    } else {
+      estBrandObj[brand][shootType] = outstandingEstNumProd;
+    };
+  };
+
+  const prettyEstBrandObj = JSON.stringify(estBrandObj, null, 2);
+  Logger.log('Est Product Deliver: \n' + prettyEstBrandObj);
+
+//=======================================================================================================================================================================================
+// Building Brand Report
+//=======================================================================================================================================================================================
+
+  //construct brand report for received but unshot
   const brandReports = {};
   const brandReportsData = []; //to write on the actual sheet
 
@@ -155,7 +168,7 @@ function integrateShotlists() {
     const prodUnshotArr = {"Flatlay": [], "Tabletop": [], "Mannequin": [], "Creative": []};
     let totalEcomShotCount = 0;
     //let totalModelShotCount = 0;
-    // let totalCreativeShotCount = 0;
+    //let totalCreativeShotCount = 0;
 
     for (let i = headerRow; i < lastRow; i++) {
       const shootNoteCell = brandShotlistData[i][shootNoteCol];
@@ -207,23 +220,78 @@ function integrateShotlists() {
     brandReports[brand]["Mannequin Unshot"] = prodUnshotArr["Mannequin"].length;
     brandReports[brand]["Total Images Shot"] = totalEcomShotCount;
 
-    const brandData = [brand, '', prodUnshotArr["Flatlay"].length, prodUnshotArr["Tabletop"].length, prodUnshotArr["Mannequin"].length, prodUnshotNum, url];
-    brandReportsData.push(brandData);
+    let estFlatlay = brandReports[brand]["Est Flatlay"] = 0;
+    let estTabletop = brandReports[brand]["Est Tabletop"] = 0;
+    let estBust = brandReports[brand]["Est Mannequin"] = 0;
+
+    if (estBrandObj[brand] != null) {
+      for (let category of Object.keys(estBrandObj[brand])) {
+        switch (category) {
+          case "Flatlay":
+            estFlatlay += estBrandObj[brand][category];
+            Logger.log(brand + 'Flatlay: ' + estFlatlay);
+            break;
+          case "Standing Flatlay":
+            estFlatlay += estBrandObj[brand][category];
+            Logger.log(brand + 'Flatlay: ' + estFlatlay);
+            break;
+          case "Tabletop":
+            estTabletop += estBrandObj[brand][category];
+            Logger.log(brand + 'Tabletop: ' + estTabletop);
+            break;
+          case "Mannequin":
+            estBust += estBrandObj[brand][category];
+            Logger.log(brand + ' Bust: ' + estBust);
+            break;
+          default:
+            Logger.log(`This is not a est Ecom batch: ${brand} ${category}`);
+        };
+      };
+    };
+
+    const brandData = [brand, '', '', prodUnshotArr["Flatlay"].length, prodUnshotArr["Tabletop"].length, prodUnshotArr["Mannequin"].length, '', estFlatlay, estTabletop, estBust, '', '', url]; //setting
+    let realBrandData = brandData.map(ele => (ele == 0 ? "": ele));
+    brandReportsData.push(realBrandData);
   };
 
+  //append Kipling data to brandReportsData if Kipling is active
+  if (kiplingCell != null) {
+    let estKipTabletop = 0;
+    for (let category of Object.keys(estBrandObj["Kipling"])) {
+        switch (category) {
+          case "Tabletop":
+            estKipTabletop += estBrandObj["Kipling"][category];
+            Logger.log('Kipling Tabletop: ' + estKipTabletop);
+            break;
+          default:
+            Logger.log(`This is not a est Ecom batch: Kipling ${category}`);
+        };
+      };
+    const kipData = ['Kipling', '', '', '', 'Check Teams', '', '', '', estKipTabletop, '', '', '', 'Microsoft Teams']; //setting
+    brandReportsData.push(kipData);
+  };
+
+//=======================================================================================================================================================================================
+
   //format header
-  const reportSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Brand Summary');
-  reportSheet.getDataRange().clear();
-  const unshotMergeHeader = reportSheet.getRange('D2:G2').merge().setValue('Unshot Products');
-  const repHeaderRow = reportSheet.getRange('B3:H3');
-  const repHeaders = [['Brand', 'Products Shot Ytd', 'Flatlay', 'Tabletop', 'Mannequin', 'Brand Total', 'URL']];
+  const reportSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Production Summary');
+  reportSheet.getDataRange().clear().setBackground("#ffffff");
+  const mergeHeader = reportSheet.getRange('B2:N2').merge().setValue('Production Summary'); //setting
+  const repHeaderRow = reportSheet.getRange('B3:N3'); //setting
+  const repHeaders = [['Brand', 'Products Shot Ytd', 'Products need Reshoot', 'Received Unshot Flatlay', 'Received Unshot Tabletop', 'Received Unshot Mannequin', 'Received Total', 'Est Delivering Flatlay', 'Est Delivering Tabletop', 'Est Delivering Mannequin', 'Est Total', 'Grand Total','URL']]; //setting
   repHeaderRow.setValues(repHeaders);
 
+//=======================================================================================================================================================================================
+
   //write data
+  const rangeToWriteFirstRow = 4; //first brand data start from B4
   const rangeToWriteLastRow = (sourceActiveBrandList.length + 3);
-  const repRangeToWrite = reportSheet.getRange('B4:H' + rangeToWriteLastRow.toString());
+  const rangeToWriteFirstCol = 2;
+  const rangeToWriteLastCol = repHeaders[0].length;
+  const repRangeToWrite = reportSheet.getRange(rangeToWriteFirstRow, rangeToWriteFirstCol, sourceActiveBrandList.length, rangeToWriteLastCol);
   repRangeToWrite.setValues(brandReportsData);
 
+  /*
   //write toal
   function getTotalEle(ele) {
     //function to get each of the shoot type no.
@@ -235,89 +303,79 @@ function integrateShotlists() {
     };
     return totalEle;
   };
-  const dateCell = 'Updated On: ' + new Date();
-  const totalData = [['Total', '', getTotalEle('Flatlay Unshot'), getTotalEle('Tabletop Unshot'), getTotalEle('Mannequin Unshot'), getTotalEle('Products Unshot'), dateCell]];
-  const totalRangeRow = rangeToWriteLastRow + 1;
-  const totalRangeToWrite = reportSheet.getRange('B' + totalRangeRow.toString() + ':H' + totalRangeRow.toString()); //columns might change
-  totalRangeToWrite.setValues(totalData);
+  */
 
-  //formatting
-  reportSheet.getDataRange().setWrap(true).setFontFamily('Avenir').setFontSize('10').setHorizontalAlignment('center');
-  unshotMergeHeader.setBackground('#ff6f31').setFontColor('#ffffff').setFontSize('12');
-  repHeaderRow.setFontColor('#ffffff').setFontSize('12');
-  reportSheet.getRange('B3').setBackground('#1c7685');
-  reportSheet.getRange('C3').setBackground('#1c7685');
-  reportSheet.getRange('D3:H3').setBackground('#004561');
-  repRangeToWrite.setBackground('#c1dfe5').setFontColor('#000000');
-  reportSheet.getRange('C3').setBackground('#57bb8a');
-  totalRangeToWrite.setBackground('#b2cfd5').setFontColor('#000000');
-};
+  //write to Totals
+  const brandCell = reportSheet.createTextFinder('Brand').findNext();
+  const brandCellRow = brandCell.getRow();
+  const brandCellCol = brandCell.getColumn();
+  reportSheet.getRange(rangeToWriteLastRow + 1, brandCellCol).setValue('Total');
+  const totalCellRow = reportSheet.createTextFinder('Total').matchEntireCell(true).findNext().getRow();
+  const urlCellCol = reportSheet.createTextFinder('URL').matchEntireCell(true).findNext().getColumn();
+  const receivedTotalCol = reportSheet.createTextFinder('Received Total').findNext().getColumn();
+  const estTotalCol = reportSheet.createTextFinder('Est Total').findNext().getColumn();
+  const grandTotalCol = reportSheet.createTextFinder('Grand Total').findNext().getColumn();
 
+  const dateCellData = 'Updated On: ' + new Date();
+  reportSheet.getRange(totalCellRow, urlCellCol).setValue(dateCellData);
 
+  //write to Total row
+  for (let i = brandCellCol + 1; i < urlCellCol -2 ; i++) {
+    const totalCell = reportSheet.getRange(`R${totalCellRow}C${i}`);
+    totalCell.setFormulaR1C1(`=SUM(R[-${totalCellRow - brandCellRow-1}]C[0]:R[-1]C[0])`)
+  }
+
+  //write to Receivd & Est & Grand total cols
+  for (let i = brandCellRow + 1; i < totalCellRow + 1; i++) {
+    const receivedTotalCell = reportSheet.getRange(`R${i}C${receivedTotalCol}`);
+    receivedTotalCell.setFormulaR1C1(`=SUM(R[0]C[-3]:R[0]C[-1])`);
+    const estTotalCell = reportSheet.getRange(`R${i}C${estTotalCol}`);
+    estTotalCell.setFormulaR1C1(`=SUM(R[0]C[-3]:R[0]C[-1])`);
+    const grandTotalCell = reportSheet.getRange(`R${i}C${grandTotalCol}`);
+    grandTotalCell.setFormulaR1C1(`=R[0]C[-${grandTotalCol - receivedTotalCol}] + R[0]C[-${grandTotalCol - estTotalCol}]`);
+  };
 
 /*
-Check Amendment
-*/
-
-function checkAmendment() {
-
-  SpreadsheetApp.flush();
-
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Outstanding Amendment');
-
-  //reset the background colour
-  sheet.getDataRange().setBackground('#f3f3f3').setHorizontalAlignment('center');
-
-  const brandTrackers = {
-    'Agnes b': 'https://docs.google.com/spreadsheets/d/1rC1-voiH3NYIsFgi3VsoWd0ds7ojZGw084XI3M6J8po/edit#gid=1601560151',
-    'AIWA': 'https://docs.google.com/spreadsheets/d/10GJTYf3yfBpnxR69j1gcnfxi1u6AYfvtGfmD6w4Oyus/edit#gid=970161406',
-    'Arena': 'https://docs.google.com/spreadsheets/d/10yNTABlFQlx_R7nbqR3oXii40rFwzsw8IajwR0V5ftE/edit#gid=1684687137',
-    'Esprit': 'https://docs.google.com/spreadsheets/d/1LK_Quoa7yJsEiL8yV01wBn8c1EOJFEMB_886atckwvc/edit#gid=210531185',
-    'Fred Perry': 'https://docs.google.com/spreadsheets/d/1y4JI-a44SjZiBcW94G5J8GErm1ytKMPC13YKhlXcb1M/edit#gid=949243280',
-    'New Balance': 'https://docs.google.com/spreadsheets/d/10D_KgKpsYesrY6xzTQpb2ZvmR9NoFO32GGtlhjjA-U0/edit#gid=863564986',
-    'OnTheList': 'https://docs.google.com/spreadsheets/d/1AqX784_9lpP9WGgddLLdmOskHseAB2rgL98o3jefggA/edit#gid=259185547',
-    'Petit Bateau': 'https://docs.google.com/spreadsheets/d/1aSYGtTLBjaqJBA6owQALhb4L_achp11b2Gjic3cQtwE/edit#gid=1637937787',
-    'Toy R US': 'https://docs.google.com/spreadsheets/d/1H1gtR3nceJJUh73JKCV4Xx1GJpuZkhHvfMeUwFR83bw/edit#gid=1459237771',
-    'WEAT': 'https://docs.google.com/spreadsheets/d/150j8-pMeSv4N1Fr4ZmQnjixwpcqIAbUOE2Sn1HCCrWc/edit#gid=1993904249'
-  };
-
-  let amendmentInfo = [];
-  let msg = "There are outstanding amendments for:\n\n";
-
-  for (let brand in brandTrackers) {
-    const url = brandTrackers[brand];
-    const statusCol = SpreadsheetApp.openByUrl(url).getRangeByName('amendment_status');
-    const statusVal = statusCol.getValues();
-    let amendmentNum = 0;
-
-    for (const status of statusVal) {
-      if (status == 'INCOMPLETE') {
-        amendmentNum += 1;
+  //remove zeros
+  for (i=rangeToWriteFirstRow; i<rangeToWriteLastRow + 1; i++) {
+    for (j=rangeToWriteFirstCol; j<rangeToWriteLastCol + 1; j++) {
+      if (reportSheet.getRange(i, j).getValue() === 0) {
+        reportSheet.getRange(i, j).clear();
       };
     };
-
-    if (amendmentNum > 0) {
-      msg += "- " + brand + "\n";
-      let newInfo = [[brand], [amendmentNum], [url]];
-      amendmentInfo.push(newInfo);
-    };
-
   };
+*/
 
-  const numRow = 3 + amendmentInfo.length;
-  const range = sheet.getRange('B4:D' + numRow.toString());
+//========================================================================================================================================================================================
 
-  //formatting background color
-  sheet.getRange('B2').setBackground('#004561').setFontColor('#ffffff');
-  sheet.getRange('B3').setBackground('#ffffff').setFontColor('#ff6f31');
-  sheet.getRange('C3:D3').setBackground('#ff6f31').setFontColor('#ffffff');
-  sheet.getRange('B4:B' + numRow.toString()).setBackground('#1c7685').setFontColor('#ffffff');
-  sheet.getRange('C4:D' + numRow.toString()).setBackground('#c1dfe5').setFontColor('#004561');
+  //formatting
+  const prodShotYtdCol = reportSheet.createTextFinder('Products Shot Ytd').matchEntireCell(true).findNext().getColumn();
+  const prodNeedReshootCol = reportSheet.createTextFinder('Products need Reshoot').matchEntireCell(true).findNext().getColumn();
 
-  //update the Outstanding Amendments sheet
-  range.setValues(amendmentInfo);
+  reportSheet.getDataRange().setWrap(true).setFontFamily('Avenir').setFontSize('10').setHorizontalAlignment('center').setBackground('#f3f3f3').setBorder(false, false, false, false, false, false);
+  mergeHeader.setBackground('#004561').setFontColor('#f3f3f3').setFontSize('14');
+  repHeaderRow.setBackground('#ff6f31').setFontColor('#f3f3f3').setFontSize('12');
+  brandCell.setBackground('#ffffff').setFontColor('#ff6f31').setFontSize('12');
+  repRangeToWrite.setBackground('#c1dfe5').setFontColor('#004561');
+  reportSheet.getRange(totalCellRow, rangeToWriteFirstCol, 1, repHeaders[0].length).setBackground('#b2cfd5').setFontColor('#004561'); //Total row
+  reportSheet.getRange(rangeToWriteFirstRow, rangeToWriteFirstCol, sourceActiveBrandList.length + 1).setBackground('#1c7685').setFontColor('#f3f3f3'); //Brands
+  reportSheet.getRange(rangeToWriteFirstRow, prodShotYtdCol, sourceActiveBrandList.length + 1).setBackground('#b2cfd5').setFontColor('#004561'); //Products Shot Ytd
+  reportSheet.getRange(brandCellRow, prodShotYtdCol).setBackground('#1c7685').setFontColor('#f3f3f3');
+  reportSheet.getRange(rangeToWriteFirstRow, prodNeedReshootCol, sourceActiveBrandList.length + 1).setBackground('#b2cfd5').setFontColor('#004561'); //Products need Reshoot
+  reportSheet.getRange(brandCellRow, prodNeedReshootCol).setBackground('#1c7685').setFontColor('#f3f3f3');
+  reportSheet.getRange(rangeToWriteFirstRow, receivedTotalCol, sourceActiveBrandList.length + 1).setBackground('#b2cfd5').setFontColor('#004561'); //Received Total
+  reportSheet.getRange(rangeToWriteFirstRow, estTotalCol, sourceActiveBrandList.length + 1).setBackground('#b2cfd5').setFontColor('#004561'); //Est Total
+  reportSheet.getRange(rangeToWriteFirstRow, grandTotalCol, sourceActiveBrandList.length + 1).setBackground('#88a3a8').setFontColor('#004561'); //Grand Total
+  reportSheet.getRange(rangeToWriteFirstRow, urlCellCol, sourceActiveBrandList.length + 1).setBackground('#1c7685').setFontColor('#f3f3f3'); //URL
+  reportSheet.getRange(totalCellRow, urlCellCol).setBackground('#004561').setFontColor('#f3f3f3');
+  reportSheet.getRange(rangeToWriteFirstRow, rangeToWriteFirstCol + 1, sourceActiveBrandList.length + 1, repHeaders[0].length - 1).setBorder(false, false, false, false, false, true, "#004561", SpreadsheetApp.BorderStyle.SOLID);
 
-  //GUI alert to display brands with outstanding amendments
-  SpreadsheetApp.getUi().alert(msg);
+  //resize columns
+  reportSheet.setColumnWidths(1, reportSheet.getLastColumn(), 100);
+  const urlColNum = reportSheet.createTextFinder('URL').findNext().getColumn();
+  reportSheet.setColumnWidth(urlColNum, 500);
 
+  Logger.log('finish');
 };
+
+//EOF======================================================================================================================================================================================

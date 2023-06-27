@@ -39,6 +39,8 @@ let NVIM_INIT = "/Users/zericchan/.config/nvim"
 
 let mapleader = "\\"
 nnoremap <space> :
+"Shift + t twice to navigate to next buffer tab
+nnoremap <S-t><S-t> :bn<CR>
 " navigate between splits
 nnoremap <C-h> <C-w><C-h>
 nnoremap <C-j> <C-w><C-j>

@@ -379,3 +379,93 @@ function integrateShotlists() {
 };
 
 //EOF======================================================================================================================================================================================
+
+
+/*
+Check Amendment
+*/
+
+function checkAmendment() {
+
+  SpreadsheetApp.flush();
+
+  const amendSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Outstanding Amendment');
+
+  //format Outstanding Amendment sheet
+  amendSheet.getDataRange().clear().setBackground('#f3f3f3').setHorizontalAlignment('center').setVerticalAlignment('middle').setFontFamily("Avenir");
+  const mergeHeader = amendSheet.getRange('B2:D2').merge().setValue('Outstanding Amendments').setFontSize(12);
+  const brandCell = amendSheet.getRange('B3').setValue('Brand').setFontSize(12);
+  const numCell = amendSheet.getRange('C3').setValue('No. of Amendment').setFontSize(12);
+  const urlCell = amendSheet.getRange('D3').setValue('URL').setFontSize(12);
+
+  const sourceSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Brand Status');
+
+  //get the col and row for the brand source sheet data
+  const soBrandCol = sourceSheet.createTextFinder('Brand').matchEntireCell(true).findNext().getColumn();
+  const soBrandRow = sourceSheet.createTextFinder('Brand').matchEntireCell(true).findNext().getRow();
+  const soURLCol = sourceSheet.createTextFinder('Shotlist link').matchEntireCell(true).findNext().getColumn();
+  const soLastRow = sourceSheet.getLastRow();
+
+  let brandTrackers = {};
+
+  for (let i=soBrandRow + 1; i<=soLastRow; i++) {  
+    const brand = sourceSheet.getRange(i, soBrandCol).getValue();
+    if (brand === "Kipling" || brand === "Speedo") {
+      Logger.log("ignoring " + brand + "...");
+      continue;
+    };
+    const url = sourceSheet.getRange(i, soURLCol).getValue();
+    brandTrackers[brand] = url;
+  };
+
+  const prettyBrandTrackers = JSON.stringify(brandTrackers, null, 2);
+  Logger.log(prettyBrandTrackers);
+
+  let amendmentInfo = [];
+  let msg = "There are outstanding amendments for:\n\n";
+
+  for (let brand in brandTrackers) {
+    Logger.log('accessing ' + brand + '...');
+    const url = brandTrackers[brand];
+    let brandSheet = SpreadsheetApp.openByUrl(url).getSheetByName('Amendment Tracker');
+    if (brand.startsWith("Ralph Lauren")) {
+      brandSheet = SpreadsheetApp.openByUrl(url).getSheetByName('RESHOOT TRACKER');
+    };
+    const statusCol = brandSheet.createTextFinder('Status').matchEntireCell(true).findNext().getColumn();
+    const statusRow = brandSheet.createTextFinder('Status').matchEntireCell(true).findNext().getRow();
+    const numStatusRow = brandSheet.getLastRow() - statusRow;
+    const statusVal = brandSheet.getRange(statusRow + 1, statusCol, numStatusRow).getValues();
+    
+    let amendmentNum = 0;
+
+    for (const status of statusVal) {
+      if (status == 'INCOMPLETE') {
+        amendmentNum += 1;
+      };
+    };
+
+    if (amendmentNum > 0) {
+      msg += "- " + brand + "\n";
+      let newInfo = [[brand], [amendmentNum], [url]];
+      amendmentInfo.push(newInfo);
+    };
+
+  };
+
+  const numRow = 3 + amendmentInfo.length;
+  const range = amendSheet.getRange('B4:D' + numRow.toString());
+
+  //formatting background color
+  mergeHeader.setBackground('#004561').setFontColor('#ffffff');
+  brandCell.setBackground('#ffffff').setFontColor('#ff6f31');
+  amendSheet.getRange('C3:D3').setBackground('#ff6f31').setFontColor('#ffffff');
+  amendSheet.getRange('B4:B' + numRow.toString()).setBackground('#1c7685').setFontColor('#ffffff');
+  amendSheet.getRange('C4:D' + numRow.toString()).setBackground('#c1dfe5').setFontColor('#004561');
+
+  //update the Outstanding Amendments sheet
+  range.setValues(amendmentInfo);
+
+  //GUI alert to display brands with outstanding amendments
+  SpreadsheetApp.getUi().alert(msg);
+
+};

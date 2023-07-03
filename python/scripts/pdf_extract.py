@@ -1,10 +1,15 @@
 #! python3
-# 1.0.2 introduce text_extract()
+# 1.0.3 formatting
 
+import io
+import os
+import sys
 from pathlib import Path
 from tkinter.filedialog import askopenfilename
+
+import fitz
+import pyperclip
 from PIL import Image
-import fitz, io, os, sys, pyperclip
 
 def img_extract():
     file = Path(askopenfilename())
@@ -64,7 +69,7 @@ def make_text(words):
     lines.sort()  # sort vertically
     return "\n".join([" ".join(line[1]) for line in lines])
 
-def select_text_extract():
+def highlight_text_extract():
     file = Path(askopenfilename())
     pdf = fitz.open(file)
 
@@ -104,7 +109,7 @@ def main():
             all_text_extract()
             sys.exit()
         elif answer == '2':
-            select_text_extract()
+            highlight_text_extract()
             sys.exit()
         elif answer == '3':
             img_extract()

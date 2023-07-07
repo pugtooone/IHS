@@ -4,50 +4,39 @@
 function onEdit(e) {
 
   const eValue = e.range.getValue();
-  const eColumn = e.range.getColumn();
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const reqDateCell = ss.getRange("Amendment Tracker!B2");
-  const reqDateCol = reqDateCell.getColumn();
-  const deliDateCell = ss.getRange("Amendment Tracker!K2");
-  const deliDateCol = deliDateCell.getColumn();
-  const shipBackDateCell = ss.getRange("Shot List!Q2");
-  const shipBackDateCol = shipBackDateCell.getColumn();
+  const eCol = e.range.getColumn();
+  const eRow = e.range.getRow();
 
-//Amendment Tracker Autofill Dates
-  if (ss.getSheetName() === "Amendment Tracker") {
+  const mainShotlist = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Shot List');
+  const shipBackDateCol = mainShotlist.createTextFinder('Ship Back Date').matchEntireCell(true).findNext().getColumn();
+  const checkouteCol = mainShotlist.createTextFinder('Check Out IHS').matchEntireCell(true).findNext().getColumn();
+  const shipBackWord = "Shipped back"; //text of the checkout status
 
-    if (eColumn == reqDateCol + 3  && eValue !== "") {
+  const amendTrackerSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Amendment Tracker');
+  const reqDateCol = amendTrackerSheet.createTextFinder('Request Date').matchEntireCell(true).findNext().getColumn();
+  const deliDateCol = amendTrackerSheet.createTextFinder('Delivery Date').matchEntireCell(true).findNext().getColumn();
+  const imgCol = amendTrackerSheet.createTextFinder('Image Name').matchEntireCell(true).findNext().getColumn();
+  const linkCol = amendTrackerSheet.createTextFinder('Delivery Link').matchEntireCell(true).findNext().getColumn();
 
-      const cell = e.range.offset(0, -3);
-      
-      if (cell.getValue() === "" && cell.getRow() > 2 && reqDateCell.getValue() === "Request Date" && cell.getColumn() === reqDateCol) {
-        cell.setValue(new Date());
-      }
-
-    } else if (eColumn == deliDateCol - 1  && eValue !== "") {
-
-      const cell = e.range.offset(0, 1);
-
-      if (cell.getValue() === "" && cell.getRow() > 2 && deliDateCell.getValue() === "Delivery Date" && cell.getColumn() === deliDateCol) {
-        cell.setValue(new Date());
-      }
-
+  //Shotlist Autofill Ship Back Date
+  if (eCol === checkouteCol && eValue === shipBackWord) {
+    const cell = mainShotlist.getRange(eRow, shipBackDateCol);
+    if (cell.getValue() === "") {
+     cell.setValue(new Date());
     };
-
   };
 
-//Shotlist Autofill Ship Back Date
-  if (ss.getSheetName() === "Shot List") {
-
-    if (eColumn == shipBackDateCol - 1  && eValue === "Shipped back") {
-
-      const cell = e.range.offset(0, 1);
-
-      if (cell.getValue() === "" && cell.getRow() > 2 && shipBackDateCell.getValue() === "Ship Back Date" && cell.getColumn() === shipBackDateCol) {
-       cell.setValue(new Date());
-      };
-    };
-
+  //Amendment Tracker Autofill Dates
+  if (eCol === imgCol  && eValue !== "") {
+    const cell = amendTrackerSheet.getRange(eRow, reqDateCol);
+    if (cell.getValue() === "" && cell.getRow() > 2) {
+     cell.setValue(new Date());
+    }
+  } else if (eCol === linkCol && eValue !== "") {
+    const cell = amendTrackerSheet.getRange(eRow, deliDateCol);
+    if (cell.getValue() === "" && cell.getRow() > 2) {
+     cell.setValue(new Date());
+    }
   };
 
 }

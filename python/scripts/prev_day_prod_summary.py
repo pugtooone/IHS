@@ -35,6 +35,7 @@ def main():
             'Alphabox': {'folder': 'Alphabox/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': ''},
             'Arena': {'folder': 'Arena/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([A-Z0-9]+)(_[0-9])(|_TOP|_BOTTOM)(|_COMP[0-9]?|_INSERT)(|_[a-zA-Z0-9\\s]+)\\.tif'},
             'Fred Perry': {'folder': 'Fred Perry/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([A-Z0-9]{2,7}_[A-Z0-9]{3})_V2_Q124_([A-Z0-9]+)(|_COMP[0-9]?[ a-zA-Z0-9]*|_INSERT)\\.tif'},
+            'Lojel': {'folder': 'Lojel/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([^_]+)(|_.+)\\.tif'},
             'Kipling': {'folder': 'Kipling/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '(KPK[A-Z0-9]+)_(\\d|DSO)\\.tif'},
             'New Balance': {'folder': 'New Balance/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': ''},
             'OnTheList': {'folder': 'On the List/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([a-zA-Z0-9-]+)(_[1-9]|-[1-9])(|_COMP[0-9]+|_INSERT)\\.tif'},
@@ -63,6 +64,9 @@ def main():
     active_brand_List = []
     for active_cell in active_brand_cells:
         brand = status_sheet.cell(active_cell.row, statsheet_brand_col).value
+        #check if brand data exists
+        if not brand in brand_data.keys():
+            sys.exit(f'Error: {brand} data is missing')
         active_brand_List.append(brand)
 
     #Brand Summary sheet
@@ -165,7 +169,7 @@ def main():
                 print(f'No. of products reshot: {num_product_reshot_ytd}')
 
             if reshoot_product_list != []:
-                print(f'No. of products reshot: {num_product_need_reshoot}')
+                print(f'No. of products need reshoot: {num_product_need_reshoot}')
                 print('\nProducts Required Reshoot:')
                 for prod in reshoot_product_list:
                     print("\t" + prod)

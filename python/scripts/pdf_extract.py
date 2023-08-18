@@ -9,15 +9,19 @@ from tkinter.filedialog import askopenfilename
 
 import fitz
 import pyperclip
+from pprint import pprint
 from PIL import Image
 
 def img_extract():
     file = Path(askopenfilename())
     pdf = fitz.open(file)
 
-    Path.mkdir(file.parent / 'Images')
+    print('img_extract() running...')
+
+    Path.mkdir(file.parent / 'Images', exist_ok=True)
     os.chdir(file.parent / 'Images')
 
+    no_of_img = 0
     for pageNo in range(len(pdf)):
         page = pdf[pageNo]
 
@@ -34,9 +38,11 @@ def img_extract():
             image = Image.open(io.BytesIO(imgBytes))
             #save img with the filename underneath
             # image.save(open(f"{imgNameList[imgIndex]}", "wb"))
-            image.save(open(f"{imgIndex}.png", "wb"))
+            image.save(open(f"{pageNo}-{imgIndex}.png", "wb"))
+            no_of_img += 1
+            print(f'saving images: {pageNo}-{imgIndex}.png')
 
-    print('Images copied')
+    print(f'\n------Summary------\nTotal pages: {len(pdf)}\nTotal images: {no_of_img}')
 
 def all_text_extract():
     file = Path(askopenfilename())
@@ -96,13 +102,49 @@ def highlight_text_extract():
     print('Text copied')
     print(f'Total Selection: {drawingCount}')
 
+def CF_highlight_text_extract():
+    """extract high-lighted text from Creative Force contact sheet
+    """
+    file = Path(askopenfilename())
+    pdf = fitz.open(file)
+
+    print(''.center(100,"="))
+    print('Scanning for highlighted text...'.center(100) + '\n')
+
+    text = ""
+    drawingCount = 0
+
+    for pageNo in range(len(pdf)):
+        print(f'Accessing Page [{pageNo + 1}]...')
+        page = pdf[pageNo]
+
+        drawings = page.get_drawings()
+        for i in range(len(drawings)):
+            rect = drawings[i]['rect']
+            #continue the loop if the fill colour is white (only return the highlighted one)
+            if drawings[i]["fill"] == (1.0, 1.0, 1.0):
+                continue
+            drawingCount += 1
+
+            try:
+                filename = page.get_text("words", clip=rect)[0][4]
+                if filename.endswith('tif'):
+                    text += f'\n{filename}'
+            except IndexError:
+                print(f"Error: No words extractable for {rect}")
+
+    pyperclip.copy(text)
+    print('Text copied')
+    print(f'Total Selection: {drawingCount}')
+
 def main():
     while True:
         print('''Choose the digital assets to extract from PDF: 
 
     [1]: All Text
     [2]: High-lighted Text
-    [3]: Images
+    [3]: Creative Force High-lighted Text
+    [4]: Images
             ''')
         answer = input()
         if answer == '1':
@@ -112,6 +154,9 @@ def main():
             highlight_text_extract()
             sys.exit()
         elif answer == '3':
+            CF_highlight_text_extract()
+            sys.exit()
+        elif answer == '4':
             img_extract()
             sys.exit()
 

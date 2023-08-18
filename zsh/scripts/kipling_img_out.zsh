@@ -15,6 +15,10 @@ setopt xtrace
 local PS4=$'+%1N:[%i]:%_> '
 print "executed at $(date "+%Y%m%d %H:%M")"
 
+while [[ ! -d /Volumes/Studio ]]; do
+  osascript -e "Server is not connected\nPlease reconnect before proceed"
+done
+
 while true; do
 
 	# applescript for dialog box for choosing folder
@@ -26,48 +30,41 @@ while true; do
 
     		cd $target_folder
     		local PARENT="$(print $target_folder)"
-		local SWATCH_BASE="/Volumes/Studio/CLIENTS/Kipling/Post-production/Kipling Color Swatch"
+        local SWATCH_BASE="/Volumes/Studio/CLIENTS/Kipling/Post-production/Kipling Color Swatch"
 
-    		# check if the last modified time of the swatch base is older than 3 days
-		# if (( $(date +%Y%m%d) - $(stat -f %Sm -t %Y%m%d ${SWATCH_BASE}) > 3 )); then
-	    		# print 'The swatch base has not been updated for more than 3 days'
-	    		# osascript -e 'display alert "The swatch base has not been updated for more than 3 days" message "Find zeric for help"'
-			# exit 2
-    		# fi
-    		
     		if [[ ! -d Images ]]; then
         		mkdir Images
     		fi
     		
     		# array for Kipling grid size
     		typeset -a GRID=( A1 A2 A3 A4 A5 B1 B2 B3 B4 B5 B6 TBC )
+        local NUM_GRID=((${#GRID[@]} + 1))
     		
     		# move all product folders to the designated master grid size folders
-    		for (( i=1 ; i<13 ; i++ )); do
-
+    		for (( i=1 ; i<$NUM_GRID ; i++ )); do
 	    		for dir in **/"${GRID[i]}"; do
 		    		mkdir Images/"${GRID[i]}"
 		    		local MGRID="${PARENT}/Images/${GRID[i]}"
-
 		    		for dir in [^I]*/**/${GRID[i]}; do
-
-			    		ls -1 $dir | while read; do
-							if [[ -e $SWATCH_BASE/${REPLY: -3}.(jpg|tif) ]]; then
-								cp $SWATCH_BASE/${REPLY: -3}.(jpg|tif) ${dir}/${REPLY}/
-			        			else
-								# duplicate the swatch into the product folder itself
-								cp ${dir}/${REPLY}/${REPLY}_(1|DSO).tif ${dir}/${REPLY}/${REPLY: -3}.tif
-	                                                	# back up the new swatch to the server
-								cp ${dir}/${REPLY}/${REPLY}_(1|DSO).tif ${SWATCH_BASE}/${REPLY: -3}.tif
-			        			fi
-			    			done
+			    		command ls -1 $dir | while read; do
+                if [[ -e $SWATCH_BASE/${REPLY: -3}.* ]]; then
+                  cp $SWATCH_BASE/${REPLY: -3}.(jpg|tif) ${dir}/${REPLY}/
+                else
+                  # convert the mainshot as jpeg and back up to the server
+                  sips -s format jpeg ${dir}/${REPLY}/${REPLY}_(1|DSO).tif --out ${dir}/${REPLY}/${REPLY: -3}.jpg
+                  if [[ -e ${dir}/${REPLY}/${REPLY}_DSO.tif ]]; then
+                    mv ${dir}/${REPLY}/${REPLY: -3}.jpg ${SWATCH_BASE}/DSO/
+                  else
+                    mv ${dir}/${REPLY}/${REPLY: -3}.jpg ${SWATCH_BASE}/Regular/
+                  fi
+                fi
+              done #end while loop
 			    		cd $dir
 			    		mv -n KPK* $MGRID
 			    		cd $PARENT
 		    		done
 	    		done
-    		done
-		osascript -e 'display alert "Backup the new swatches to the server" message "We will be eternally grateful"'
+    		done #end i loop
 		break
 	elif [[ ${target_folder_apple} == '' ]]; then
 		exit 2

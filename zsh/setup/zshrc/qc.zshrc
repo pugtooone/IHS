@@ -38,7 +38,7 @@ ZSH_THEME="Zeric's agnoster"
 
 # Uncomment one of the following lines to change the auto-update behavior
 # zstyle ':omz:update' mode disabled  # disable automatic updates
-# zstyle ':omz:update' mode auto      # update automatically without asking
+zstyle ':omz:update' mode auto      # update automatically without asking
 # zstyle ':omz:update' mode reminder  # just remind me to update when it's time
 
 # Uncomment the following line to change how often to auto-update (in days).
@@ -176,17 +176,21 @@ source $ZSH/oh-my-zsh.sh
   autoload -U qcstart
   autoload -U retest
   autoload -U rl_aem
+  autoload -U vid_edit_template
+
+  #ssh-related
+  autoload -U check-ssh-key
+  autoload -U rsync-to-all-imac
   autoload -U scp-from-imac
-  autoload -U scp-to-imac
   autoload -U show-ihs-ip
   autoload -U ssh-ihs
   autoload -U ssh-ihs-all
-  autoload -U vid_edit_template
 
 # Parameters
   export PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
   export -U path=(
-                 $(brew --prefix)/Cellar/ruby/3.2.2/bin
+                 $(brew --prefix)/opt/ssh-copy-id/bin
+                 $(brew --prefix)/Cellar/ruby/3.2.2_1/bin
                  $(brew --prefix)/lib/ruby/gems/3.2.0/bin
                  $path
                  $(brew --prefix)/bin
@@ -244,6 +248,7 @@ source $ZSH/oh-my-zsh.sh
   alias -g O="open ."
   # external commands
   alias dmen="open -a dmenu-mac"
+  alias enhance='function ne() { docker run --rm -v "$(pwd)/`dirname ${@:$#}`":/ne/input -it alexjc/neural-enhance ${@:1:$#-1} "input/`basename ${@:$#}`"; }; ne'
   # alias htop="sudo htop"
   alias ls="colorls -A --sd"
   alias l="colorls -lA --sd --git-status"
@@ -253,7 +258,7 @@ source $ZSH/oh-my-zsh.sh
   alias py3="python3"
   alias py3pyhs="python3 /Users/zeric.chan/.zeric/.zgit/pyhs/Menu.py"
   alias ripgrep="rg"
-  alias stable-diffusion="cd $ZGIT/Stable-Diffusion/; ./webui.sh"
+  alias stable-diffusion="cd ~/.zeric/.zgit/Stable-Diffusion/; ./webui.sh"
   alias xl2csv="xlsx2csv"
   # IHS
   alias brand="open $HOME/Desktop/DOCUMENTS/Brand"
@@ -268,7 +273,7 @@ source $ZSH/oh-my-zsh.sh
   alias TSF="ToSendFolder"
   alias xl="open -a 'Microsoft Excel' '/Users/zeric.chan/Desktop/DOCUMENTS/QC/finder_search.xlsx'"
   # Work
-  alias ssh-van="ssh -i $VAN_WEB_KEY -p $VAN_WEB_PORT $VAN_WEB_SERVER"
+  alias ssh-seo="ssh -i $SEO_WEB_KEY -p $SEO_WEB_PORT $SEO_WEB_SERVER"
 
 # Startup commands
   clear  

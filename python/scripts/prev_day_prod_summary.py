@@ -6,7 +6,6 @@
 #[Done]1. ignore pre-market session for regular Ralph Lauren
 #[Done] 2. exclude model sessions
 #3. fill shot column on each shotlist
-#4. test print(*list)
 
 import json
 import re
@@ -22,31 +21,44 @@ import pyinputplus as pyip
 
 def main():
     #prompt the user to see if yesterday is public holiday, and amend the days to be subtracted from today
-    holiday_check = pyip.inputYesNo('Is yesterday public holiday? ')
+    holiday_check = pyip.inputYesNo('Is yesterday public holiday? (Y/N): ')
     day_to_subtract = 2 if holiday_check == "yes" else 1
 
-    print('Parsing server...')
+    #prompt for custom date
+    custom_date_yes_no = pyip.inputYesNo('Do you want to check a custom date? (Y/N): ')
+    if custom_date_yes_no == 'yes':
+        custom_year = date.today().year
+        custom_month = pyip.inputNum('Month (1-12): ')
+        custom_day = pyip.inputNum('Day (1-31): ')
+        check_date = date(custom_year, custom_month, custom_day)
+    else:
+        #construct check_date as yesterday or last friday if today is Monday
+        check_date = date.today() - timedelta(days=3) if date.today().strftime('%a') == 'Mon' else date.today() - timedelta(days=day_to_subtract)
 
-    #construct check_date as yesterday or last friday if today is Monday
-    check_date = date.today() - timedelta(days=3) if date.today().strftime('%a') == 'Mon' else date.today() - timedelta(days=day_to_subtract)
+    print(f'\nChecking production for {check_date}')
+    print('Parsing server...')
 
     brand_data = {
             'Agnes b': {'folder': 'Agnes B/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([A-Z0-9]+_[0-9]{3,4})_([0-9])(|_COMP[0-9]+|_INSERT)\\.tif'},
+            'AIWA': {'folder': 'AIWA EUROPE/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([-A-Z0-9]+)_([\\sA-Z0-9]+)(|_COMP[0-9]{1,2})\\.tif'},
             'Alphabox': {'folder': 'Alphabox/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': ''},
             'Arena': {'folder': 'Arena/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([A-Z0-9]+)(_[0-9])(|_TOP|_BOTTOM)(|_COMP[0-9]?|_INSERT)(|_[a-zA-Z0-9\\s]+)\\.tif'},
-            'Fred Perry': {'folder': 'Fred Perry/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([A-Z0-9]{2,7}_[A-Z0-9]{3})_V2_Q124_([A-Z0-9]+)(|_COMP[0-9]?[ a-zA-Z0-9]*|_INSERT)\\.tif'},
+            'Chevignon': {'folder': 'Chevignon/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([A-Z0-9]+)(_[1-9])(|_COMP[0-9]?|_INSERT)(|_[a-zA-Z0-9\\s]+)\\.tif'},
+            'Fred Perry': {'folder': 'Fred Perry/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([A-Z0-9]{2,7}_[A-Z0-9]{3})_V2_Q[\\d]{3}_([A-Z0-9]+)(|_COMP[0-9]?[ a-zA-Z0-9]*|_Comp[0-9]?[ a-zA-Z0-9]*|_INSERT)\\.tif'},
             'Lojel': {'folder': 'Lojel/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([^_]+)(|_.+)\\.tif'},
             'Kipling': {'folder': 'Kipling/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '(KPK[A-Z0-9]+)_(\\d|DSO)\\.tif'},
             'New Balance': {'folder': 'New Balance/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': ''},
             'OnTheList': {'folder': 'On the List/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([a-zA-Z0-9-]+)(_[1-9]|-[1-9])(|_COMP[0-9]+|_INSERT)\\.tif'},
+            'Petit Bateau': {'folder': 'Petit Bateau/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([A-Z0-9]+)_([A-Z0-9]+|[0-9]+)\\.tif'},
             'Satami': {'folder': 'Satami/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': "([A-Z]{2}-[A-Z0-9]+-[A-Z0-9]{2})_(FRONT|BACK|DETAIL)(|_COMP[0-9]+|_INSERT)\\.tif"},
             'Sau Lee': {'folder': 'Sau Lee/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': ''},
             'Speedo': {'folder': 'Arena/Production/', 'session': check_date.strftime('%Y%m%d') + '_Speedo' + '*', 'prod_re': '([A-Z0-9]+)(_[0-9])(|_TOP|_BOTTOM)(|_COMP[0-9]+|_INSERT)(|_[a-zA-Z0-9\\s]+)\\.tif'},
-            'Tommy Hilfiger': {'folder': 'Tommy Hilfiger/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': 'C11_02_AAA([A-Z0-9]+)_(FL|MO)-ST-([BDF][1-2])\\.tif'},
+            'Tommy Hilfiger': {'folder': 'Tommy Hilfiger/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([A-Z0-9]+)[^tif]+\\.tif'},
             'Toys R Us': {'folder': 'Toys R Us/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': ''},
             'Ralph Lauren': {'folder': 'Ralph Lauren/Production/', 'session': check_date.strftime('%m%d%Y') + '*[!T]', 'prod_re': '([0-9]+)_([-a-zA-Z0-9]+)(|_[a-zA-Z0-9]+)\\.tif'},
             'Ralph Lauren Premarket': {'folder': 'Ralph Lauren/Production/', 'session': check_date.strftime('%m%d%Y') + '*PREMARKET*', 'prod_re': '([0-9]+)_([-a-zA-Z0-9]+)(|_[a-zA-Z0-9]+)\\.tif'},
-            'Vans': {'folder': 'Vans/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([0-9]+)_([-a-zA-Z]+)(|_[a-zA-Z0-9]+)\\.tif'}
+            'Vans': {'folder': 'Vans/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([0-9]+)_([-a-zA-Z]+)(|_[a-zA-Z0-9]+)\\.tif'},
+            'WEAT': {'folder': 'WEAT/Production/', 'session': check_date.strftime('%Y%m%d') + '*', 'prod_re': '([^_]+)(|_[^\\.]+)\\.tif'}
             }
 
     service_account_json = Path('/Users/zeric.chan/.zeric/resources/service_account.json')
@@ -87,13 +99,14 @@ def main():
 
     for brand in brand_data.keys():
         if brand in active_brand_List:
+            print('\n==========================================================================================\n')
+            print(f'\nAccessing {brand} production data...\n')
             brand_prod_path = server_path / brand_data[brand]['folder']
             session_shot_yesterday_list = brand_prod_path.glob(brand_data[brand]['session'])
             product_list = [] #products been shot
             reshot_product_list = [] #products been reshot
             reshoot_product_list = [] #products need reshoot
             brand_img_name = re.compile(r'{}'.format(brand_data[brand]['prod_re']))
-            print('\n==========================================================================================\n')
             print('Brand: ' + brand + '\n')
 
             for session in session_shot_yesterday_list:
@@ -105,10 +118,10 @@ def main():
                     try :
                         product = brand_img_name.fullmatch(img.name).group(1)
                     except AttributeError:
-                        print(f'The image {img.name} does not match with the Regex')
+                        print(f'\nThe image {img.name} does not match with the Regex')
                         ans = ''
                         while ans == '':
-                            ans = input('\nignore? (Y/N): ')
+                            ans = input('ignore? (Y/N): ')
                             if ans.lower() == 'y' or ans.lower() == 'yes':
                                 product = ''
                                 while product == '':

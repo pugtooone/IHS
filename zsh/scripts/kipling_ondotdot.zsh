@@ -172,11 +172,13 @@ local TMP_CSV="/tmp/kipling_csv_tmp.csv"
 local CSV_TO_CLIENT="${JOB_PATH}/../$(date "+%Y%m%d")_${JOB_NAME}.csv"
 local CSV_TO_THE_DOT="${JOB_PATH}/../${JOB_NAME}.csv"
 
+# inserting UTF-8 byte order mark (BOM)
 echo -ne '\xEF\xBB\xBF' > ${CSV_TO_THE_DOT}
 
 pbpaste | sed 's/,/;/g' | sed 's/\t/,/g' > ${CSV_TO_CLIENT}
 pbpaste | sed 's/\t/;/g' > ${TMP_CSV}
 
+# converting the encoding from Microsoft CP1252 (copied from Teams Excel) to UTF-8
 iconv -f CP1252 -t UTF-8 ${TMP_CSV} >> ${CSV_TO_THE_DOT}
 #==================================================
 #}}}

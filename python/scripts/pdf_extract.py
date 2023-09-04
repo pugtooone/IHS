@@ -18,8 +18,8 @@ def img_extract():
 
     print('img_extract() running...')
 
-    Path.mkdir(file.parent / 'Images', exist_ok=True)
-    os.chdir(file.parent / 'Images')
+    Path.mkdir(file.parent / 'PDF_Extract_Images', exist_ok=True)
+    os.chdir(file.parent / 'PDF_Extract_Images')
 
     no_of_img = 0
     for pageNo in range(len(pdf)):

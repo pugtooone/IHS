@@ -115,7 +115,8 @@ def CF_highlight_text_extract():
     drawingCount = 0
 
     for pageNo in range(len(pdf)):
-        print(f'Accessing Page [{pageNo + 1}]...')
+        print("".center(70, "="))
+        print(f'\nAccessing Page[{pageNo + 1}]...\n')
         page = pdf[pageNo]
 
         drawings = page.get_drawings()
@@ -128,13 +129,17 @@ def CF_highlight_text_extract():
 
             try:
                 filename = page.get_text("words", clip=rect)[0][4]
+                print(f"{filename}")
+                print(f"{rect}")
+                print(f"Fill: {drawings[i]['fill']}\n")
                 if filename.endswith('tif'):
                     text += f'\n{filename}'
             except IndexError:
                 print(f"Error: No words extractable for {rect}")
 
     pyperclip.copy(text)
-    print('Text copied')
+    print("".center(70, "="))
+    print('\nText copied')
     print(f'Total Selection: {drawingCount}')
 
 def main():

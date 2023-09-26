@@ -21,7 +21,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="Zeric's agnoster"
+ZSH_THEME=""
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -187,7 +187,8 @@ source $ZSH/oh-my-zsh.sh
   autoload -U ssh-ihs-all
 
 # Parameters
-  export PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
+  export -U PS1="> "
+  export -U PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
   export -U path=(
                  $(brew --prefix)/opt/ssh-copy-id/bin
                  $(brew --prefix)/Cellar/ruby/3.2.2_1/bin
@@ -198,31 +199,30 @@ source $ZSH/oh-my-zsh.sh
                  $HOME/.bin/pybin
                  )
 
-  typeset -U cdpath=(
+  export -U cdpath=(
                      .
                      $HOME/Desktop
                      )
 
-  typeset -U fpath=(
+  export -U fpath=(
                     $fpath
                     $HOME/.zfunc/
                     $HOME/.zfunc/**/*
                     )
 
   export HOMEBREW_EDITOR=nvim
-
-  #python env
   export PYTHONPATH="$HOME/.bin/pybin/"
 
-  typeset PYBIN="$HOME/.bin/pybin/"
-  typeset ZBIN="$HOME/.bin/zbin/"
+  export PYBIN="$HOME/.bin/pybin/"
+  export ZBIN="$HOME/.bin/zbin/"
 
-  typeset NVIM="$HOME/.config/nvim"
-  typeset NVIM_INIT="$HOME/.config/nvim/init.vim"
-  typeset ZGIT="$HOME/.zeric/.zgit"
+  export NVIM="$HOME/.config/nvim"
+  export NVIM_INIT="$HOME/.config/nvim/init.vim"
+  export TESSDATA_PREFIX="$HOME/homebrew/Cellar/tesseract/5.3.2_1/share/tessdata"
+  export ZGIT="$HOME/.zeric/.zgit"
 
   # associative array for the IHS zshrc
-  typeset -A ihsrc=( 
+  typeset -xA ihsrc=( 
                     qc $HOME/.zeric/.zgit/IHS/zsh/setup/zshrc/qc.zshrc 
                     stud $HOME/.zeric/.zgit/IHS/zsh/setup/zshrc/studio.zshrc 
                     ) 
@@ -246,7 +246,11 @@ source $ZSH/oh-my-zsh.sh
   alias zfunc="cd $HOME/.zfunc/"
   alias zgit="cd $HOME/.zeric/.zgit/"
   alias -g O="open ."
+
+
   # external commands
+  alias venv="if [[ -d venv ]]; then source venv/bin/activate; else print 'Error: There is no virtual environment in the current directory'; fi"
+  alias deact="deactivate"
   alias dmen="open -a dmenu-mac"
   alias enhance='function ne() { docker run --rm -v "$(pwd)/`dirname ${@:$#}`":/ne/input -it alexjc/neural-enhance ${@:1:$#-1} "input/`basename ${@:$#}`"; }; ne'
   # alias htop="sudo htop"
@@ -258,9 +262,10 @@ source $ZSH/oh-my-zsh.sh
   alias py3="python3"
   alias py3pyhs="python3 /Users/zeric.chan/.zeric/.zgit/pyhs/Menu.py"
   alias ripgrep="rg"
-  alias stable-diffusion="cd ~/.zeric/.zgit/Stable-Diffusion/; ./webui.sh"
+  alias stable-diffusion="cd ~/Stable-Diffusion/; ./webui.sh"
   alias xl2csv="xlsx2csv"
   # IHS
+  alias box="cd $HOME/Library/CloudStorage/Box-Box"
   alias brand="open $HOME/Desktop/DOCUMENTS/Brand"
   alias google_ser_ac="print $GOOGLE_SERVICE_AC | pbcopy; print 'Google Service Account copied to the clipboard'"
   alias ihse="ihs_email.py"
@@ -279,7 +284,7 @@ source $ZSH/oh-my-zsh.sh
   clear  
   neofetch
   # cowsay -f dragon 'Roar!! I don''t want OT!!'
-  curl -s https://cultofthepartyparrot.com/parrots/hd/shuffleparrot.gif | chafa -
+  #curl -s https://cultofthepartyparrot.com/parrots/hd/shuffleparrot.gif | chafa -
   # File management
   [[ -f $HOME/Desktop/**/Thumbs.db ]] && rm $HOME/Desktop/**/Thumbs.db
 
@@ -307,12 +312,6 @@ source $ZSH/oh-my-zsh.sh
 
   # zsh-autosuggestions config
     ZSH_AUTOSUGGEST_STRATEGY=( history completion )
-
-  # agnoster.zsh-theme setup
-    customize_agnoster() {
-  	prompt_segment 'red' '' '%{\e[33m%}%B\uf12a %!%b%{\e[0m%}'
-    }
-    AGNOSTER_PROMPT_SEGMENTS=("customize_agnoster" "${AGNOSTER_PROMPT_SEGMENTS[@]}")
 
 #}}}
 #=================================================================

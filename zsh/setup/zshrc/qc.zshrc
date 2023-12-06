@@ -21,7 +21,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME=""
+ZSH_THEME="agnoster"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -171,6 +171,7 @@ source $ZSH/oh-my-zsh.sh
   autoload -U exportdrag
   autoload -U dialog
   autoload -U l1
+  autoload -U mklist
   autoload -U newimgver
   autoload -U or_name_search
   autoload -U qcstart
@@ -182,12 +183,12 @@ source $ZSH/oh-my-zsh.sh
   autoload -U check-ssh-key
   autoload -U rsync-to-all-imac
   autoload -U scp-from-imac
-  autoload -U show-ihs-ip
+  autoload -U show-ihs-hostname
   autoload -U ssh-ihs
   autoload -U ssh-ihs-all
 
 # Parameters
-  export -U PS1="> "
+  #export -U PS1="> "
   export -U PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
   export -U path=(
                  $(brew --prefix)/opt/ssh-copy-id/bin
@@ -218,7 +219,7 @@ source $ZSH/oh-my-zsh.sh
 
   export NVIM="$HOME/.config/nvim"
   export NVIM_INIT="$HOME/.config/nvim/init.vim"
-  export TESSDATA_PREFIX="$HOME/homebrew/Cellar/tesseract/5.3.2_1/share/tessdata"
+  export TESSDATA_PREFIX="$HOME/homebrew/Cellar/tesseract/5.3.3/share/tessdata"
   export ZGIT="$HOME/.zeric/.zgit"
 
   # associative array for the IHS zshrc
@@ -236,6 +237,7 @@ source $ZSH/oh-my-zsh.sh
   alias D="cd $HOME/Desktop/"
   alias down="cd $HOME/Downloads"
   alias dv="dirs -v"
+  alias listfilter="find . -type f | grep -f /tmp/list.txt"
   alias pgrep="pgrep -li"
   alias pybin="$HOME/.bin/pybin/"
   alias pyhs="cd $HOME/.zeric/.zgit/pyhs"
@@ -262,11 +264,12 @@ source $ZSH/oh-my-zsh.sh
   alias py3="python3"
   alias py3pyhs="python3 /Users/zeric.chan/.zeric/.zgit/pyhs/Menu.py"
   alias ripgrep="rg"
-  alias stable-diffusion="cd ~/Stable-Diffusion/; ./webui.sh"
+  alias stable-diffusion="cd ~/stable-diffusion-webui/; ./webui.sh"
   alias xl2csv="xlsx2csv"
   # IHS
   alias box="cd $HOME/Library/CloudStorage/Box-Box"
   alias brand="open $HOME/Desktop/DOCUMENTS/Brand"
+  alias fp_swatch="cd $HOME/Library/CloudStorage/Box-Box/Hong\ Kong/Colour\ Reference/Fred\ Perry\ Swatch"
   alias google_ser_ac="print $GOOGLE_SERVICE_AC | pbcopy; print 'Google Service Account copied to the clipboard'"
   alias ihse="ihs_email.py"
   alias imgdrag="mv -i **/*(.) ." 
@@ -308,7 +311,7 @@ source $ZSH/oh-my-zsh.sh
     ZSH_HIGHLIGHT_STYLES[alias]='fg=blue,bold'
     ZSH_HIGHLIGHT_STYLES[function]='fg=magenta,blod'
     ZSH_HIGHLIGHT_STYLES[path]='fg=yellow,blod'
-    ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=blue,bg=yellow,blod'
+    ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=blue,blod'
 
   # zsh-autosuggestions config
     ZSH_AUTOSUGGEST_STRATEGY=( history completion )

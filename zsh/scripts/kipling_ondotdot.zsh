@@ -99,8 +99,16 @@ mkdir $JOB_PATH
 for dir in ${RESULT}; do
   dir=$(print ${dir//;/ })
 
-  #!!!ADD CONDITIONS FOR VARIOUS JOB TYPES
-  mv -i ${dir}/**/*.(jpg|jpeg|png|tif|tiff) ${JOB_PATH}
+  #conditional check if subfolder is Ecom or Macy
+  for subdir in "$(command ls -1 ${dir})"; do
+    if [[ ${(L)subdir} == *"/ecom/" ]]; then
+      mv -i ${dir}/**/*.(jpg|jpeg) ${JOB_PATH}
+    elif [[ ${(L)subdir} == *"/macy/" ]]; then
+      mv -i ${dir}/**/*.(tif|tiff) ${JOB_PATH}
+    else
+      mv -i ${dir}/**/*.(jpg|jpeg|tif|tiff) ${JOB_PATH}
+    fi
+  done
   # rm the original dir if more than 1 is selected; rm the subfolder inside if only 1 is selected
   if [[ ${#RESULT} > 1 ]]; then
     rm -r ${dir}
@@ -157,7 +165,7 @@ while [[ "$(pbpaste | head -c 8)" != "filename" ]]; do
     });
 HERE
   if [[ $RESPONSE == "buttonReturned:Cancel" ]]; then
-    return 1
+    exit 1
   fi
 done
 #==================================================

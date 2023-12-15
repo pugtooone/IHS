@@ -237,6 +237,7 @@ source $ZSH/oh-my-zsh.sh
   alias D="cd $HOME/Desktop/"
   alias down="cd $HOME/Downloads"
   alias dv="dirs -v"
+  alias finduplicates="sort | uniq -c | awk '{ if ($1 != "1") print $0 }'"
   alias listfilter="find . -type f | grep -f /tmp/list.txt"
   alias pgrep="pgrep -li"
   alias pybin="$HOME/.bin/pybin/"

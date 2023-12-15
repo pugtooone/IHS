@@ -20,13 +20,16 @@ function timeTrackingSummary() {
   const currentYear = currentDate.getFullYear() - 2000;
   const monthList = {0: "Jan", 1: "Feb", 2: "Mar", 3: "Apr", 4: "May", 5: "Jun", 6: "Jul", 7: "Aug", 8: "Sep", 9: "Oct", 10: "Nov", 11: "Dec"};
   const tabName = monthList[currentMonth] + currentYear.toString();
+  Logger.log(`Current Month: ${tabName}`);
 
   let reportObj = {};
 
   for (let url of trackFileUrls) {
     let brandObj = {};
 
-    const employeeSheet = SpreadsheetApp.openByUrl(url).getSheetByName(tabName);
+    const employeeSpreadSheet = SpreadsheetApp.openByUrl(url);
+    Logger.log(`Accessing ${employeeSpreadSheet.getName()}...`);
+    const employeeSheet = employeeSpreadSheet.getSheetByName(tabName);
     const employeeName = employeeSheet.createTextFinder("Employee Name:").matchEntireCell(true).findNext().offset(0, 1).getValue();
     let employeeObj = reportObj[employeeName] = {};
     const roleObj = {"Stockroom": "Stockroom", "Styli": "Styling", "Photographer": "Photography", "Image": "QC", "Studio": "Studio"}; //setting: search the substring to map the department
@@ -69,7 +72,7 @@ function timeTrackingSummary() {
   Logger.log(prettyReportObj);
 
   //constructing reporting format
-  const employeeList = Object.keys(reportObj).sort();
+  const employeeList = Object.keys(reportObj).sort().filter(value => value != "");
   let brandList = [];
   for (let employee of employeeList) {
     const employeeBrandList = Object.keys(reportObj[employee]["brand"]);
@@ -77,6 +80,7 @@ function timeTrackingSummary() {
   };
 
   //convert the employeeList to column format
+
   const employeeListToCol = employeeList.map(value => [value]);
   //remove the duplicated brand
   const deDupBrandList = [...new Set(brandList)];
@@ -91,8 +95,14 @@ function timeTrackingSummary() {
 
   //Summary Sheet
   const sumSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Time Tracking Summary");
-  sumSheet.insertColumns(sumSheet.getMaxColumns(), 22); //inserting columns to the end
   const endCellList = sumSheet.createTextFinder("End").findAll();
+  sumSheet.insertColumns(sumSheet.getMaxColumns(), 50); //inserting columns to the end
+  //remove the last end cell if this is not the month end run
+  Logger.log(`tabName is ${sumSheet.createTextFinder(tabName).findNext}`);
+  if (sumSheet.createTextFinder(tabName).findNext() != null) { 
+    endCellList.pop()
+    Logger.log('removing last End cell...');
+  } 
   let endCellCol = 0;
   if (endCellList != null) {
     for (let endCell of endCellList) {
@@ -101,10 +111,11 @@ function timeTrackingSummary() {
       };
     };
   };
+  Logger.log('endCellCol:' + endCellCol);
 
   const startCell = sumSheet.getRange(2, endCellCol + 2);
   //the new range for this month data to be written in, if not create, previous brand or employee name will be matched with text finder
-  const newRangeToWrite = sumSheet.getRange(startCell.getRow(), startCell.getColumn(), sumSheet.getMaxRows() - startCell.getRow(), sumSheet.getMaxColumns() - startCell.getColumn());
+  const newRangeToWrite = sumSheet.getRange(startCell.getRow(), startCell.getColumn(), sumSheet.getMaxRows() - startCell.getRow(), sumSheet.getMaxColumns() - startCell.getColumn()).clear().setBackground('#efefef');
   const header = sumSheet.getRange(startCell.getRow(), startCell.getColumn(), 1, deDupBrandList.length + 2).merge().setValue(tabName).setBackground('#004562').setFontColor('#efefef').setFontSize(12).setHorizontalAlignment('center').setVerticalAlignment('middle');
   const writeEndCell = header.offset(0, 1).setValue('End').setBackground('#004562').setFontColor('#efefef').setHorizontalAlignment('center').setVerticalAlignment('middle');
 
@@ -119,6 +130,7 @@ function timeTrackingSummary() {
     newRangeToWrite.createTextFinder(employee).matchEntireCell(true).findNext().offset(0, -1).setValue(reportObj[employee]["role"]).setBackground("#b7e1cd").setFontColor("#004562");
     for (let brand of Object.keys(reportObj[employee]["brand"])) {
       if( reportObj[employee]["brand"][brand] != 0) {
+        Logger.log(`Writing ${employee} - ${brand}...`);
         const toWriteRow = newRangeToWrite.createTextFinder(employee).matchEntireCell(true).findNext().getRow();
         const toWriteCol = newRangeToWrite.createTextFinder(brand).matchEntireCell(true).findNext().getColumn();
         sumSheet.getRange(toWriteRow, toWriteCol).setValue(reportObj[employee]["brand"][brand]);
@@ -128,7 +140,7 @@ function timeTrackingSummary() {
 
   //setting sum formulas
   const brandTotalCell = sumSheet.getRange(employeeColRange.getLastRow() + 1, startCell.getColumn(), 1, 2).merge().setValue('Brand Total').setBackground('#004562').setFontColor('#efefef');
-  const brandTotalRow = sumSheet.getRange(employeeColRange.getLastRow() + 1, startCell.getColumn() + 2, 1, deDupBrandList.length + 1).setBackground('#b2cfd5').setFontColor('');
+  const brandTotalRow = sumSheet.getRange(employeeColRange.getLastRow() + 1, startCell.getColumn() + 2, 1, deDupBrandList.length + 1).setBackground('#b2cfd5').setFontColor('#004562');
   const brandSumFormula = `=SUM(R[-${employeeList.length}]C[0]:R[-1]C[0])`;
   const brandSumFormulas = [];
   for (let i = 0; i < deDupBrandList.length + 1; i++) brandSumFormulas.push(brandSumFormula);
@@ -148,4 +160,8 @@ function timeTrackingSummary() {
     const col = range.getColumn();
     sumSheet.deleteColumn(col);
   };
+
+  const finalEndCellCol = sumSheet.createTextFinder('End').findAll().pop().getColumn() + 2;
+  const numColDel = sumSheet.getMaxColumns() + 1;
+  sumSheet.deleteColumns(finalEndCellCol, numColDel - finalEndCellCol);
 }

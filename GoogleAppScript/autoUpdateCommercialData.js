@@ -1,3 +1,5 @@
+//Google App Script that autoupdates the commercial data about payment and model booking
+
 /** @OnlyCurrentDoc */
 function onOpen(e) {
 

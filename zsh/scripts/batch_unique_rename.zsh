@@ -10,17 +10,10 @@
 # 1) % at the end of the last row of csv needs to be removed
 
 if [[ -e $1 ]]; then
-
     cd $1	
-
     cat *.csv | sed 's/\r//g' | while IFS=, read -r oldname newname; do
-
         rename -s $oldname $newname **/*(.)
-
     done
-
 else
-
     print "target directory missing!!!"
-
 fi

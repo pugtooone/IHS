@@ -21,7 +21,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="agnoster"
+ZSH_THEME="zagnoster"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -188,11 +188,12 @@ source $ZSH/oh-my-zsh.sh
   autoload -U ssh-ihs-all
 
 # Parameters
+  export -U EDITOR=$(brew --prefix)/bin/nvim
   #export -U PS1="> "
   export -U PS4=$'+%N:%{\e[43m%}%i%{\e[0m%}:%_>'
   export -U path=(
                  $(brew --prefix)/opt/ssh-copy-id/bin
-                 $(brew --prefix)/Cellar/ruby/3.2.2_1/bin
+                 $(brew --prefix)/Cellar/ruby/3.3.0/bin
                  $(brew --prefix)/lib/ruby/gems/3.2.0/bin
                  $path
                  $(brew --prefix)/bin
@@ -261,6 +262,7 @@ source $ZSH/oh-my-zsh.sh
   alias l="colorls -lA --sd --git-status"
   alias lr="colorls -report"
   alias ltree="exa --long --tree --sort=type"
+  alias man="batman"
   alias pip3updateall="pip3 list --outdated | cut -d' ' -f1 | sed -n '3,$ p' | xargs -I % pip3 install --upgrade %"
   alias py3="python3"
   alias py3pyhs="python3 /Users/zeric.chan/.zeric/.zgit/pyhs/Menu.py"

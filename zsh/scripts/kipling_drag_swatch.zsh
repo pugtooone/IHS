@@ -1,6 +1,6 @@
 #! /bin/zsh
 
-exec > /tmp/kipling_drag_swatch.log 2>&1
+exec > /tmp/kipling_drag_swatch.zlog 2>&1
 
 emulate -LR zsh
 setopt extended_glob

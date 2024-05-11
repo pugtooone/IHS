@@ -1,6 +1,6 @@
 #! /bin/zsh
 
-exec > /tmp/kipling_ondotdot.log 2>&1
+exec >| /tmp/kipling_ondotdot.zlog 2>&1
 
 emulate -LR zsh
 setopt extended_glob
@@ -59,9 +59,7 @@ HERE
       });
 HERE
     )
-    if [[ $RESPONSE == "buttonReturned:Cancel" ]]; then
-      return 1
-    fi
+    [[ $RESPONSE == "buttonReturned:Cancel" ]] && exit 0
     continue
   fi
 
@@ -94,17 +92,17 @@ done
 
 # create $JOB_PATH as the master directory to store all the images to-be-uploaded
 local JOB_PATH=$(dirname ${RESULT[1]} | sed 's/;/ /g')/$JOB_NAME
-mkdir $JOB_PATH
+[[ ! -e ${JOB_PATH} ]] && mkdir $JOB_PATH
 
 for dir in ${RESULT}; do
   dir=$(print ${dir//;/ })
 
   #conditional check if subfolder is Ecom or Macy
   for subdir in "$(command ls -1 ${dir})"; do
-    if [[ ${(L)subdir} == *"/ecom/" ]]; then
-      mv -i ${dir}/**/*.(jpg|jpeg) ${JOB_PATH}
-    elif [[ ${(L)subdir} == *"/macy/" ]]; then
-      mv -i ${dir}/**/*.(tif|tiff) ${JOB_PATH}
+    if [[ ${(L)subdir} == *ecom* ]]; then
+      mv -i "${dir}/${subdir}"/**/*.(jpg|jpeg) ${JOB_PATH}
+    elif [[ ${(L)subdir} == *macy* ]]; then
+      mv -i "${dir}/${subdir}"/**/*.(tif|tiff) ${JOB_PATH}
     else
       mv -i ${dir}/**/*.(jpg|jpeg|tif|tiff) ${JOB_PATH}
     fi
@@ -117,9 +115,7 @@ for dir in ${RESULT}; do
   fi
 done
 
-print -l ${JOB_PATH}/*.(jpg|jpeg|png|tif|tiff) | while read; do
-	basename ${REPLY}
-done | pbcopy
+basename ${JOB_PATH}/* | pbcopy
 
 osascript -l JavaScript <<-HERE
   const app = Application.currentApplication();
@@ -164,9 +160,8 @@ while [[ "$(pbpaste | head -c 8)" != "filename" ]]; do
       buttons: ["Information Copied!", "Cancel"],
     });
 HERE
-  if [[ $RESPONSE == "buttonReturned:Cancel" ]]; then
-    exit 1
-  fi
+[[ $RESPONSE == "buttonReturned:Cancel" || $RESPONSE == "" ]] && exit 0
+
 done
 #==================================================
 #}}}

@@ -15,7 +15,7 @@
 # 1) renameing images with 1 missing character, only the first alphabet will be removed if there are more than 1 of the same alphabet
 # 2) append number if COMP does not have one
 
-exec > /tmp/RL_check.log 2>&1
+exec > /tmp/RL_check.zlog 2>&1
 
 emulate -LR zsh
 setopt xtrace
